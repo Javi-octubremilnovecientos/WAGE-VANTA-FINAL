@@ -1,22 +1,19 @@
-import { Link } from 'react-router-dom';
+import MainChart from "../components/charts/MainChart";
+import FormLayout from "../components/form/FormLayout";
 
-function Home() {
+
+export default function Home() {
     return (
-        <div className="container mx-auto px-4 py-12">
-            <div className="text-center">
-                <h1 className="text-4xl font-bold mb-6">Wage Comparator</h1>
-                <p className="text-xl text-gray-600 mb-8">
-                    Choose a country to start comparing
-                </p>
-                <Link
-                    to="/comparison"
-                    className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition"
-                >
-                    Start Comparison
-                </Link>
+        <div className="min-h-screenrelative flex flex-col lg:flex-row items-center justify-around gap-8 py-12">
+
+
+            {/* Formularios lado a lado */}
+            <div className="w-full px-6 lg:px-8">
+               <MainChart/>
+            </div>
+            <div className="w-full px-6 lg:px-8">
+                <FormLayout />
             </div>
         </div>
-    );
+    )
 }
-
-export default Home;
