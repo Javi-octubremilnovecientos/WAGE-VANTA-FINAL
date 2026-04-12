@@ -38,7 +38,7 @@ export default function Home() {
                     </div>
                 ) : (
                     /* Active state: chart + compare button */
-                    <div className="w-full max-w-[500px] flex flex-col gap-4 animate-[fadeIn_0.4s_ease-in]">
+                    <div className="w-full max-w-[650px] flex flex-col gap-4 animate-[fadeIn_0.4s_ease-in]">
                         <MainChart />
                         <div className="flex items-center justify-center">
                             <button

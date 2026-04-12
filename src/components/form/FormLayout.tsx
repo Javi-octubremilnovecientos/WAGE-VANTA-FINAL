@@ -1,9 +1,12 @@
 
 import { useState } from 'react';
+import AuthModal from '../ui/modals/AuthModal';
+import { ClipboardDocumentIcon, BookmarkIcon } from '@heroicons/react/24/outline';
 import StandardComboBox from './StandardComboBox';
 import NumberInput from './NumberInput';
 import StepSlider from './Stepslider';
 import { formSteps } from '../../features/salaries/salaryConstants';
+import './FormLayout.css';
 
 // Type for form values
 type FormValues = Record<string, string>;
@@ -15,6 +18,7 @@ interface FormLayoutProps {
 function FormLayout({ onCountryChange }: FormLayoutProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [formValues, setFormValues] = useState<FormValues>({});
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const totalSteps = formSteps.length;
   const currentStepData = formSteps[currentStep];
@@ -51,18 +55,37 @@ function FormLayout({ onCountryChange }: FormLayoutProps) {
 
   return (
     <div className="w-full max-w-md md:max-w-2xl mx-auto">
-      {/* Step Slider */}
-      <div className="mb-8">
-        <StepSlider currentStep={currentStep} totalSteps={totalSteps} />
-      </div>
+      {/* Top Buttons */}
+
 
       {/* Step Title */}
 
 
       {/* Form */}
       <form action="#" method="POST" className="w-full" onSubmit={handleSubmit}>
+        {/* Step Slider */}
+        <div className="mb-8">
+          <StepSlider currentStep={currentStep} totalSteps={totalSteps} />
+        </div>
+
+        <div className="flex justify-end h-fit animate-fade-in-down">
+          {/* Fill with template button */}
+          <button
+            type="button"
+            className="flex items-center gap-2 text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none"
+            aria-label="Fill with a template"
+            onClick={() => setAuthModalOpen(true)}
+          >
+            <ClipboardDocumentIcon className="w-5 h-5" />
+            <span className="text-sm font-medium">Fill with a template</span>
+          </button>
+        </div>
+
         {/* Dynamic Fields Container */}
-        <div className="flex flex-col gap-6">
+        <div
+          key={currentStep}
+          className="flex flex-col gap-6 animate-slide-in"
+        >
           {currentStepData.fields.map((field) => {
             if (field.type === 'select' && field.options) {
               return (
@@ -97,14 +120,30 @@ function FormLayout({ onCountryChange }: FormLayoutProps) {
           })}
         </div>
 
+
+        {/* Save as template button - only on last step */}
+        {isLastStep && (
+          <div className="flex justify-end animate-fade-in">
+            <button
+              type="button"
+              className="flex items-center gap-2 text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none h-fit mt-3"
+              aria-label="Save as a template"
+              onClick={() => setAuthModalOpen(true)}
+            >
+              <BookmarkIcon className="w-5 h-5" />
+              <span className="text-sm font-medium">Save as a template</span>
+            </button>
+          </div>
+        )}
+
         {/* Navigation Buttons */}
-        <div className="mt-10 flex gap-3">
+        <div className="mt-10 flex gap-3 animate-fade-in-up">
           <button
             onClick={handleBack}
             disabled={currentStep === 0}
             style={{ backgroundColor: currentStep === 0 ? "#9ca3af" : "#45d2fd" }}
             type="button"
-            className="block w-1/3 rounded-md px-3.5 py-2.5 text-center text-sm font-semibold text-gray-900 shadow-xs hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all disabled:cursor-not-allowed"
+            className="block w-1/3 rounded-md px-3.5 py-2.5 text-center text-sm font-semibold text-gray-900 shadow-xs hover:opacity-90 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all duration-200 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
             Back
           </button>
@@ -113,12 +152,19 @@ function FormLayout({ onCountryChange }: FormLayoutProps) {
             type={isLastStep ? 'submit' : 'button'}
             disabled={isNextDisabled}
             style={{ backgroundColor: isNextDisabled ? "#9ca3af" : "#45d2fd" }}
-            className="block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold text-gray-900 shadow-xs hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all disabled:cursor-not-allowed disabled:opacity-60"
+            className="block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold text-gray-900 shadow-xs hover:opacity-90 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
           >
-            {isLastStep ? 'Submit' : 'Next'}
+            {isLastStep ? 'Go to comprasions sheet' : 'Next'}
           </button>
         </div>
       </form>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        mode="login"
+      />
     </div>
   );
 }

@@ -1,49 +1,71 @@
+
+
+import { useNavigate } from 'react-router-dom';
+
+export type PremiumFeature =
+    | 'compare_countries'
+    | 'export'
+    | 'chart_views'
+    | 'save_templates';
+
+const featureMessages: Record<PremiumFeature, JSX.Element> = {
+    compare_countries: <>Wanna chose more countries? Upgrade Premium plan and chose <span className="font-semibold text-accent-500">up to 3 countries</span>
+    </>,
+    export: <>to export this comprasions on .csv,.pdf or .png files, you have to upgrade to premium plan</>,
+    chart_views: <>to unlock multiple chart views, you need to upgrade to a Premium plan</>,
+    save_templates: <>to save up to 4 templates (Free plan allows 1 only), you need to upgrade to a Premium plan</>,
+};
+
 interface UpgradeModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onUpgrade: () => void;
-    feature: string;
+    feature: PremiumFeature;
 }
 
-function UpgradeModal({ isOpen, onClose, onUpgrade, feature }: UpgradeModalProps) {
+function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
+    const navigate = useNavigate();
+
     if (!isOpen) return null;
 
+    const handleUpgrade = () => {
+        onClose();
+        navigate('/plans');
+    };
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div
-                className="absolute inset-0 bg-black bg-opacity-50"
-                onClick={onClose}
-            />
-            <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold">Upgrade Required</h2>
-                    <button
-                        onClick={onClose}
-                        className="text-gray-500 hover:text-gray-700 text-2xl leading-none"
-                    >
-                        ×
-                    </button>
-                </div>
-                <div className="mb-6">
-                    <p className="text-gray-700 mb-4">
-                        You've reached the limit for <strong>{feature}</strong> on the FREE plan.
-                    </p>
-                    <p className="text-gray-700">
-                        Upgrade to PREMIUM to unlock more features and remove all limits.
-                    </p>
-                </div>
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="upgrade-modal-title"
+        >
+            <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-xl p-6 shadow-xl">
+                {/* Title */}
+                <h2
+                    id="upgrade-modal-title"
+                    className="text-2xl font-bold mb-4 text-accent-500 drop-shadow-[0_2px_8px_rgba(245,158,11,0.25)]"
+                >
+                    Upgrade now
+                </h2>
+
+                {/* Dynamic description */}
+                <p className="text-gray-300 text-base mb-7 leading-relaxed">
+                    {featureMessages[feature]}.
+                </p>
+
+                {/* Buttons */}
                 <div className="flex gap-3">
                     <button
-                        onClick={onClose}
-                        className="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition"
+                        onClick={handleUpgrade}
+                        className="flex-1 rounded-lg px-4 py-3 text-base font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-gray-900"
                     >
-                        Maybe Later
+                        Upgrade to Premium
                     </button>
                     <button
-                        onClick={onUpgrade}
-                        className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+                        onClick={onClose}
+                        className="flex-1 rounded-lg px-4 py-3 text-base font-semibold text-gray-300 bg-gray-800 hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
                     >
-                        Upgrade Now
+                        Not now
                     </button>
                 </div>
             </div>

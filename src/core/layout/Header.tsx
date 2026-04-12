@@ -5,11 +5,13 @@ import { Link } from "react-router-dom";
 import { Dialog, DialogPanel, PopoverGroup, Switch } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
+import AuthModal from "../../components/ui/modals/AuthModal";
 
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [enabled, setEnabled] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   return (
     <header className="relative z-50">
@@ -18,9 +20,9 @@ export default function Header() {
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
       >
         <div className="flex lg:flex-1">
-          <Link
-            to="/"
-            className="flex items-center -m-1.5 p-1.5 gap-x-3 text-white"
+          <button
+            onClick={() => setAuthModalOpen(true)}
+            className="flex items-center -m-1.5 p-1.5 gap-x-3 text-white hover:opacity-80 transition-opacity focus:outline-none"
           >
             <img
               alt=""
@@ -28,7 +30,7 @@ export default function Header() {
               className="inline-block size-11 rounded-full ring-2 ring-gray-900 outline -outline-offset-1 outline-white/10"
             />
             Log in <span aria-hidden="true">&rarr;</span>
-          </Link>
+          </button>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -127,6 +129,13 @@ export default function Header() {
           </div>
         </DialogPanel>
       </Dialog>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        mode="login"
+      />
     </header>
   );
 }

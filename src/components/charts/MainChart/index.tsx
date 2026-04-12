@@ -23,9 +23,7 @@ type BoxPlotDatum = {
 };
 
 const data: ReadonlyArray<BoxPlotDatum> = [
-    { category: 'A', min: 16, q1: 20, median: 24, q3: 29, max: 35 },
-    { category: 'B', min: 12, q1: 15, median: 18, q3: 21, max: 27 }
-
+    { category: 'A', min: 16, q1: 20, median: 24, q3: 29, max: 35 }
 ];
 
 type OutlierDatum = {

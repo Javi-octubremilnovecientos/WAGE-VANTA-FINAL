@@ -19,9 +19,9 @@ function StepSlider({ currentStep, totalSteps }: StepSliderProps) {
             {Array.from({ length: totalSteps }).map((_, index) => (
                 <div key={index} className="flex-1">
                     {/* Barra de progreso */}
-                    <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                    <div className="w-full h-1 bg-gray-700 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-gradient-to-r from-indigo-500 to-[#45d2fd] rounded-full transition-all duration-300 ease-out"
+                            className="h-full bg-white rounded-full transition-all duration-300 ease-out"
                             style={{
                                 width: `${getProgressPercentage(index)}%`,
                             }}

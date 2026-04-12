@@ -341,14 +341,30 @@ export const formSteps = [
                 type: "select",
                 label: "Years of Experience",
                 required: true,
-                options: []
+                options: [
+                    { label: "Less than 1 year", value: "<1" },
+                    { label: "1-2 years", value: "1-2" },
+                    { label: "3-5 years", value: "3-5" },
+                    { label: "6-10 years", value: "6-10" },
+                    { label: "11-15 years", value: "11-15" },
+                    { label: "16-20 years", value: "16-20" },
+                    { label: "More than 20 years", value: ">20" }
+                ]
             },
             {
                 id: "companySize",
                 type: "select",
                 label: "Company Size",
                 required: true,
-                options: []
+                options: [
+                    { label: "1-10 employees", value: "1-10" },
+                    { label: "11-50 employees", value: "11-50" },
+                    { label: "51-200 employees", value: "51-200" },
+                    { label: "201-500 employees", value: "201-500" },
+                    { label: "501-1000 employees", value: "501-1000" },
+                    { label: "1001-5000 employees", value: "1001-5000" },
+                    { label: "More than 5000 employees", value: ">5000" }
+                ]
             }
         ]
     }
