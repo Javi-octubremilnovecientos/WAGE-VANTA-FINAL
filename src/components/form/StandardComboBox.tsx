@@ -44,11 +44,8 @@ export default function StandardComboBox({
         : internalSelected;
 
     const handleChange = (option: SelectOption) => {
-        if (onChange) {
-            onChange(option.value);
-        } else {
-            setInternalSelected(option);
-        }
+        setInternalSelected(option);
+        onChange?.(option.value);
     };
 
     return (

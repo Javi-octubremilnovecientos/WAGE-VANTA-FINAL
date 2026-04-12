@@ -8,7 +8,11 @@ import { formSteps } from '../../features/salaries/salaryConstants';
 // Type for form values
 type FormValues = Record<string, string>;
 
-function FormLayout() {
+interface FormLayoutProps {
+  onCountryChange?: (value: string) => void;
+}
+
+function FormLayout({ onCountryChange }: FormLayoutProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [formValues, setFormValues] = useState<FormValues>({});
 
@@ -37,9 +41,13 @@ function FormLayout() {
       ...prev,
       [fieldId]: value
     }));
+    if (fieldId === 'country') {
+      onCountryChange?.(value);
+    }
   };
 
   const isLastStep = currentStep === totalSteps - 1;
+  const isNextDisabled = currentStep === 0 && !formValues['country'];
 
   return (
     <div className="w-full max-w-md md:max-w-2xl mx-auto">
@@ -49,9 +57,7 @@ function FormLayout() {
       </div>
 
       {/* Step Title */}
-      <h2 className="text-xl font-semibold text-white mb-6">
-        {currentStepData.title}
-      </h2>
+
 
       {/* Form */}
       <form action="#" method="POST" className="w-full" onSubmit={handleSubmit}>
@@ -105,8 +111,9 @@ function FormLayout() {
           <button
             onClick={isLastStep ? undefined : handleNext}
             type={isLastStep ? 'submit' : 'button'}
-            style={{ backgroundColor: "#45d2fd" }}
-            className="block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold text-gray-900 shadow-xs hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all"
+            disabled={isNextDisabled}
+            style={{ backgroundColor: isNextDisabled ? "#9ca3af" : "#45d2fd" }}
+            className="block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold text-gray-900 shadow-xs hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isLastStep ? 'Submit' : 'Next'}
           </button>

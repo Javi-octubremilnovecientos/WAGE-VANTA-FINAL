@@ -5,6 +5,7 @@ import {
     DefaultZIndexes,
     ErrorBar,
     Rectangle,
+    ResponsiveContainer,
     Scatter,
     Tooltip,
     XAxis,
@@ -88,19 +89,17 @@ const TooltipContent = (props: TooltipContentProps) => {
 
 export default function MainChart({ defaultIndex }: { defaultIndex?: TooltipIndex }) {
     return (
-        <BarChart
-            data={data}
-            style={{ width: '100%', maxWidth: '700px', maxHeight: '90vh', aspectRatio: 1 }}
-            responsive
-        >
-            <XAxis dataKey="category" allowDuplicatedCategory={false} />
-            <YAxis width="auto" />
-            <CartesianGrid vertical={false} />
-            <Bar dataKey={boxDataKey} shape={BoxShape}>
-                <ErrorBar dataKey={whiskerDataKey} width={0} zIndex={DefaultZIndexes.bar - 1} />
-            </Bar>
-            <Scatter data={outliers} dataKey="value" fill="#e11d48" />
-            <Tooltip content={TooltipContent} defaultIndex={defaultIndex} />
-        </BarChart>
+        <ResponsiveContainer width="100%" aspect={1}>
+            <BarChart data={data}>
+                <XAxis dataKey="category" allowDuplicatedCategory={false} />
+                <YAxis width={40} />
+                <CartesianGrid vertical={false} />
+                <Bar dataKey={boxDataKey} shape={BoxShape}>
+                    <ErrorBar dataKey={whiskerDataKey} width={0} zIndex={DefaultZIndexes.bar - 1} />
+                </Bar>
+                <Scatter data={outliers} dataKey="value" fill="#e11d48" />
+                <Tooltip content={TooltipContent} defaultIndex={defaultIndex} />
+            </BarChart>
+        </ResponsiveContainer>
     );
 }
