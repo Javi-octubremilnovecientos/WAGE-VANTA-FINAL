@@ -1,0 +1,70 @@
+import React from 'react';
+
+interface NumberInputProps {
+    /** Unique identifier for the input */
+    id: string;
+    /** Label text displayed above the input */
+    label: string;
+    /** Placeholder text */
+    placeholder?: string;
+    /** Whether the field is required */
+    required?: boolean;
+    /** Current value */
+    value: string | number;
+    /** Change handler */
+    onChange: (value: string) => void;
+    /** Additional CSS classes */
+    className?: string;
+    /** Minimum value */
+    min?: number;
+    /** Maximum value */
+    max?: number;
+    /** Step value for increment/decrement */
+    step?: number;
+}
+
+const NumberInput: React.FC<NumberInputProps> = ({
+    id,
+    label,
+    placeholder = '',
+    required = false,
+    value,
+    onChange,
+    className = '',
+    min,
+    max,
+    step,
+}) => {
+    return (
+        <div className={className}>
+            <label htmlFor={id} className="block text-sm font-medium text-white mb-2">
+                {label}
+                {required && <span className="text-[#45d2fd] ml-1">*</span>}
+            </label>
+            <input
+                type="number"
+                id={id}
+                name={id}
+                placeholder={placeholder}
+                required={required}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                min={min}
+                max={max}
+                step={step}
+                className="
+          w-full rounded-lg
+          bg-gray-800 py-3 px-4
+          text-white shadow-sm
+          ring-1 ring-inset ring-gray-700
+          placeholder:text-gray-400
+          focus:ring-2 focus:ring-[#45d2fd]
+          transition-colors
+          sm:text-sm
+        "
+            />
+        </div>
+    );
+};
+
+export default NumberInput;

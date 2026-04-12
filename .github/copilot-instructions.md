@@ -78,6 +78,8 @@ Actúa siempre como un Senior Frontend Architect especializado en React, TypeScr
 Este proyecto cuenta con agentes personalizados para tareas específicas. Consulta `AGENTS.md` para detalles completos.
 
 ### Agentes disponibles:
+
+- **@navigation-architect** - React Router, rutas, loaders/actions, protected routes
 - **@redux-architect** - Redux Toolkit, RTK Query, selectores optimizados
 - **@recharts-expert** - Recharts, gráficas, tooltips personalizados
 - **@ui-ux-master** - Tailwind CSS v4, componentes UI, Atomic Design
@@ -85,6 +87,7 @@ Este proyecto cuenta con agentes personalizados para tareas específicas. Consul
 
 ### Cuándo usar cada agente:
 
+- Para crear/modificar rutas, loaders o proteger rutas → `@navigation-architect`
 - Para crear/modificar slices o selectores → `@redux-architect`
 - Para implementar gráficas o visualizaciones → `@recharts-expert`
 - Para crear componentes UI o formularios → `@ui-ux-master`
@@ -94,6 +97,7 @@ Este proyecto cuenta con agentes personalizados para tareas específicas. Consul
 
 ## 8. Ejemplo de prompts para Copilot
 
+- "@navigation-architect Crea rutas protegidas por autenticación y validación de plan"
 - "Crea un componente atómico de botón usando Tailwind v4 y tipado estricto."
 - "@redux-architect Implementa un slice para gestionar comparaciones salariales"
 - "@recharts-expert Genera un BoxPlot con tooltips personalizados para mostrar percentiles"
