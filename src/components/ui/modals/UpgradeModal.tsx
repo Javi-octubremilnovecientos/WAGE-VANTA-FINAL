@@ -39,31 +39,31 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
             aria-modal="true"
             aria-labelledby="upgrade-modal-title"
         >
-            <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-xl p-6 shadow-xl">
+            <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-lg p-4 shadow-xl">
                 {/* Title */}
                 <h2
                     id="upgrade-modal-title"
-                    className="text-2xl font-bold mb-4 text-accent-500 drop-shadow-[0_2px_8px_rgba(245,158,11,0.25)]"
+                    className="text-lg font-bold mb-3 text-accent-500 drop-shadow-[0_2px_8px_rgba(245,158,11,0.25)]"
                 >
                     Upgrade now
                 </h2>
 
                 {/* Dynamic description */}
-                <p className="text-gray-300 text-base mb-7 leading-relaxed">
+                <p className="text-gray-300 text-sm mb-5 leading-relaxed">
                     {featureMessages[feature]}.
                 </p>
 
                 {/* Buttons */}
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                     <button
                         onClick={handleUpgrade}
-                        className="flex-1 rounded-lg px-4 py-3 text-base font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-gray-900"
+                        className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-gray-900"
                     >
                         Upgrade to Premium
                     </button>
                     <button
                         onClick={onClose}
-                        className="flex-1 rounded-lg px-4 py-3 text-base font-semibold text-gray-300 bg-gray-800 hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                        className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-gray-300 bg-gray-800 hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
                     >
                         Not now
                     </button>

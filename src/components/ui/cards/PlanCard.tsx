@@ -1,8 +1,11 @@
+import { CheckIcon } from '@heroicons/react/24/solid';
+
 interface PlanCardProps {
     name: string;
     price: string;
+    annualPrice?: string;
+    description: string;
     features: string[];
-    isRecommended?: boolean;
     isCurrent?: boolean;
     onSelect: () => void;
 }
@@ -10,46 +13,63 @@ interface PlanCardProps {
 function PlanCard({
     name,
     price,
+    annualPrice,
+    description,
     features,
-    isRecommended = false,
     isCurrent = false,
     onSelect,
 }: PlanCardProps) {
     return (
-        <div
-            className={`p-6 bg-white rounded-lg shadow-lg border-2 ${isRecommended ? 'border-blue-600' : 'border-gray-200'
-                }`}
-        >
-            {isRecommended && (
-                <div className="text-sm font-semibold text-blue-600 mb-2">
-                    RECOMMENDED
+        <div className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-4 py-4 shadow-lg">
+            {/* Plan Name with Badge */}
+            <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-1.5">
+                    <h3 className="text-sm font-bold text-white">{name}</h3>
                 </div>
+                {isCurrent && (
+                    <span className="inline-flex items-center rounded-md bg-green-500/20 px-2 py-0.5 text-xs font-semibold text-green-400 border border-green-500/30">
+                        Active
+                    </span>
+                )}
+            </div>
+
+            {/* Price */}
+            <div className="mb-1">
+                <span className="text-2xl font-bold text-white">{price}</span>
+                <span className="text-gray-400 text-xs font-medium">/month</span>
+            </div>
+
+            {/* Annual Price Info */}
+            {annualPrice && (
+                <p className="text-xs font-medium text-[#45d2fd] mb-5">
+                    {annualPrice} per month if paid annually
+                </p>
             )}
-            <h3 className="text-2xl font-bold mb-4">{name}</h3>
-            <p className="text-3xl font-bold mb-6">
-                {price}
-                <span className="text-sm font-normal">/month</span>
-            </p>
-            <ul className="space-y-3 mb-8">
-                {features.map((feature, index) => (
-                    <li key={index} className="flex items-start">
-                        <span className="text-green-600 mr-2">✓</span>
-                        <span>{feature}</span>
-                    </li>
-                ))}
-            </ul>
+
+            {/* Buy Button */}
             <button
                 onClick={onSelect}
                 disabled={isCurrent}
-                className={`w-full py-3 rounded-lg font-semibold transition ${isCurrent
-                        ? 'bg-gray-200 text-gray-800 cursor-default'
-                        : isRecommended
-                            ? 'bg-blue-600 text-white hover:bg-blue-700'
-                            : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                className={`w-full py-1.5 rounded-md font-semibold transition mb-4 text-xs ${isCurrent
+                    ? 'bg-gray-700 text-gray-400 cursor-default'
+                    : 'bg-[#45d2fd] text-gray-900 hover:bg-[#22b8d9]'
                     }`}
             >
-                {isCurrent ? 'Current Plan' : 'Select Plan'}
+                {isCurrent ? 'Current Plan' : 'Buy plan'}
             </button>
+
+            {/* Description */}
+            <p className="text-white text-xs font-semibold mb-3">{description}</p>
+
+            {/* Features List */}
+            <ul className="space-y-2">
+                {features.map((feature, index) => (
+                    <li key={index} className="flex items-start gap-1.5">
+                        <CheckIcon className="h-3 w-3 text-[#45d2fd] flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-300 text-xs font-medium">{feature}</span>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }

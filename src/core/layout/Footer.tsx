@@ -17,9 +17,9 @@ const socialLinks = [
 export default function Footer() {
     return (
         <footer className="bg-gray-900">
-            <div className="mx-auto max-w-7xl overflow-hidden px-6 py-5 sm:py-6 lg:px-8">
+            <div className="mx-auto max-w-7xl overflow-hidden px-3 py-2 sm:py-3 lg:px-4">
 
-                <div className="mt-4 flex justify-center gap-x-10">
+                <div className="mt-1 flex justify-center gap-x-4">
                     {socialLinks.map((item) => (
                         <a
                             key={item.name}
@@ -27,11 +27,11 @@ export default function Footer() {
                             className="text-gray-500 hover:text-gray-400 transition-colors"
                         >
                             <span className="sr-only">{item.name}</span>
-                            <item.icon aria-hidden="true" className="h-6 w-6" />
+                            <item.icon aria-hidden="true" className="h-3 w-3" />
                         </a>
                     ))}
                 </div>
-                <p className="mt-2.5 text-center text-sm/6 text-gray-500">
+                <p className="mt-1 text-center text-xs text-gray-500">
                     &copy; 2026 Wage Vantage, Inc. All rights reserved.
                 </p>
             </div>

@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-interface User {
+export interface User {
     id: string;
     email: string;
     name: string;
@@ -8,6 +8,8 @@ interface User {
 
 interface AuthState {
     user: User | null;
+    token: string | null;
+    refreshToken: string | null;
     isAuthenticated: boolean;
     isLoading: boolean;
     error: string | null;
@@ -15,6 +17,8 @@ interface AuthState {
 
 const initialState: AuthState = {
     user: null,
+    token: null,
+    refreshToken: null,
     isAuthenticated: false,
     isLoading: false,
     error: null,
@@ -24,14 +28,19 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        loginStart: (state) => {
-            state.isLoading = true;
-            state.error = null;
-        },
-        loginSuccess: (state, action: PayloadAction<User>) => {
-            state.isLoading = false;
+        setCredentials: (
+            state,
+            action: PayloadAction<{
+                user: User;
+                token: string;
+                refreshToken: string;
+            }>,
+        ) => {
+            state.user = action.payload.user;
+            state.token = action.payload.token;
+            state.refreshToken = action.payload.refreshToken;
             state.isAuthenticated = true;
-            state.user = action.payload;
+            state.isLoading = false;
             state.error = null;
         },
         loginFailure: (state, action: PayloadAction<string>) => {
@@ -40,6 +49,8 @@ const authSlice = createSlice({
         },
         logout: (state) => {
             state.user = null;
+            state.token = null;
+            state.refreshToken = null;
             state.isAuthenticated = false;
             state.error = null;
         },
@@ -49,7 +60,7 @@ const authSlice = createSlice({
     },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout, clearError } =
+export const { setCredentials, loginFailure, logout, clearError } =
     authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,74 +1,73 @@
-function Plans() {
-    return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-center mb-12">Plans & Pricing</h1>
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                {/* FREE Plan */}
-                <div className="p-8 bg-white rounded-lg shadow-lg border-2 border-gray-200">
-                    <h2 className="text-2xl font-bold mb-4">FREE</h2>
-                    <p className="text-3xl font-bold mb-6">$0<span className="text-sm font-normal">/month</span></p>
-                    <ul className="space-y-3 mb-8">
-                        <li className="flex items-start">
-                            <span className="text-green-600 mr-2">✓</span>
-                            <span>Up to 2 countries</span>
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-green-600 mr-2">✓</span>
-                            <span>Save 1 template</span>
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-green-600 mr-2">✓</span>
-                            <span>Save 1 comparison</span>
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-green-600 mr-2">✓</span>
-                            <span>One chart view</span>
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-red-600 mr-2">✗</span>
-                            <span>No export options</span>
-                        </li>
-                    </ul>
-                    <button className="w-full bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition">
-                        Current Plan
-                    </button>
-                </div>
 
-                {/* PREMIUM Plan */}
-                <div className="p-8 bg-white rounded-lg shadow-lg border-2 border-blue-600">
-                    <div className="text-sm font-semibold text-blue-600 mb-2">RECOMMENDED</div>
-                    <h2 className="text-2xl font-bold mb-4">PREMIUM</h2>
-                    <p className="text-3xl font-bold mb-6">$9.99<span className="text-sm font-normal">/month</span></p>
-                    <ul className="space-y-3 mb-8">
-                        <li className="flex items-start">
-                            <span className="text-green-600 mr-2">✓</span>
-                            <span>Up to 3 countries</span>
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-green-600 mr-2">✓</span>
-                            <span>Save up to 4 templates</span>
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-green-600 mr-2">✓</span>
-                            <span>Save up to 4 comparisons</span>
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-green-600 mr-2">✓</span>
-                            <span>Multiple chart views</span>
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-green-600 mr-2">✓</span>
-                            <span>Export (PDF, CSV, PNG)</span>
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-green-600 mr-2">✓</span>
-                            <span>Full historical data</span>
-                        </li>
-                    </ul>
-                    <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
-                        Upgrade Now
-                    </button>
-                </div>
+import PlanCard from '../components/ui/cards/PlanCard';
+import { BackToHomeButton } from '../components/ui/buttons/BackToHomeButton';
+
+const plans = [
+    {
+        name: 'FREE',
+        price: '$0',
+        description: 'Everything necessary to get started.',
+        features: [
+            'Choose up to 2 countries to compare',
+            'Save form as a template (one)',
+            'Save comparison (one)',
+            "Can't export comparison",
+            'Only one chart view',
+            'Limited data displayed on comparison sheet',
+        ],
+        isCurrent: true,
+    },
+    {
+        name: 'PREMIUM',
+        price: '$2.99',
+        description: 'Everything in Basic, plus essential tools for growing your analysis.',
+        features: [
+            'Choose up to 3 countries to compare',
+            'Save form as a template (up to 4)',
+            'Save comparison (up to 4)',
+            'Unlimited comparison exports (PDF, CSV, PNG)',
+            'Multiple chart views',
+            'Full accurate data displayed on comparison sheet (Full wage increase, historical data etc)',
+        ],
+        isCurrent: false,
+    },
+];
+
+function Plans() {
+    const handleSelectPlan = (planName: string) => {
+        console.log(`Selected plan: ${planName}`);
+        // Aquí se implementaría la lógica de upgrade/downgrade
+    };
+
+    return (
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-5 sm:px-4 lg:px-6">
+            {/* Back to Home Button */}
+            <div className="mb-1">
+                <BackToHomeButton className="" />
+            </div>
+            {/* Header */}
+            <div className="text-center">
+                <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl mb-3">
+                    Plans & Pricing
+                </h1>
+                <p className="text-sm font-medium text-gray-400">
+                    Choose the plan that fits your needs
+                </p>
+            </div>
+
+            {/* Plans Grid */}
+            <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto w-full">
+                {plans.map((plan) => (
+                    <PlanCard
+                        key={plan.name}
+                        name={plan.name}
+                        price={plan.price}
+                        description={plan.description}
+                        features={plan.features}
+                        isCurrent={plan.isCurrent}
+                        onSelect={() => handleSelectPlan(plan.name)}
+                    />
+                ))}
             </div>
         </div>
     );

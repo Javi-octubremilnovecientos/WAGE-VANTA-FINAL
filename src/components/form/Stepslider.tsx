@@ -15,7 +15,7 @@ function StepSlider({ currentStep, totalSteps }: StepSliderProps) {
     };
 
     return (
-        <div className="w-full flex gap-4">
+        <div className="w-full flex gap-2">
             {Array.from({ length: totalSteps }).map((_, index) => (
                 <div key={index} className="flex-1">
                     {/* Barra de progreso */}

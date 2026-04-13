@@ -63,7 +63,7 @@ export default function StandardComboBox({
                 <div className="relative">
                     {/* Label */}
                     {label && (
-                        <label htmlFor={id} className="block text-sm font-medium text-white mb-2">
+                        <label htmlFor={id} className="block text-xs font-medium text-white mb-2">
                             {label}
                         </label>
                     )}
@@ -72,7 +72,7 @@ export default function StandardComboBox({
                     <div className="relative">
                         <ComboboxInput
                             id={id}
-                            className="w-full rounded-lg bg-gray-800 py-3 pl-4 pr-10 text-white shadow-sm ring-1 ring-inset ring-gray-700 sm:text-sm hover:bg-gray-700 transition-colors placeholder:text-gray-400 focus:ring-2 focus:ring-[#45d2fd] focus:outline-none"
+                            className="w-full rounded-md bg-gray-800 py-1.5 pl-2.5 pr-7 text-white shadow-sm ring-1 ring-inset ring-gray-700 text-xs hover:bg-gray-700 transition-colors placeholder:text-gray-400 focus:ring-2 focus:ring-[#45d2fd] focus:outline-none"
                             displayValue={(option: SelectOption | null) => option?.label ?? ""}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder={placeholder}
@@ -80,7 +80,7 @@ export default function StandardComboBox({
                         <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
                             <ChevronUpDownIcon
                                 aria-hidden="true"
-                                className="h-5 w-5 text-gray-400"
+                                className="h-4 w-4 text-gray-400"
                             />
                         </ComboboxButton>
                     </div>
@@ -88,10 +88,10 @@ export default function StandardComboBox({
                     {/* Options */}
                     <ComboboxOptions
                         transition
-                        className="combobox-options absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-gray-800 backdrop-blur-md py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none data-closed:opacity-0 data-leave:opacity-0 transition duration-100 ease-in sm:text-sm"
+                        className="combobox-options absolute z-10 mt-1 max-h-40 w-full overflow-auto rounded-md bg-gray-800 backdrop-blur-md py-1 text-xs shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none data-closed:opacity-0 data-leave:opacity-0 transition duration-100 ease-in"
                     >
                         {filteredOptions.length === 0 && query !== "" ? (
-                            <div className="py-3 pl-4 pr-9 text-gray-400 sm:text-sm">
+                            <div className="py-1.5 pl-2.5 pr-6 text-gray-400 text-xs">
                                 No results found
                             </div>
                         ) : (
@@ -99,14 +99,14 @@ export default function StandardComboBox({
                                 <ComboboxOption
                                     key={option.value}
                                     value={option}
-                                    className="group relative cursor-pointer select-none py-3 pl-4 pr-9 text-white hover:bg-[#45d2fd] data-focus:bg-[#45d2fd] transition-colors hover:text-gray-900 data-focus:text-gray-900"
+                                    className="group relative cursor-pointer select-none py-1.5 pl-2.5 pr-6 text-white hover:bg-[#45d2fd] data-focus:bg-[#45d2fd] transition-colors hover:text-gray-900 data-focus:text-gray-900"
                                 >
                                     <span className="block truncate font-normal group-data-selected:font-semibold">
                                         {option.label}
                                     </span>
 
                                     <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-white group-data-selected:flex group-[&:not([data-selected])]:hidden">
-                                        <CheckIcon aria-hidden="true" className="h-5 w-5" />
+                                        <CheckIcon aria-hidden="true" className="h-4 w-4" />
                                     </span>
                                 </ComboboxOption>
                             ))

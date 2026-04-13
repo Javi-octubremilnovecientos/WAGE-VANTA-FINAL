@@ -10,16 +10,24 @@ import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolk
 
 // Configuración del baseQuery con fetchBaseQuery
 const baseQuery = fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL || 'https://api.example.com',
-    credentials: 'include', // Incluir cookies en las peticiones
+    baseUrl: 'https://idrgqvtgllamddukkkvx.supabase.co/',
     prepareHeaders: (headers, { getState }) => {
-        // Aquí puedes agregar headers comunes como Authorization
-        // Ejemplo:
-        // const state = getState() as RootState;
-        // const token = state.auth.token;
-        // if (token) {
-        //   headers.set('authorization', `Bearer ${token}`);
-        // }
+        // Supabase API Key requerida en todas las peticiones
+        const apiKey = import.meta.env.VITE_SUPABASE_API_KEY;
+        if (apiKey) {
+            headers.set('apikey', apiKey);
+        }
+
+        // Token de autorización si el usuario está autenticado
+        const state = getState() as { auth: { token: string | null } };
+        const token = state.auth.token;
+        if (token) {
+            headers.set('authorization', `Bearer ${token}`);
+        }
+
+        // Content-Type para JSON
+        headers.set('Content-Type', 'application/json');
+
         return headers;
     },
 });

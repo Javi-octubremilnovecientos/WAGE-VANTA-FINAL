@@ -23,7 +23,8 @@ type BoxPlotDatum = {
 };
 
 const data: ReadonlyArray<BoxPlotDatum> = [
-    { category: 'A', min: 16, q1: 20, median: 24, q3: 29, max: 35 }
+    { category: 'Spain', min: 1600, q1: 2000, median: 2400, q3: 2900, max: 3500 }
+
 ];
 
 type OutlierDatum = {
@@ -50,7 +51,7 @@ const BoxShape = (props: BarShapeProps) => {
     const medianY = props.y + medianOffset;
 
     // Reducir el ancho a la mitad y centrar
-    const reducedWidth = props.width * 0.5;
+    const reducedWidth = props.width * 0.25;
     const offsetX = props.x + (props.width - reducedWidth) / 2;
 
     return (
@@ -87,11 +88,18 @@ const TooltipContent = (props: TooltipContentProps) => {
 
 export default function MainChart({ defaultIndex }: { defaultIndex?: TooltipIndex }) {
     return (
-        <ResponsiveContainer width="100%" aspect={1}>
+        <ResponsiveContainer width="90%" aspect={1 / 1}>
             <BarChart data={data}>
-                <XAxis dataKey="category" allowDuplicatedCategory={false} />
-                <YAxis width={40} />
-                <CartesianGrid vertical={false} />
+                <XAxis dataKey="category" allowDuplicatedCategory={false} tick={{ fontSize: 10, fill: '#d1d5db' }} stroke="#d1d5db" />
+                <YAxis
+                    width={40}
+                    domain={[0, 15000]}
+                    ticks={[0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000]}
+                    tick={{ fontSize: 10, fill: '#d1d5db' }}
+                    stroke="#d1d5db"
+                    tickFormatter={(value) => `${value}€`}
+                />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#374151" />
                 <Bar dataKey={boxDataKey} shape={BoxShape}>
                     <ErrorBar dataKey={whiskerDataKey} width={0} zIndex={DefaultZIndexes.bar - 1} />
                 </Bar>
