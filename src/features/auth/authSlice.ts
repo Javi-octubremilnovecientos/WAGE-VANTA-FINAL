@@ -1,9 +1,9 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { UserData, Template, Comparison, PayData } from '@/lib/User';
 
-export interface User {
+export interface User extends UserData {
     id: string;
     email: string;
-    name: string;
 }
 
 interface AuthState {
@@ -57,10 +57,57 @@ const authSlice = createSlice({
         clearError: (state) => {
             state.error = null;
         },
+        updateTemplates: (state, action: PayloadAction<Template[]>) => {
+            if (state.user) {
+                state.user.templates = action.payload;
+            }
+        },
+        updatePremium: (state, action: PayloadAction<boolean>) => {
+            if (state.user) {
+                state.user.premium = action.payload;
+            }
+        },
+        updateComparisons: (state, action: PayloadAction<Comparison[]>) => {
+            if (state.user) {
+                state.user.comparisons = action.payload;
+            }
+        },
+        updatePayData: (state, action: PayloadAction<PayData>) => {
+            if (state.user) {
+                state.user.payData = action.payload;
+            }
+        },
+        patchUser: (state, action: PayloadAction<Partial<User>>) => {
+            if (state.user) {
+                state.user = { ...state.user, ...action.payload };
+            }
+        },
     },
 });
 
-export const { setCredentials, loginFailure, logout, clearError } =
-    authSlice.actions;
+export const {
+    setCredentials,
+    loginFailure,
+    logout,
+    clearError,
+    updateTemplates,
+    updatePremium,
+    updateComparisons,
+    updatePayData,
+    patchUser,
+} = authSlice.actions;
+
+// Selectores
+export const selectUser = (state: { auth: AuthState }) => state.auth.user;
+export const selectIsAuthenticated = (state: { auth: AuthState }) =>
+    state.auth.isAuthenticated;
+export const selectUserPremium = (state: { auth: AuthState }) =>
+    state.auth.user?.premium ?? false;
+export const selectUserTemplates = (state: { auth: AuthState }) =>
+    state.auth.user?.templates ?? [];
+export const selectUserComparisons = (state: { auth: AuthState }) =>
+    state.auth.user?.comparisons ?? [];
+export const selectUserPayData = (state: { auth: AuthState }) =>
+    state.auth.user?.payData;
 
 export default authSlice.reducer;

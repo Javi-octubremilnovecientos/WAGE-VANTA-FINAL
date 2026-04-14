@@ -1,6 +1,8 @@
 
 import PlanCard from '../components/ui/cards/PlanCard';
 import { BackToHomeButton } from '../components/ui/buttons/BackToHomeButton';
+import { useAppSelector } from '@/hooks/useRedux';
+import { selectUserPremium } from '@/features/auth/authSlice';
 
 const plans = [
     {
@@ -15,7 +17,6 @@ const plans = [
             'Only one chart view',
             'Limited data displayed on comparison sheet',
         ],
-        isCurrent: true,
     },
     {
         name: 'PREMIUM',
@@ -29,11 +30,12 @@ const plans = [
             'Multiple chart views',
             'Full accurate data displayed on comparison sheet (Full wage increase, historical data etc)',
         ],
-        isCurrent: false,
     },
 ];
 
 function Plans() {
+    const isPremium = useAppSelector(selectUserPremium);
+
     const handleSelectPlan = (planName: string) => {
         console.log(`Selected plan: ${planName}`);
         // Aquí se implementaría la lógica de upgrade/downgrade
@@ -64,7 +66,7 @@ function Plans() {
                         price={plan.price}
                         description={plan.description}
                         features={plan.features}
-                        isCurrent={plan.isCurrent}
+                        isCurrent={isPremium ? plan.name === 'PREMIUM' : plan.name === 'FREE'}
                         onSelect={() => handleSelectPlan(plan.name)}
                     />
                 ))}

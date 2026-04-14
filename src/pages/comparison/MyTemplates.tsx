@@ -1,7 +1,11 @@
 import { ArrowLeftIcon, DocumentTextIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '@/hooks/useRedux';
+import { selectUserTemplates } from '@/features/auth/authSlice';
 
 function MyTemplates() {
+    const templates = useAppSelector(selectUserTemplates);
+    const hasTemplates = templates && templates.length > 0;
     return (
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-5 sm:px-4 lg:px-6">
             {/* Header with Back link */}
@@ -25,25 +29,46 @@ function MyTemplates() {
             </div>
 
             {/* Empty State */}
-            <section>
-                <div className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-4 py-14 text-center shadow-lg sm:px-6">
-                    <div className="mx-auto flex max-w-md flex-col items-center gap-3">
-                        <div className="inline-flex rounded-full bg-[#45d2fd]/20 p-2 text-[#45d2fd]">
-                            <DocumentTextIcon className="h-5 w-5" />
+            {!hasTemplates && (
+                <section>
+                    <div className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-4 py-14 text-center shadow-lg sm:px-6">
+                        <div className="mx-auto flex max-w-md flex-col items-center gap-3">
+                            <div className="inline-flex rounded-full bg-[#45d2fd]/20 p-2 text-[#45d2fd]">
+                                <DocumentTextIcon className="h-5 w-5" />
+                            </div>
+                            <p className="text-sm font-medium text-gray-300">
+                                No templates saved yet
+                            </p>
+                            <Link
+                                to="/"
+                                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#45d2fd] transition-colors hover:text-[#22b8d9] mt-1"
+                            >
+                                <PlusIcon className="h-4 w-4" />
+                                Create template
+                            </Link>
                         </div>
-                        <p className="text-sm font-medium text-gray-300">
-                            No templates saved yet
-                        </p>
-                        <Link
-                            to="/"
-                            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#45d2fd] transition-colors hover:text-[#22b8d9] mt-1"
-                        >
-                            <PlusIcon className="h-4 w-4" />
-                            Create template
-                        </Link>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
+
+            {/* Templates Grid */}
+            {hasTemplates && (
+                <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {templates.map((template) => (
+                        <div
+                            key={template.id}
+                            className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur p-4 shadow-lg hover:border-[#45d2fd]/50 hover:shadow-lg hover:shadow-[#45d2fd]/10 transition-all cursor-pointer"
+                        >
+                            <div className="flex items-start justify-between mb-3">
+                                <DocumentTextIcon className="h-5 w-5 text-[#45d2fd]" />
+                            </div>
+                            <h3 className="text-sm font-semibold text-white mb-1">{template.country}</h3>
+                            <p className="text-xs text-gray-400 mb-2">Gender: {template.gender}</p>
+                            <p className="text-xs text-gray-300 font-medium">Wage: ${template.monthlyWage.toLocaleString()}</p>
+                        </div>
+                    ))}
+                </section>
+            )}
         </div>
     );
 }

@@ -1,4 +1,7 @@
 import { apiSlice } from '@/services/api';
+import type { UserData, PayData } from '@/lib/User';
+import type { User } from '@/features/auth/authSlice';
+import type { Template, Comparison } from '@/lib/User';
 
 /**
  * Interfaces para autenticación con Supabase
@@ -7,15 +10,18 @@ import { apiSlice } from '@/services/api';
 export interface SignUpRequest {
     email: string;
     password: string;
-    data?: {
-        name?: string;
-        [key: string]: unknown;
-    };
+    data: UserData;
 }
 
 export interface SignInRequest {
     email: string;
     password: string;
+}
+
+export interface UpdateUserRequest {
+    email?: string;
+    password?: string;
+    data?: Partial<UserData>;
 }
 
 export interface SupabaseUser {
@@ -41,6 +47,23 @@ export interface AuthResponse {
     expires_at?: number;
     refresh_token: string;
     user: SupabaseUser;
+}
+
+/**
+ * Mapea la respuesta de Supabase a nuestro modelo de User en Redux.
+ * Aplica valores por defecto para campos que aún no existan en user_metadata.
+ */
+export function mapSupabaseResponseToUser(supabaseUser: SupabaseUser): User {
+    const meta = supabaseUser.user_metadata ?? {};
+    return {
+        id: supabaseUser.id,
+        email: supabaseUser.email ?? '',
+        name: (meta.name as string) ?? '',
+        premium: (meta.premium as boolean) ?? false,
+        templates: (meta.templates as Template[]) ?? [],
+        comparisons: (meta.comparisons as Comparison[]) ?? [],
+        payData: (meta.payData as PayData) ?? { card: null, history: [] },
+    };
 }
 
 /**
@@ -82,7 +105,24 @@ export const authApi = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Auth', 'Profile'],
         }),
+        /**
+         * Actualizar datos del usuario en Supabase
+         * PATCH auth/v1/user
+         * Centraliza actualizaciones de email, password, name, premium, payData, etc.
+         */
+        updateUser: builder.mutation<SupabaseUser, UpdateUserRequest>({
+            query: (body) => ({
+                url: 'auth/v1/user',
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: ['Profile'],
+        }),
     }),
 });
 
-export const { useSignInMutation, useSignUpMutation } = authApi;
+export const {
+    useSignInMutation,
+    useSignUpMutation,
+    useUpdateUserMutation,
+} = authApi;

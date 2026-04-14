@@ -2,9 +2,10 @@ import { type ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { Google, Github } from '../../../assets/icons/Solidicons';
-import { useSignInMutation, useSignUpMutation } from '@/features/auth/authApi';
+import { useSignInMutation, useSignUpMutation, mapSupabaseResponseToUser } from '@/features/auth/authApi';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { setCredentials } from '@/features/auth/authSlice';
+import { createDefaultUserData } from '@/lib/User';
 
 interface BaseModalProps {
     isOpen: boolean;
@@ -79,16 +80,13 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode }: AuthModalProps) {
                 : await signUp({
                     email,
                     password,
-                    data: { name },
+                    data: createDefaultUserData(name),
                 }).unwrap();
-
+            const mappedUser = mapSupabaseResponseToUser(response.user);
+            console.log('🔐 Login exitoso - Usuario completo:', mappedUser)
             dispatch(
                 setCredentials({
-                    user: {
-                        id: response.user.id,
-                        email: response.user.email ?? '',
-                        name: (response.user.user_metadata?.name as string) ?? '',
-                    },
+                    user: mapSupabaseResponseToUser(response.user),
                     token: response.access_token,
                     refreshToken: response.refresh_token,
                 }),

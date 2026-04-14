@@ -1,4 +1,4 @@
-interface Template {
+export interface Template {
   id: number;
   country: string;
   gender: string;
@@ -11,7 +11,7 @@ interface Template {
   experienceYears?: number;
 }
 
-interface ChartData {
+export interface ChartData {
   min: number;
   max: number;
   median: number;
@@ -21,42 +21,53 @@ interface ChartData {
   mw: number;
 }
 
-interface SurveyYear extends ChartData {
+export interface SurveyYear extends ChartData {
   year: number;
 }
 
-interface Comprasion {
+export interface Comparison {
   id: number;
   median: ChartData;
   history: SurveyYear[];
 }
 
-interface cardData {
-  cardNumber: number;
+export interface CardData {
+  cardNumber: string;
   cardName: string;
-  expires: Date;
+  expires: string;
 }
 
-type payState = "refused" | "pending" | "done";
+export type PayState = 'refused' | 'pending' | 'done';
 
-interface paymentCharge {
+export interface PaymentCharge {
   id: number;
-  cardFourDigits: number;
-  state: payState;
-  chargeDate: Date;
+  cardFourDigits: string;
+  state: PayState;
+  chargeDate: string;
 }
 
-interface User {
-  email: string;
-  password: string;
-  data: {
-    name: string;
-    premium: boolean;
-    templates: Template[];
-    compraisons: Comprasion[];
+export interface PayData {
+  card: CardData | null;
+  history: PaymentCharge[];
+}
+
+export interface UserData {
+  name: string;
+  premium: boolean;
+  templates: Template[];
+  comparisons: Comparison[];
+  payData: PayData;
+}
+
+export function createDefaultUserData(name: string): UserData {
+  return {
+    name,
+    premium: false,
+    templates: [],
+    comparisons: [],
     payData: {
-      card: cardData;
-      history: paymentCharge[];
-    };
+      card: null,
+      history: [],
+    },
   };
 }

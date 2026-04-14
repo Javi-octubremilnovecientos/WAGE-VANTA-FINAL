@@ -6,6 +6,7 @@ import { Dialog, DialogPanel, PopoverGroup, Switch } from "@headlessui/react";
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
 import { useAppSelector } from "@/hooks/useRedux";
+import { selectUser } from "@/features/auth/authSlice";
 import AuthModal from "@/components/ui/modals/AuthModal";
 
 
@@ -17,6 +18,7 @@ export default function Header() {
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const user = useAppSelector(selectUser);
   const navigate = useNavigate();
 
   const handleAuthClick = () => {
@@ -36,14 +38,21 @@ export default function Header() {
         className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-6 "
       >
         <div className="flex lg:flex-1">
-            <button
+          <button
             type="button"
             onClick={handleAuthClick}
             className="flex items-center -m-0.5 p-0.5 gap-x-1.5 text-white hover:opacity-80 transition-opacity focus:outline-none text-sm"
-            >
+          >
             <UserIcon className="size-6" aria-hidden="true" />
-            {isAuthenticated ? 'Dashboard' : 'Log in'} 
-            </button>
+            {isAuthenticated ? (
+              <div className="flex items-center gap-2">
+                <span>{user?.name || 'Usuario'}</span>
+                <span className="h-2 w-2 bg-green-500 rounded-full inline-block"></span>
+              </div>
+            ) : (
+              'Log in'
+            )}
+          </button>
         </div>
         <div className="flex lg:hidden">
           <button

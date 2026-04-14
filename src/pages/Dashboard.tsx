@@ -11,6 +11,8 @@ import {
 import { Link } from "react-router-dom";
 import FeatureCard from "../components/ui/cards/FeatureCard";
 import type { FeatureCardProps } from "../components/ui/cards/FeatureCard";
+import { useAppSelector } from "@/hooks/useRedux";
+import { selectUser, selectUserPremium } from "@/features/auth/authSlice";
 
 const shortcuts: FeatureCardProps[] = [
   {
@@ -49,17 +51,20 @@ const shortcuts: FeatureCardProps[] = [
 ];
 
 function Dashboard() {
+  const user = useAppSelector(selectUser);
+  const isPremium = useAppSelector(selectUserPremium);
+
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-3 sm:px-4 lg:px-6 ">
       <section className="flex flex-col gap-3 mb-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between ">
           <h1 className="text-base font-bold tracking-tight text-white sm:text-lg">
-            Nombre del usuario logueado
+            {user?.name || 'Usuario'}
           </h1>
         </div>
         <div className="flex flex-row justify-between items-center">
           <span className="inline-flex w-fit items-center rounded-full border border-gray-700 bg-gray-800/50 backdrop-blur px-2.5 py-0.5 text-xs font-medium text-gray-300 shadow-sm">
-            Free Plan
+            {isPremium ? 'Premium Plan' : 'Free Plan'}
           </span>
           <Link
             to="/"

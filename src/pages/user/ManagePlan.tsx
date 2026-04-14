@@ -1,6 +1,8 @@
 import { ArrowLeftIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import PlanCard from '../../components/ui/cards/PlanCard';
+import { useAppSelector } from '@/hooks/useRedux';
+import { selectUserPremium } from '@/features/auth/authSlice';
 
 const plans = [
     {
@@ -15,7 +17,6 @@ const plans = [
             'Only one chart view',
             'Limited data displayed on comparison sheet',
         ],
-        isCurrent: true,
     },
     {
         name: 'PREMIUM',
@@ -29,11 +30,12 @@ const plans = [
             'Multiple chart views',
             'Full accurate data displayed on comparison sheet (full wage increase, historical data etc)',
         ],
-        isCurrent: false,
     },
 ];
 function ManagePlan() {
-     const handleSelectPlan = (planName: string) => {
+    const isPremium = useAppSelector(selectUserPremium);
+
+    const handleSelectPlan = (planName: string) => {
         console.log(`Selected plan: ${planName}`);
         // Aquí se implementaría la lógica de upgrade/downgrade
     };
@@ -56,7 +58,7 @@ function ManagePlan() {
             </div>
 
             {/* Plans Grid */}
-  <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto w-full">
+            <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto w-full">
                 {plans.map((plan) => (
                     <PlanCard
                         key={plan.name}
@@ -64,7 +66,7 @@ function ManagePlan() {
                         price={plan.price}
                         description={plan.description}
                         features={plan.features}
-                        isCurrent={plan.isCurrent}
+                        isCurrent={isPremium ? plan.name === 'PREMIUM' : plan.name === 'FREE'}
                         onSelect={() => handleSelectPlan(plan.name)}
                     />
                 ))}
