@@ -2,9 +2,9 @@ export interface SalaryData {
     country: string;
     gender: string;
     monthlyWage: number;
-    economicActivity: string;
-    occupation: string;
-    position: string;
+    economicActivity?: string;
+    occupation?: string;
+    position?: string;
     educationLevel?: string;
     companySize?: string;
     experienceYears?: number;

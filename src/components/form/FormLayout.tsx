@@ -18,6 +18,7 @@ interface FormLayoutProps {
 function FormLayout({ onCountryChange }: FormLayoutProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [formValues, setFormValues] = useState<FormValues>({});
+
   const [authModalOpen, setAuthModalOpen] = useState(false);
 const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const totalSteps = formSteps.length;

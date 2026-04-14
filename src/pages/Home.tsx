@@ -23,9 +23,9 @@ export default function Home() {
     };
 
     return (
-        <div className="min-h-screen relative flex flex-col lg:flex-row items-start lg:items-center justify-around gap-5 lg:gap-3 py-8 px-4 lg:px-6">
+        <div className="min-h-screen relative flex flex-col lg:flex-row-reverse items-start lg:items-center justify-around gap-5 lg:gap-3 py-8 px-4 lg:px-6">
             {/* Left Side: Hero title or Chart + Compare Button */}
-            <div className="w-full lg:w-1/2 flex flex-col gap-5 lg:gap-3 lg:justify-center items-center">
+            <div className="w-full lg:w-1/2 flex flex-col gap-5 lg:gap-3 lg:justify-start items-center">
                 {!selectedCountry ? (
                     /* Hero state: no country selected yet */
                     <div className="flex flex-col gap-3 text-center items-center">
@@ -44,7 +44,7 @@ export default function Home() {
                             <button
                                 onClick={handleCompare}
                                 style={{ backgroundColor: "#45d2fd" }}
-                                className="block w-full lg:w-1/2 rounded-md px-2.5 py-2 text-center text-xs font-semibold text-gray-900 shadow-xs hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all"
+                                className="block w-3/4 lg:w-1/2 rounded-md px-2.5 py-2 text-center text-xs font-semibold text-gray-900 shadow-xs hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all"
                             >
                                 Compare Now
                             </button>

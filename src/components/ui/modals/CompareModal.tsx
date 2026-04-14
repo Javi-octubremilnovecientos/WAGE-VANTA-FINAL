@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import CompareComboBox from '../CompareComboBox';
+import type { CountryOption } from '../CompareComboBox';
 import { formSteps } from '../../../features/salaries/salaryConstants';
 
 interface CompareModalProps {
@@ -21,12 +22,23 @@ export default function CompareModal({
     cancelButtonColor = "#374151",
     confirmButtonColor = "#6366F1",
 }: CompareModalProps) {
-    const [selectedCountry, setSelectedCountry] = useState<string>('');
+    const [selectedCountry, setSelectedCountry] = useState<CountryOption | null>(null);
 
     if (!isOpen) return null;
 
     // Obtener opciones de países del step-1
     const countryOptions = formSteps[0].fields[0].options ?? [];
+
+    const handleCancel = () => {
+        setSelectedCountry(null);
+        onCancel();
+    };
+
+    const handleConfirm = () => {
+        if (selectedCountry) {
+            onConfirm();
+        }
+    };
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -35,6 +47,11 @@ export default function CompareModal({
                 {/* Title */}
                 <h2 className="text-lg font-semibold text-white text-center mb-4">
                     Chose countries to compare
+                    {selectedCountry && (
+                        <span className="block text-xs text-gray-400 mt-1">
+                            Selected: {selectedCountry.label}
+                        </span>
+                    )}
                 </h2>
 
                 {/* Country ComboBox */}
@@ -43,14 +60,15 @@ export default function CompareModal({
                         id="compareCountry"
                         label="Country"
                         countries={countryOptions}
-                        onChange={(value) => setSelectedCountry(value ?? '')}
+                        value={selectedCountry}
+                        onChange={setSelectedCountry}
                     />
                 </div>
 
                 {/* Buttons Container */}
                 <div className="flex gap-3">
                     <button
-                        onClick={onConfirm}
+                        onClick={handleConfirm}
                         disabled={!selectedCountry}
                         style={{ backgroundColor: confirmButtonColor }}
                         className="flex-1 rounded-md px-3 py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -58,7 +76,7 @@ export default function CompareModal({
                         {confirmText}
                     </button>
                     <button
-                        onClick={onCancel}
+                        onClick={handleCancel}
                         style={{ backgroundColor: cancelButtonColor }}
                         className="flex-1 rounded-md px-3 py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500"
                     >

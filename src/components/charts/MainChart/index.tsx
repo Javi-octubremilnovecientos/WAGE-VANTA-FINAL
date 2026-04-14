@@ -69,7 +69,7 @@ const TooltipContent = (props: TooltipContentProps) => {
         return (
             <div
                 style={{
-                    backgroundColor: 'white',
+                    backgroundColor: 'rgba(255,255,255,0.5)',
                     border: '1px solid #ccc',
                     padding: '0 1em',
                 }}

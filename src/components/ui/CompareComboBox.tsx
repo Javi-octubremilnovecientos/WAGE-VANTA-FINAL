@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react";
-import { CheckIcon, ChevronUpDownIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { ChevronUpDownIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import UpgradeModal from "./modals/UpgradeModal";
 import "../form/StandardComboBox.css";
 
@@ -14,8 +14,9 @@ interface CompareComboBoxProps {
     label?: string;
     placeholder?: string;
     countries: CountryOption[];
-    /** Called when a country badge is confirmed */
-    onChange?: (value: string | null) => void;
+    value: CountryOption | null;
+    /** Called when a country is selected or removed */
+    onChange?: (country: CountryOption | null) => void;
 }
 
 export default function CompareComboBox({
@@ -23,10 +24,10 @@ export default function CompareComboBox({
     label,
     placeholder = "Choose a country",
     countries,
+    value,
     onChange,
 }: CompareComboBoxProps) {
     const [query, setQuery] = useState("");
-    const [selectedBadge, setSelectedBadge] = useState<CountryOption | null>(null);
     const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
 
     const filteredCountries =
@@ -39,25 +40,23 @@ export default function CompareComboBox({
     const handleChange = (country: CountryOption | null) => {
         if (!country) return;
 
-        if (selectedBadge) {
+        if (value) {
             // Ya hay un país seleccionado → abrir UpgradeModal
             setIsUpgradeOpen(true);
             return;
         }
 
-        // Primera selección → crear badge
-        setSelectedBadge(country);
-        onChange?.(country.value);
+        // Notificar al padre
+        onChange?.(country);
     };
 
     const handleRemoveBadge = () => {
-        setSelectedBadge(null);
         onChange?.(null);
     };
 
     return (
         <div>
-            <Combobox value={null} onChange={handleChange} onClose={() => setQuery("")}>
+            <Combobox value={value} onChange={handleChange} onClose={() => setQuery("")}>
                 <div className="relative">
                     {/* Label */}
                     {label && (
@@ -67,14 +66,14 @@ export default function CompareComboBox({
                     )}
 
                     {/* Badge container */}
-                    {selectedBadge && (
+                    {value && (
                         <div className="flex flex-wrap gap-2 mb-2">
                             <span className="inline-flex items-center gap-1.5 rounded-md bg-gray-700 px-2.5 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-600">
-                                {selectedBadge.label}
+                                {value.label}
                                 <button
                                     type="button"
                                     onClick={handleRemoveBadge}
-                                    aria-label={`Remove ${selectedBadge.label}`}
+                                    aria-label={`Remove ${value.label}`}
                                     className="rounded-sm hover:text-[#45d2fd] transition-colors focus:outline-none"
                                 >
                                     <XMarkIcon className="h-3.5 w-3.5" />
@@ -88,9 +87,9 @@ export default function CompareComboBox({
                         <ComboboxInput
                             id={id}
                             className="w-full rounded-lg bg-gray-800 py-3 pl-4 pr-10 text-white shadow-sm ring-1 ring-inset ring-gray-700 sm:text-sm hover:bg-gray-700 transition-colors placeholder:text-gray-400 focus:ring-2 focus:ring-[#45d2fd] focus:outline-none"
-                            displayValue={() => ""}
+                            displayValue={(country: CountryOption | null) => country?.label || ""}
                             onChange={(e) => setQuery(e.target.value)}
-                            placeholder={selectedBadge ? "Add another country..." : placeholder}
+                            placeholder={value ? "Add another country..." : placeholder}
                         />
                         <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
                             <ChevronUpDownIcon
@@ -111,15 +110,15 @@ export default function CompareComboBox({
                             </div>
                         ) : (
                             filteredCountries.map((country) => {
-                                const isSelected = selectedBadge?.value === country.value;
+                                const isSelected = value?.value === country.value;
                                 return (
                                     <ComboboxOption
                                         key={country.value}
                                         value={country}
                                         disabled={isSelected}
                                         className={`group relative select-none py-3 pl-4 pr-9 transition-colors ${isSelected
-                                                ? "cursor-not-allowed text-gray-500 bg-gray-700"
-                                                : "cursor-pointer text-white hover:bg-[#45d2fd] data-focus:bg-[#45d2fd] hover:text-gray-900 data-focus:text-gray-900"
+                                            ? "cursor-not-allowed text-gray-500 bg-gray-700"
+                                            : "cursor-pointer text-white hover:bg-[#45d2fd] data-focus:bg-[#45d2fd] hover:text-gray-900 data-focus:text-gray-900"
                                             }`}
                                     >
                                         <span className="block truncate font-normal">

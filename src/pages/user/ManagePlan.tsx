@@ -2,26 +2,40 @@ import { ArrowLeftIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import PlanCard from '../../components/ui/cards/PlanCard';
 
-const freePlanFeatures = [
-    'Compare up to 2 countries',
-    'Save 1 form template (logged in)',
-    'Save 1 comparison sheet',
-    'Box-plot chart view',
+const plans = [
+    {
+        name: 'FREE',
+        price: '$0',
+        description: 'Everything necessary to get started.',
+        features: [
+            'Choose up to 2 countries to compare',
+            'Save form as a template (one)',
+            'Save comparison (one)',
+            "Can't export comparison",
+            'Only one chart view',
+            'Limited data displayed on comparison sheet',
+        ],
+        isCurrent: true,
+    },
+    {
+        name: 'PREMIUM',
+        price: '$2.99',
+        description: 'Everything in Basic, plus essential tools for growing your analysis.',
+        features: [
+            'Choose up to 3 countries to compare',
+            'Save form as a template (up to 4)',
+            'Save comparison (up to 4)',
+            'Unlimited comparison exports (PDF, CSV, PNG)',
+            'Multiple chart views',
+            'Full accurate data displayed on comparison sheet (full wage increase, historical data etc)',
+        ],
+        isCurrent: false,
+    },
 ];
-
-const premiumFeatures = [
-    'Compare up to 3 countries',
-    'Save up to 4 templates',
-    'Save up to 4 comparisons',
-    'Unlimited exports (PDF, CSV, PNG)',
-    'Multiple chart views',
-    'Full historical wage data',
-];
-
 function ManagePlan() {
-    const handleUpgrade = () => {
-        console.log('Upgrading to Premium');
-        // Lógica de upgrade
+     const handleSelectPlan = (planName: string) => {
+        console.log(`Selected plan: ${planName}`);
+        // Aquí se implementaría la lógica de upgrade/downgrade
     };
 
     return (
@@ -42,26 +56,18 @@ function ManagePlan() {
             </div>
 
             {/* Plans Grid */}
-            <div className="grid md:grid-cols-2 gap-5">
-                {/* Current Plan */}
-                <PlanCard
-                    name="Free Plan"
-                    price="$0"
-                    description="Free forever"
-                    features={freePlanFeatures}
-                    isCurrent={true}
-                    onSelect={() => { }}
-                />
-
-                {/* Upgrade to Premium */}
-                <PlanCard
-                    name="Premium"
-                    price="$2.99"
-                    description="Unlock advanced charts, multiple comparisons, exports and more."
-                    features={premiumFeatures}
-                    isCurrent={false}
-                    onSelect={handleUpgrade}
-                />
+  <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto w-full">
+                {plans.map((plan) => (
+                    <PlanCard
+                        key={plan.name}
+                        name={plan.name}
+                        price={plan.price}
+                        description={plan.description}
+                        features={plan.features}
+                        isCurrent={plan.isCurrent}
+                        onSelect={() => handleSelectPlan(plan.name)}
+                    />
+                ))}
             </div>
 
             {/* Payment History Section */}

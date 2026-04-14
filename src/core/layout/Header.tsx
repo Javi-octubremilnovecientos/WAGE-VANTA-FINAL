@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Dialog, DialogPanel, PopoverGroup, Switch } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
 import { useAppSelector } from "@/hooks/useRedux";
 import AuthModal from "@/components/ui/modals/AuthModal";
@@ -33,21 +33,17 @@ export default function Header() {
     <header className="relative z-50">
       <nav
         aria-label="Global"
-        className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-6"
+        className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-6 "
       >
         <div className="flex lg:flex-1">
-          <button
+            <button
             type="button"
             onClick={handleAuthClick}
             className="flex items-center -m-0.5 p-0.5 gap-x-1.5 text-white hover:opacity-80 transition-opacity focus:outline-none text-sm"
-          >
-            <img
-              alt=""
-              src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-              className="inline-block size-6 rounded-full ring-2 ring-gray-900 outline -outline-offset-1 outline-white/10"
-            />
-            {isAuthenticated ? 'Dashboard' : 'Log in'} <span aria-hidden="true">&rarr;</span>
-          </button>
+            >
+            <UserIcon className="size-6" aria-hidden="true" />
+            {isAuthenticated ? 'Dashboard' : 'Log in'} 
+            </button>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -59,7 +55,7 @@ export default function Header() {
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
-        <PopoverGroup className="hidden lg:flex lg:gap-x-8">
+        <PopoverGroup className="hidden lg:flex lg:gap-x-8 w-1/3 justify-around">
           <Link to="/about" className="text-xs lg:text-sm font-semibold text-white">
             About
           </Link>
@@ -71,7 +67,7 @@ export default function Header() {
           <Switch
             checked={enabled}
             onChange={setEnabled}
-            className="group relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full bg-gray-700 transition-colors duration-200 ease-in-out focus:outline-none data-[checked]:bg-[#45D2FD]"
+            className="group relative inline-flex items-center h-5 w-9 shrink-0 cursor-pointer rounded-full bg-gray-700 transition-colors duration-200 ease-in-out focus:outline-none data-[checked]:bg-[#45D2FD]"
           >
             <span className="sr-only">Toggle theme</span>
             <span
@@ -105,7 +101,7 @@ export default function Header() {
             </button>
           </div>
           <div className="mt-4 flow-root">
-            <div className="-my-6 divide-y divide-white/10">
+            <div className="-my-6 divide-y divide-white/10 ">
               <div className="space-y-1.5 py-4">
                 <Link
                   to="/about"
@@ -122,18 +118,18 @@ export default function Header() {
                   Plans
                 </Link>
               </div>
-              <div className="space-y-1.5 py-4">
-                <div className="flex items-center justify-between">
+              <div className="space-y-1.5 py-4 ">
+                <div className="flex items-center justify-between ">
                   <span className="text-xs font-semibold text-white">Theme</span>
                   <Switch
                     checked={enabled}
                     onChange={setEnabled}
-                    className="group relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full bg-gray-700 transition-colors duration-200 ease-in-out focus:outline-none data-[checked]:bg-[#45D2FD]"
+                    className="group relative items-center inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full bg-gray-700 transition-colors duration-200 ease-in-out focus:outline-none data-[checked]:bg-[#45D2FD]"
                   >
                     <span className="sr-only">Toggle theme</span>
                     <span
                       aria-hidden="true"
-                      className="pointer-events-none  size-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-4 flex items-center justify-center"
+                      className="pointer-events-none  size-4  transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-4 flex items-center justify-center"
                     >
                       {enabled ? (
                         <SunIcon className="h-3 w-3 text-[#45D2FD]" />
