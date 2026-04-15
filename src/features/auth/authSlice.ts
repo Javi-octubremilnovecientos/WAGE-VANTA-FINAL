@@ -4,6 +4,7 @@ import type { UserData, Template, Comparison, PayData } from '@/lib/User';
 export interface User extends UserData {
     id: string;
     email: string;
+    newEmail?: string; // Email pendiente de confirmación
 }
 
 interface AuthState {

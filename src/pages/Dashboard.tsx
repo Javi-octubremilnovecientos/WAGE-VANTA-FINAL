@@ -63,8 +63,11 @@ function Dashboard() {
           </h1>
         </div>
         <div className="flex flex-row justify-between items-center">
-          <span className="inline-flex w-fit items-center rounded-full border border-gray-700 bg-gray-800/50 backdrop-blur px-2.5 py-0.5 text-xs font-medium text-gray-300 shadow-sm">
-            {isPremium ? 'Premium Plan' : 'Free Plan'}
+          <span className={`inline-flex w-fit items-center rounded-full border backdrop-blur px-2.5 py-0.5 text-xs font-medium shadow-sm transition-colors ${isPremium
+            ? 'border-yellow-600/50 bg-yellow-500/10 text-yellow-300'
+            : 'border-gray-700 bg-gray-800/50 text-gray-300'
+            }`}>
+            {isPremium ? '⭐ Premium Plan' : 'Free Plan'}
           </span>
           <Link
             to="/"
@@ -114,28 +117,30 @@ function Dashboard() {
         </div>
       </section>
 
-      <section>
-        <Link
-          to="/plans"
-          className="group flex items-center gap-2 rounded-lg border border-gray-700 bg-gradient-to-br from-gray-900/60 via-[#22b8d9]/20 to-gray-900/60 backdrop-blur px-3 py-3 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:px-4"
-        >
-          <span className="inline-flex rounded-lg bg-[#45d2fd]/20 p-1.5 text-[#45d2fd]">
-            <SparklesIcon className="h-3.5 w-3.5" />
-          </span>
+      {!isPremium && (
+        <section>
+          <Link
+            to="/plans"
+            className="group flex items-center gap-2 rounded-lg border border-gray-700 bg-gradient-to-br from-gray-900/60 via-[#22b8d9]/20 to-gray-900/60 backdrop-blur px-3 py-3 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:px-4"
+          >
+            <span className="inline-flex rounded-lg bg-[#45d2fd]/20 p-1.5 text-[#45d2fd]">
+              <SparklesIcon className="h-3.5 w-3.5" />
+            </span>
 
-          <div className="min-w-0 flex-1">
-            <h2 className="text-sm font-bold tracking-tight text-[#45d2fd]">
-              Upgrade to Premium
-            </h2>
-            <p className="mt-0.5 text-xs leading-4 text-gray-400">
-              Unlock exports, multiple chart views, more templates and extra
-              comparisons.
-            </p>
-          </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-sm font-bold tracking-tight text-[#45d2fd]">
+                Upgrade to Premium
+              </h2>
+              <p className="mt-0.5 text-xs leading-4 text-gray-400">
+                Unlock exports, multiple chart views, more templates and extra
+                comparisons.
+              </p>
+            </div>
 
-          <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-gray-500 transition-colors group-hover:text-[#45d2fd]" />
-        </Link>
-      </section>
+            <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-gray-500 transition-colors group-hover:text-[#45d2fd]" />
+          </Link>
+        </section>
+      )}
     </div>
   );
 }

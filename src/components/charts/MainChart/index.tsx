@@ -5,38 +5,23 @@ import {
     DefaultZIndexes,
     ErrorBar,
     Rectangle,
+    ReferenceLine,
     ResponsiveContainer,
     Scatter,
     Tooltip,
-    XAxis,
     YAxis,
 } from 'recharts';
 import type { BarShapeProps, TooltipContentProps, TooltipIndex } from 'recharts';
+import type { BoxPlotData } from '../../../features/salaries/types';
 
-type BoxPlotDatum = {
-    category: string;
-    min: number;
-    q1: number;
-    median: number;
-    q3: number;
-    max: number;
-};
-
-const data: ReadonlyArray<BoxPlotDatum> = [
-    { category: 'Spain', min: 1600, q1: 2000, median: 2400, q3: 2900, max: 3500 }
-
-];
+type BoxPlotDatum = BoxPlotData;
 
 type OutlierDatum = {
     category: string;
     value: number;
 };
 
-const outliers: ReadonlyArray<OutlierDatum> = [
-
-
-
-];
+const outliers: ReadonlyArray<OutlierDatum> = [];
 
 const boxDataKey: (entry: BoxPlotDatum) => [number, number] = entry => [entry.q1, entry.q3];
 
@@ -51,12 +36,12 @@ const BoxShape = (props: BarShapeProps) => {
     const medianY = props.y + medianOffset;
 
     // Reducir el ancho a la mitad y centrar
-    const reducedWidth = props.width * 0.25;
+    const reducedWidth = props.width * 0.5;
     const offsetX = props.x + (props.width - reducedWidth) / 2;
 
     return (
         <g>
-            <Rectangle {...props} x={offsetX} width={reducedWidth} fill="#8884d8" />
+            <Rectangle {...props} x={offsetX} width={reducedWidth} fill={entry.color || '#8884d8'} />
             <line x1={offsetX} x2={offsetX + reducedWidth} y1={medianY} y2={medianY} stroke="#1f2937" strokeWidth={2} />
         </g>
     );
@@ -86,15 +71,28 @@ const TooltipContent = (props: TooltipContentProps) => {
     return null;
 };
 
-export default function MainChart({ defaultIndex }: { defaultIndex?: TooltipIndex }) {
+interface MainChartProps {
+    data?: BoxPlotData[];
+    userWage?: number | null;
+    defaultIndex?: TooltipIndex;
+}
+
+export default function MainChart({ data = [], userWage, defaultIndex }: MainChartProps) {
+    if (data.length === 0) {
+        return (
+            <div className="flex items-center justify-center w-full aspect-square text-gray-500 text-sm">
+                Select countries and fill the form to see salary data
+            </div>
+        );
+    }
+
     return (
         <ResponsiveContainer width="90%" aspect={1 / 1}>
             <BarChart data={data}>
-                <XAxis dataKey="category" allowDuplicatedCategory={false} tick={{ fontSize: 10, fill: '#d1d5db' }} stroke="#d1d5db" />
                 <YAxis
                     width={40}
-                    domain={[0, 15000]}
-                    ticks={[0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000]}
+                    domain={[0, 13000]}
+                    ticks={[0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000]}
                     tick={{ fontSize: 10, fill: '#d1d5db' }}
                     stroke="#d1d5db"
                     tickFormatter={(value) => `${value}€`}
@@ -104,6 +102,15 @@ export default function MainChart({ defaultIndex }: { defaultIndex?: TooltipInde
                     <ErrorBar dataKey={whiskerDataKey} width={0} zIndex={DefaultZIndexes.bar - 1} />
                 </Bar>
                 <Scatter data={outliers} dataKey="value" fill="#e11d48" />
+                {userWage != null && (
+                    <ReferenceLine
+                        y={userWage}
+                        stroke="#45d2fd"
+                        strokeDasharray="6 3"
+                        strokeWidth={1.5}
+                        label={{ value: `Your wage: ${userWage}€`, position: 'right', fill: '#45d2fd', fontSize: 10 }}
+                    />
+                )}
                 <Tooltip content={TooltipContent} defaultIndex={defaultIndex} />
             </BarChart>
         </ResponsiveContainer>

@@ -1,58 +1,66 @@
 
-import { useState } from 'react';
 import AuthModal from '../ui/modals/AuthModal';
+import { useState } from 'react';
 import { ClipboardDocumentIcon, BookmarkIcon } from '@heroicons/react/24/outline';
 import StandardComboBox from './StandardComboBox';
 import NumberInput from './NumberInput';
 import StepSlider from './Stepslider';
 import { formSteps } from '../../features/salaries/salaryConstants';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import {
+  selectCurrentStep,
+  selectFormValues,
+  updateFormValue,
+  setCurrentStep,
+  addCountry,
+} from '../../features/salaries/salarySlice';
+import { resolveLabel } from '../../features/salaries/salaryUtils';
 import './FormLayout.css';
 
-// Type for form values
-type FormValues = Record<string, string>;
-
 interface FormLayoutProps {
-  onCountryChange?: (value: string) => void;
+  onNavigateToSheet?: () => void;
 }
 
-function FormLayout({ onCountryChange }: FormLayoutProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [formValues, setFormValues] = useState<FormValues>({});
+function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
+  const dispatch = useAppDispatch();
+  const currentStep = useAppSelector(selectCurrentStep);
+  const formValues = useAppSelector(selectFormValues);
 
   const [authModalOpen, setAuthModalOpen] = useState(false);
-const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+
   const totalSteps = formSteps.length;
   const currentStepData = formSteps[currentStep];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formValues);
+    onNavigateToSheet?.();
   };
 
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
-      setCurrentStep(currentStep + 1);
+      dispatch(setCurrentStep(currentStep + 1));
     }
   };
 
   const handleBack = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+      dispatch(setCurrentStep(currentStep - 1));
     }
   };
 
   const handleFieldChange = (fieldId: string, value: string) => {
-    setFormValues(prev => ({
-      ...prev,
-      [fieldId]: value
-    }));
+    dispatch(updateFormValue({ fieldId, value }));
+
+    // Cuando el usuario selecciona un país en Step 1, lo añadimos a selectedCountries
     if (fieldId === 'country') {
-      onCountryChange?.(value);
+      const label = resolveLabel('country', value);
+      dispatch(addCountry(label));
     }
   };
 
   const isLastStep = currentStep === totalSteps - 1;
-  const isNextDisabled = currentStep === 0 && !formValues['country'];
+  const isNextDisabled = currentStep === 0 && !formValues.country;
 
   return (
     <div className="w-full max-w-xs md:max-w-lg mx-auto">
@@ -97,7 +105,7 @@ const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
                   options={field.options}
                   placeholder={field.placeholder}
                   required={field.required}
-                  value={formValues[field.id]}
+                  value={(formValues as Record<string, string>)[field.id]}
                   onChange={(value) => handleFieldChange(field.id, value)}
                 />
               );
@@ -111,7 +119,7 @@ const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
                   label={field.label}
                   placeholder={field.placeholder}
                   required={field.required}
-                  value={formValues[field.id] || ''}
+                  value={(formValues as Record<string, string>)[field.id] || ''}
                   onChange={(value) => handleFieldChange(field.id, value)}
                 />
               );
@@ -162,11 +170,11 @@ const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
       {/* Auth Modal */}
       <AuthModal
-  isOpen={authModalOpen}
-  onClose={() => setAuthModalOpen(false)}
-  mode={authMode}  // ← usar el estado en vez de hardcodear
-  onSwitchMode={(newMode) => setAuthMode(newMode)}  // ← permitir cambio
-/>
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        mode={authMode}  // ← usar el estado en vez de hardcodear
+        onSwitchMode={(newMode) => setAuthMode(newMode)}  // ← permitir cambio
+      />
     </div>
   );
 }

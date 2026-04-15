@@ -1,66 +1,37 @@
 import { createSelector } from '@reduxjs/toolkit';
-import type { SalaryStats } from './salaryService';
+import type { RootState } from '@/core/store';
 
-// Example selector structure for when salary data is added to the store
-// This demonstrates the pattern for memoized selectors
+const selectSalary = (state: RootState) => state.salary;
+const selectAuth = (state: RootState) => state.auth;
 
-interface SalaryState {
-    data: Record<string, SalaryStats>;
-    isLoading: boolean;
-    error: string | null;
-}
-
-// Base selectors
-const selectSalaryData = (state: { salary?: SalaryState }) =>
-    state.salary?.data || {};
-
-const selectIsLoading = (state: { salary?: SalaryState }) =>
-    state.salary?.isLoading || false;
-
-const selectError = (state: { salary?: SalaryState }) =>
-    state.salary?.error || null;
-
-// Memoized selectors for Recharts transformation
-export const selectFormattedSalaryData = createSelector(
-    [selectSalaryData],
-    (data): Array<{ country: string } & SalaryStats> => {
-        return Object.entries(data).map(([country, stats]) => ({
-            country,
-            ...stats,
-        }));
-    }
+/** True cuando hay al menos 1 país seleccionado y algún campo del form con valor */
+export const selectComparisonReady = createSelector(
+    [selectSalary],
+    (salary) => {
+        const hasCountry = salary.selectedCountries.length >= 1;
+        const hasValues = Object.values(salary.formValues).some(
+            (v) => v !== undefined && v !== '',
+        );
+        return hasCountry && hasValues;
+    },
 );
 
-export const selectBoxPlotData = createSelector(
-    [selectSalaryData],
-    (data) => {
-        return Object.entries(data).map(([country, stats]) => ({
-            name: country,
-            min: stats.min,
-            q1: stats.q1,
-            median: stats.median,
-            q3: stats.q3,
-            max: stats.max,
-        }));
-    }
+/** Valida si se puede añadir otro país según el plan (FREE: max 2, PREMIUM: max 3) */
+export const selectCanAddCountry = createSelector(
+    [selectSalary, selectAuth],
+    (salary, auth) => {
+        const max = auth.user?.premium ? 3 : 2;
+        return salary.selectedCountries.length < max;
+    },
 );
 
-export const selectBarChartData = createSelector(
-    [selectSalaryData],
-    (data) => {
-        return Object.entries(data).map(([country, stats]) => ({
-            country,
-            median: stats.median,
-            mean: stats.mean,
-        }));
-    }
+/** Extrae monthlyWage del form parseado a number (para línea referencial en chart) */
+export const selectUserMonthlyWage = createSelector(
+    [selectSalary],
+    (salary) => {
+        const raw = salary.formValues.monthlyWage;
+        if (!raw) return null;
+        const parsed = parseFloat(raw);
+        return isNaN(parsed) ? null : parsed;
+    },
 );
-
-export const salarySelectors = {
-    selectSalaryData,
-    selectIsLoading,
-    selectError,
-    selectFormattedSalaryData,
-    selectBoxPlotData,
-    selectBarChartData,
-};

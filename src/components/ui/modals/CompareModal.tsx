@@ -2,6 +2,8 @@ import { useState } from 'react';
 import CompareComboBox from '../CompareComboBox';
 import type { CountryOption } from '../CompareComboBox';
 import { formSteps } from '../../../features/salaries/salaryConstants';
+import { useAppDispatch } from '../../../hooks/useRedux';
+import { addCountry } from '../../../features/salaries/salarySlice';
 
 interface CompareModalProps {
     isOpen: boolean;
@@ -18,11 +20,12 @@ export default function CompareModal({
     onCancel,
     onConfirm,
     cancelText = "Cancel",
-    confirmText = "Confirm",
+    confirmText = "Compare",
     cancelButtonColor = "#374151",
     confirmButtonColor = "#6366F1",
 }: CompareModalProps) {
     const [selectedCountry, setSelectedCountry] = useState<CountryOption | null>(null);
+    const dispatch = useAppDispatch();
 
     if (!isOpen) return null;
 
@@ -36,6 +39,9 @@ export default function CompareModal({
 
     const handleConfirm = () => {
         if (selectedCountry) {
+            // Añadir país al array de selectedCountries en Redux
+            dispatch(addCountry(selectedCountry.label));
+            setSelectedCountry(null);
             onConfirm();
         }
     };

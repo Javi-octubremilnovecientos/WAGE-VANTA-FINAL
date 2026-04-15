@@ -1,4 +1,4 @@
-import type { SalaryStats } from '../../features/salaries/salaryService';
+import type { SalaryStats } from '../../features/salaries/types';
 
 export const chartUtils = {
     formatCurrency: (value: number, currency: string = 'EUR'): string => {

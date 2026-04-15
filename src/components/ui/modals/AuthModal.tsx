@@ -82,8 +82,7 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode }: AuthModalProps) {
                     password,
                     data: createDefaultUserData(name),
                 }).unwrap();
-            const mappedUser = mapSupabaseResponseToUser(response.user);
-            console.log('🔐 Login exitoso - Usuario completo:', mappedUser)
+           
             dispatch(
                 setCredentials({
                     user: mapSupabaseResponseToUser(response.user),

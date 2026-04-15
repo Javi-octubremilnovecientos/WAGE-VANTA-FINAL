@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { ArrowLeftIcon, Cog6ToothIcon, LockClosedIcon, CreditCardIcon, PencilIcon, ArrowDownOnSquareIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, Cog6ToothIcon, LockClosedIcon, CreditCardIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import { selectUser, selectUserPremium, logout, patchUser } from '@/features/auth/authSlice';
 import { useUpdateUserMutation } from '@/features/auth/authApi';
+import { Save } from '@/assets/icons/Solidicons';
 
 function UserSettings() {
     const user = useAppSelector(selectUser);
@@ -11,27 +12,66 @@ function UserSettings() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const [editingName, setEditingName] = useState(false);
-    const [editingEmail, setEditingEmail] = useState(false);
-    const [nameValue, setNameValue] = useState('');
-    const [emailValue, setEmailValue] = useState('');
+    const [fields, setFields] = useState<Record<string, { value: string; editing: boolean }>>({
+        name: { value: '', editing: false },
+        email: { value: '', editing: false },
+        password: { value: '', editing: false },
+    });
 
     const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
 
-    const handleSaveName = async () => {
-        try {
-            await updateUser({ data: { name: nameValue } }).unwrap();
-            dispatch(patchUser({ name: nameValue }));
-        } catch { /* error silenciado, el input revierte al valor anterior */ }
-        setEditingName(false);
+    const handleFieldChange = (field: string, value: string) => {
+        setFields(prev => ({
+            ...prev,
+            [field]: { ...prev[field], value }
+        }));
     };
 
-    const handleSaveEmail = async () => {
+    const handleToggleEdit = (field: string) => {
+        setFields(prev => {
+            const isNowEditing = !prev[field].editing;
+            return {
+                ...prev,
+                [field]: {
+                    editing: isNowEditing,
+                    value: isNowEditing
+                        ? field === 'name'
+                            ? user?.name ?? ''
+                            : field === 'email'
+                                ? user?.email ?? ''
+                                : ''
+                        : prev[field].value,
+                }
+            };
+        });
+    };
+
+    const handleSaveField = async (field: string) => {
+        const value = fields[field].value;
         try {
-            await updateUser({ email: emailValue }).unwrap();
-            dispatch(patchUser({ email: emailValue }));
+            const updatePayload =
+                field === 'email' ? { email: value }
+                    : field === 'password' ? { password: value }
+                        : { data: { name: value } };
+
+            const response = await updateUser(updatePayload).unwrap();
+
+            // IMPORTANTE: Email requiere confirmación. Supabase devuelve 'new_email' en vez de actualizar 'email'.
+            // Solo actualizamos Redux con el cambio confirmado.
+            if (field === 'email') {
+                // Actualizar newEmail en Redux (pendiente de confirmación)
+                dispatch(patchUser({ newEmail: response.new_email }));
+            } else if (field === 'name') {
+                // Name sí se actualiza inmediatamente
+                dispatch(patchUser({ name: value }));
+            }
+            // password no se persiste en user_metadata, no actualizar Redux
         } catch { /* error silenciado, el input revierte al valor anterior */ }
-        setEditingEmail(false);
+
+        setFields(prev => ({
+            ...prev,
+            [field]: { ...prev[field], editing: false }
+        }));
     };
 
     const handleSignOut = () => {
@@ -71,46 +111,54 @@ function UserSettings() {
                             <p className="text-xs font-medium text-gray-400">Full Name</p>
                             <input
                                 type="text"
-                                value={editingName ? nameValue : (user?.name ?? '')}
-                                onChange={(e) => setNameValue(e.target.value)}
-                                disabled={!editingName || isUpdatingUser}
+                                value={fields.name.editing ? fields.name.value : (user?.name ?? '')}
+                                onChange={(e) => handleFieldChange('name', e.target.value)}
+                                disabled={!fields.name.editing || isUpdatingUser}
                                 aria-label="Full name"
                                 className="bg-transparent text-gray-300 text-sm mt-0.5 w-full focus:outline-none disabled:cursor-default enabled:border-b enabled:border-[#45d2fd]/60 transition-all"
                             />
                         </div>
                         <button
-                            onClick={editingName ? handleSaveName : () => { setNameValue(user?.name ?? ''); setEditingName(true); }}
+                            onClick={fields.name.editing ? () => handleSaveField('name') : () => handleToggleEdit('name')}
                             disabled={isUpdatingUser}
-                            aria-label={editingName ? 'Save name' : 'Edit name'}
+                            aria-label={fields.name.editing ? 'Save name' : 'Edit name'}
                             className="text-[#45d2fd] hover:text-[#22b8d9] transition-colors shrink-0 disabled:opacity-50"
                         >
-                            {editingName
-                                ? <ArrowDownOnSquareIcon className="h-4 w-4" />
+                            {fields.name.editing
+                                ? <Save />
                                 : <PencilIcon className="h-4 w-4" />}
                         </button>
                     </div>
-                    <div className="flex items-center justify-between pb-3 border-b border-gray-700">
-                        <div className="flex-1 min-w-0 mr-3">
-                            <p className="text-xs font-medium text-gray-400">Email Address</p>
-                            <input
-                                type="email"
-                                value={editingEmail ? emailValue : (user?.email ?? '')}
-                                onChange={(e) => setEmailValue(e.target.value)}
-                                disabled={!editingEmail || isUpdatingUser}
-                                aria-label="Email address"
-                                className="bg-transparent text-gray-300 text-sm mt-0.5 w-full focus:outline-none disabled:cursor-default enabled:border-b enabled:border-[#45d2fd]/60 transition-all"
-                            />
+                    <div className="pb-3 border-b border-gray-700">
+                        <div className="flex items-center justify-between">
+                            <div className="flex-1 min-w-0 mr-3">
+                                <p className="text-xs font-medium text-gray-400">Email Address</p>
+                                <input
+                                    type="email"
+                                    value={fields.email.editing ? fields.email.value : (user?.email ?? '')}
+                                    onChange={(e) => handleFieldChange('email', e.target.value)}
+                                    disabled={!fields.email.editing || isUpdatingUser}
+                                    aria-label="Email address"
+                                    className="bg-transparent text-gray-300 text-sm mt-0.5 w-full focus:outline-none disabled:cursor-default enabled:border-b enabled:border-[#45d2fd]/60 transition-all"
+                                />
+                            </div>
+                            <button
+                                onClick={fields.email.editing ? () => handleSaveField('email') : () => handleToggleEdit('email')}
+                                disabled={isUpdatingUser}
+                                aria-label={fields.email.editing ? 'Save email' : 'Edit email'}
+                                className="text-[#45d2fd] hover:text-[#22b8d9] transition-colors shrink-0 disabled:opacity-50"
+                            >
+                                {fields.email.editing
+                                    ? <Save />
+                                    : <PencilIcon className="h-4 w-4" />}
+                            </button>
                         </div>
-                        <button
-                            onClick={editingEmail ? handleSaveEmail : () => { setEmailValue(user?.email ?? ''); setEditingEmail(true); }}
-                            disabled={isUpdatingUser}
-                            aria-label={editingEmail ? 'Save email' : 'Edit email'}
-                            className="text-[#45d2fd] hover:text-[#22b8d9] transition-colors shrink-0 disabled:opacity-50"
-                        >
-                            {editingEmail
-                                ? <ArrowDownOnSquareIcon className="h-4 w-4" />
-                                : <PencilIcon className="h-4 w-4" />}
-                        </button>
+                        {user?.newEmail && (
+                            <p className="text-xs text-yellow-400 mt-2 flex items-center gap-1.5">
+                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
+                                Pending confirmation: {user.newEmail}
+                            </p>
+                        )}
                     </div>
                 </div>
             </section>
@@ -123,12 +171,27 @@ function UserSettings() {
                 </div>
                 <div className="space-y-3">
                     <div className="flex items-center justify-between pb-3 border-b border-gray-700">
-                        <div>
+                        <div className="flex-1 min-w-0 mr-3">
                             <p className="text-xs font-medium text-gray-400">Password</p>
-                            <p className="text-gray-300 mt-0.5">••••••••</p>
+                            <input
+                                type="password"
+                                value={fields.password.editing ? fields.password.value : '••••••••'}
+                                onChange={(e) => handleFieldChange('password', e.target.value)}
+                                disabled={!fields.password.editing || isUpdatingUser}
+                                aria-label="Password"
+                                placeholder="Enter new password"
+                                className="bg-transparent text-gray-300 text-sm mt-0.5 w-full focus:outline-none disabled:cursor-default enabled:border-b enabled:border-[#45d2fd]/60 transition-all"
+                            />
                         </div>
-                        <button className="text-[#45d2fd] hover:text-[#22b8d9] transition-colors">
-                            <PencilIcon className="h-4 w-4" />
+                        <button
+                            onClick={fields.password.editing ? () => handleSaveField('password') : () => handleToggleEdit('password')}
+                            disabled={isUpdatingUser}
+                            aria-label={fields.password.editing ? 'Save password' : 'Edit password'}
+                            className="text-[#45d2fd] hover:text-[#22b8d9] transition-colors shrink-0 disabled:opacity-50"
+                        >
+                            {fields.password.editing
+                                ? <Save />
+                                : <PencilIcon className="h-4 w-4" />}
                         </button>
                     </div>
                 </div>

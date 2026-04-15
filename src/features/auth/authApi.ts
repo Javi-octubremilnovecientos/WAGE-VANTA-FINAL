@@ -38,6 +38,7 @@ export interface SupabaseUser {
     identities?: Array<Record<string, unknown>>;
     created_at?: string;
     updated_at?: string;
+    new_email?: string; // Email pendiente de confirmación
 }
 
 export interface AuthResponse {
@@ -58,6 +59,7 @@ export function mapSupabaseResponseToUser(supabaseUser: SupabaseUser): User {
     return {
         id: supabaseUser.id,
         email: supabaseUser.email ?? '',
+        newEmail: supabaseUser.new_email, // Email pendiente de confirmación
         name: (meta.name as string) ?? '',
         premium: (meta.premium as boolean) ?? false,
         templates: (meta.templates as Template[]) ?? [],
@@ -107,13 +109,18 @@ export const authApi = apiSlice.injectEndpoints({
         }),
         /**
          * Actualizar datos del usuario en Supabase
-         * PATCH auth/v1/user
+         * PUT auth/v1/user
+         * 
+         * IMPORTANTE: Al cambiar email, Supabase NO lo actualiza inmediatamente.
+         * Coloca el nuevo email en 'new_email' y requiere confirmación por correo.
+         * Solo después de confirmar, 'email' se actualiza con el valor de 'new_email'.
+         * 
          * Centraliza actualizaciones de email, password, name, premium, payData, etc.
          */
         updateUser: builder.mutation<SupabaseUser, UpdateUserRequest>({
             query: (body) => ({
                 url: 'auth/v1/user',
-                method: 'PATCH',
+                method: 'PUT',
                 body,
             }),
             invalidatesTags: ['Profile'],
