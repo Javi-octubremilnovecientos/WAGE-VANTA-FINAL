@@ -16,6 +16,13 @@ const salarySlice = createSlice({
                 state.selectedCountries.push(action.payload);
             }
         },
+        setPrimaryCountry(state, action: PayloadAction<string>) {
+            if (state.selectedCountries.length === 0) {
+                state.selectedCountries.push(action.payload);
+            } else {
+                state.selectedCountries[0] = action.payload;
+            }
+        },
         removeCountry(state, action: PayloadAction<string>) {
             state.selectedCountries = state.selectedCountries.filter(
                 (c) => c !== action.payload,
@@ -46,6 +53,7 @@ const salarySlice = createSlice({
 export const {
     addCountry,
     removeCountry,
+    setPrimaryCountry,
     setSelectedCountries,
     updateFormValue,
     setFormValues,

@@ -2,22 +2,23 @@
  * Salary Comparison Types
  *
  * Interfaces para la core feature de comparación salarial.
- * Mapean a Supabase TABLE_1 y al flujo de datos del formulario → RTK Query → BoxPlot.
+ * Keys coinciden exactamente con los nombres de columna de Supabase TABLE_0
+ * y los field IDs de formSteps — eliminando toda capa de mapeo.
  */
 
-/** Row de TABLE_1 en Supabase (keys en camelCase, transformadas desde UPPER_CASE) */
+/** Row de TABLE_0 en Supabase. Keys = column names (Title Case). */
 export interface SalaryRecord {
-    country: string;
-    gender: string;
-    occupation: string;
-    occupationLevel: string;
-    economicActivity: string;
-    educationLevel: string;
-    meanMonthlyWage: string; // Supabase lo almacena como text → parsear a number
-    year: number;
+    Country: string;
+    Gender: string;
+    Occupation: string;
+    'Occupation Level': string;
+    'Economic Activity': string;
+    'Education Level': string;
+    'Monthly Wage': number;
+    Year: number;
 }
 
-/** Parámetros para construir la query PostgREST a TABLE_1. Country obligatorio, resto progresivo. */
+/** Parámetros para construir la query PostgREST a TABLE_0. Country obligatorio, resto progresivo. */
 export interface SalaryQueryParams {
     country: string;
     formValues: ComparisonFormValues;
@@ -37,17 +38,17 @@ export interface BoxPlotData {
 /** Alias de BoxPlotData para compatibilidad con ChartUtils */
 export type SalaryStats = BoxPlotData;
 
-/** Valores acumulados del formulario multi-paso */
+/** Valores acumulados del formulario multi-paso. Keys = field IDs de formSteps = column names de TABLE_0. */
 export interface ComparisonFormValues {
-    country?: string;
-    gender?: string;
-    monthlyWage?: string;
-    economicActivity?: string;
-    occupation?: string;
-    occupationLevel?: string;
-    educationLevel?: string;
-    yearsOfExperience?: string;
-    companySize?: string;
+    Country?: string;
+    Gender?: string;
+    'Monthly Wage'?: string;
+    'Economic Activity'?: string;
+    Occupation?: string;
+    'Occupation Level'?: string;
+    'Education Level'?: string;
+    'Years Of Experience'?: string;
+    'Company Size'?: string;
 }
 
 /** Estado del slice de salarios en Redux */

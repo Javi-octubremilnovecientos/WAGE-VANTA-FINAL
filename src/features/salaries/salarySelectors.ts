@@ -25,11 +25,11 @@ export const selectCanAddCountry = createSelector(
     },
 );
 
-/** Extrae monthlyWage del form parseado a number (para línea referencial en chart) */
+/** Extrae Monthly Wage del form parseado a number (para línea referencial en chart) */
 export const selectUserMonthlyWage = createSelector(
     [selectSalary],
     (salary) => {
-        const raw = salary.formValues.monthlyWage;
+        const raw = salary.formValues['Monthly Wage'];
         if (!raw) return null;
         const parsed = parseFloat(raw);
         return isNaN(parsed) ? null : parsed;

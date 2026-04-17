@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import MainChart from "../components/charts/MainChart";
 import FormLayout from "../components/form/FormLayout";
 import CompareModal from "../components/ui/modals/CompareModal";
+import UpgradeModal from "../components/ui/modals/UpgradeModal";
 import { useAppSelector } from "../hooks/useRedux";
 import {
     selectSelectedCountries,
@@ -16,6 +17,7 @@ const CHART_COLORS = ['#8884d8', '#82ca9d', '#fbbf24'];
 
 export default function Home() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
 
     const selectedCountries = useAppSelector(selectSelectedCountries);
     const formValues = useAppSelector(selectFormValues);
@@ -59,6 +61,11 @@ export default function Home() {
 
     const handleConfirm = () => {
         setIsModalOpen(false);
+    };
+
+    const handleUpgradeRequired = () => {
+        setIsModalOpen(false);
+        setIsUpgradeModalOpen(true);
     };
 
     return (
@@ -125,10 +132,17 @@ export default function Home() {
                 isOpen={isModalOpen}
                 onCancel={handleCancel}
                 onConfirm={handleConfirm}
+                onUpgradeRequired={handleUpgradeRequired}
                 cancelText="Cancel"
                 confirmText="Compare"
                 cancelButtonColor="#6b7280"
                 confirmButtonColor="#45d2fd"
+            />
+
+            {/* Upgrade Modal */}
+            <UpgradeModal
+                isOpen={isUpgradeModalOpen}
+                onClose={() => setIsUpgradeModalOpen(false)}
             />
         </div>
     )

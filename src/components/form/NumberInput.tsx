@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface NumberInputProps {
     /** Unique identifier for the input */
@@ -11,7 +11,7 @@ interface NumberInputProps {
     required?: boolean;
     /** Current value */
     value: string | number;
-    /** Change handler */
+    /** Change handler — only fires on blur or Enter, not on every keystroke */
     onChange: (value: string) => void;
     /** Additional CSS classes */
     className?: string;
@@ -35,6 +35,18 @@ const NumberInput: React.FC<NumberInputProps> = ({
     max,
     step,
 }) => {
+    const [localValue, setLocalValue] = useState(String(value));
+
+    useEffect(() => {
+        setLocalValue(String(value));
+    }, [value]);
+
+    const commit = () => {
+        if (localValue !== String(value)) {
+            onChange(localValue);
+        }
+    };
+
     return (
         <div className={className}>
             <label htmlFor={id} className="block text-xs font-medium text-white mb-2">
@@ -47,8 +59,10 @@ const NumberInput: React.FC<NumberInputProps> = ({
                 name={id}
                 placeholder={placeholder}
                 required={required}
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
+                value={localValue}
+                onChange={(e) => setLocalValue(e.target.value)}
+                onBlur={commit}
+                onKeyDown={(e) => { if (e.key === 'Enter') commit(); }}
                 min={min}
                 max={max}
                 step={step}

@@ -1,5 +1,4 @@
 
-
 import { useNavigate } from 'react-router-dom';
 
 export type PremiumFeature =
@@ -7,14 +6,6 @@ export type PremiumFeature =
     | 'export'
     | 'chart_views'
     | 'save_templates';
-
-const featureMessages: Record<PremiumFeature, JSX.Element> = {
-    compare_countries: <>Wanna chose more countries? Upgrade Premium plan and chose <span className="font-semibold text-accent-500">up to 3 countries</span>
-    </>,
-    export: <>to export this comprasions on .csv,.pdf or .png files, you have to upgrade to premium plan</>,
-    chart_views: <>to unlock multiple chart views, you need to upgrade to a Premium plan</>,
-    save_templates: <>to save up to 4 templates (Free plan allows 1 only), you need to upgrade to a Premium plan</>,
-};
 
 interface UpgradeModalProps {
     isOpen: boolean;
@@ -32,6 +23,26 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
         navigate('/plans');
     };
 
+    const getFeatureMessage = () => {
+        switch (feature) {
+            case 'compare_countries':
+                return (
+                    <>
+                        Wanna chose more than one country? Upgrade to premium and chose up to{' '}
+                        <span className="font-semibold text-[#45d2fd]">3 countries</span> to compare
+                    </>
+                );
+            case 'export':
+                return 'To export comparisons as .csv, .pdf, or .png files, you need to upgrade to the Premium plan';
+            case 'chart_views':
+                return 'To unlock multiple chart views, you need to upgrade to a Premium plan';
+            case 'save_templates':
+                return 'To save up to 4 templates (Free plan allows 1 only), you need to upgrade to a Premium plan';
+            default:
+                return 'Upgrade to Premium to unlock this feature';
+        }
+    };
+
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
@@ -43,14 +54,14 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
                 {/* Title */}
                 <h2
                     id="upgrade-modal-title"
-                    className="text-lg font-bold mb-3 text-accent-500 drop-shadow-[0_2px_8px_rgba(245,158,11,0.25)]"
+                    className="text-lg font-bold mb-3 text-[#45d2fd]"
                 >
                     Upgrade now
                 </h2>
 
                 {/* Dynamic description */}
                 <p className="text-gray-300 text-sm mb-5 leading-relaxed">
-                    {featureMessages[feature]}.
+                    {getFeatureMessage()}
                 </p>
 
                 {/* Buttons */}

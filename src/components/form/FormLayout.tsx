@@ -12,9 +12,8 @@ import {
   selectFormValues,
   updateFormValue,
   setCurrentStep,
-  addCountry,
+  setPrimaryCountry,
 } from '../../features/salaries/salarySlice';
-import { resolveLabel } from '../../features/salaries/salaryUtils';
 import './FormLayout.css';
 
 interface FormLayoutProps {
@@ -52,15 +51,14 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
   const handleFieldChange = (fieldId: string, value: string) => {
     dispatch(updateFormValue({ fieldId, value }));
 
-    // Cuando el usuario selecciona un país en Step 1, lo añadimos a selectedCountries
-    if (fieldId === 'country') {
-      const label = resolveLabel('country', value);
-      dispatch(addCountry(label));
+    // Cuando el usuario selecciona un país en Step 1, reemplazamos el país principal
+    if (fieldId === 'Country') {
+      dispatch(setPrimaryCountry(value));
     }
   };
 
   const isLastStep = currentStep === totalSteps - 1;
-  const isNextDisabled = currentStep === 0 && !formValues.country;
+  const isNextDisabled = currentStep === 0 && !(formValues as Record<string, string>)['Country'];
 
   return (
     <div className="w-full max-w-xs md:max-w-lg mx-auto">
@@ -101,7 +99,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
                 <StandardComboBox
                   key={field.id}
                   id={field.id}
-                  label={field.label}
+                  label={field.id}
                   options={field.options}
                   placeholder={field.placeholder}
                   required={field.required}
@@ -116,7 +114,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
                 <NumberInput
                   key={field.id}
                   id={field.id}
-                  label={field.label}
+                  label={field.id}
                   placeholder={field.placeholder}
                   required={field.required}
                   value={(formValues as Record<string, string>)[field.id] || ''}

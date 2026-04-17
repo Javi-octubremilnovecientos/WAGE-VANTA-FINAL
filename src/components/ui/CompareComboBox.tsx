@@ -15,8 +15,10 @@ interface CompareComboBoxProps {
     placeholder?: string;
     countries: CountryOption[];
     value: CountryOption | null;
+    canAddMore?: boolean;
     /** Called when a country is selected or removed */
     onChange?: (country: CountryOption | null) => void;
+    onUpgradeRequired?: () => void;
 }
 
 export default function CompareComboBox({
@@ -25,7 +27,9 @@ export default function CompareComboBox({
     placeholder = "Choose a country",
     countries,
     value,
+    canAddMore = true,
     onChange,
+    onUpgradeRequired,
 }: CompareComboBoxProps) {
     const [query, setQuery] = useState("");
     const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
@@ -38,11 +42,24 @@ export default function CompareComboBox({
             );
 
     const handleChange = (country: CountryOption | null) => {
-        if (!country) return;
+        if (!country) {
+            onChange?.(null);
+            return;
+        }
 
+        // Si ya hay un país seleccionado, permitir cambiar (eliminar badge antiguo)
         if (value) {
-            // Ya hay un país seleccionado → abrir UpgradeModal
-            setIsUpgradeOpen(true);
+            onChange?.(country);
+            return;
+        }
+
+        // Si NO puede añadir más países, mostrar modal de upgrade
+        if (!canAddMore) {
+            if (onUpgradeRequired) {
+                onUpgradeRequired();
+            } else {
+                setIsUpgradeOpen(true);
+            }
             return;
         }
 

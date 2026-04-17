@@ -10,12 +10,14 @@ import { useComputeSalaryStats } from '@/hooks/useComputeSalaryStats';
 import FormLayout from '@/components/form/FormLayout';
 import MainChart from '@/components/charts/MainChart';
 import CompareModal from '@/components/ui/modals/CompareModal';
+import UpgradeModal from '@/components/ui/modals/UpgradeModal';
 import type { BoxPlotData } from '@/features/salaries/types';
 
 const CHART_COLORS = ['#8884d8', '#82ca9d', '#fbbf24'];
 
 function ComparisonSheet() {
     const [compareModalOpen, setCompareModalOpen] = useState(false);
+    const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
     const selectedCountries = useAppSelector(selectSelectedCountries);
     const formValues = useAppSelector(selectFormValues);
@@ -149,6 +151,16 @@ function ComparisonSheet() {
                 isOpen={compareModalOpen}
                 onCancel={() => setCompareModalOpen(false)}
                 onConfirm={() => setCompareModalOpen(false)}
+                onUpgradeRequired={() => {
+                    setCompareModalOpen(false);
+                    setUpgradeModalOpen(true);
+                }}
+            />
+
+            {/* Upgrade Modal */}
+            <UpgradeModal
+                isOpen={upgradeModalOpen}
+                onClose={() => setUpgradeModalOpen(false)}
             />
         </div>
     );

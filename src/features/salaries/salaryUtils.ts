@@ -1,52 +1,44 @@
 /**
  * Salary Utilities
  *
- * Funciones para mapear valores del formulario a parámetros PostgREST de Supabase,
- * y para extraer/parsear datos de respuesta.
+ * Funciones para construir parámetros PostgREST de Supabase TABLE_0
+ * y extraer datos de respuesta.
+ *
+ * Tras la refactorización, los field IDs de formSteps coinciden exactamente
+ * con los column names de TABLE_0 y label === value, eliminando toda capa de mapeo.
  */
 
-import { formSteps } from './salaryConstants';
+import {
+    SUPABASE_SELECT_COLUMNS,
+    VALID_COUNTRIES,
+} from './salaryConstants';
 import type { ComparisonFormValues, SalaryRecord } from './types';
 
-/**
- * Busca en formSteps el label correspondiente a un value de campo.
- * Los labels de formSteps coinciden exactamente con los valores de Supabase TABLE_1.
- *
- * Ej: resolveLabel('gender', 'male') → "Male"
- * Ej: resolveLabel('occupation', 'programmers') → "Applications programmers"
- */
-export function resolveLabel(fieldId: string, value: string): string {
-    for (const step of formSteps) {
-        for (const field of step.fields) {
-            if (field.id === fieldId && field.options) {
-                const match = field.options.find((opt) => opt.value === value);
-                if (match) return match.label;
-            }
-        }
-    }
-    return value; // Fallback: devolver el value tal cual
-}
+/** Campos que se filtran con operador PostgREST `eq` (coincidencia exacta) */
+const EQ_FIELDS = new Set<string>(['Gender']);
 
-/** IDs de campos que tienen mapeo directo a columnas de Supabase con operador `eq` */
-const EQ_FIELDS: Record<string, string> = {
-    gender: 'GENDER',
-};
+/** Campos que se filtran con operador PostgREST `ilike` (coincidencia parcial) */
+const ILIKE_FIELDS = new Set<string>([
+    'Occupation',
+    'Occupation Level',
+    'Economic Activity',
+    'Education Level',
+]);
 
-/** IDs de campos que usan operador `ilike` (búsqueda parcial) */
-const ILIKE_FIELDS: Record<string, string> = {
-    occupation: 'OCCUPATION',
-    occupationLevel: 'OCCUPATION LEVEL',
-    economicActivity: 'ECONOMIC_ACTIVITY',
-    educationLevel: 'EDUCATION_LEVEL',
-};
+/** Campos del formulario que NO son columnas de filtro en TABLE_0 */
+const EXCLUDED_FIELDS = new Set<string>([
+    'Country',
+    'Monthly Wage',
+    'Years Of Experience',
+    'Company Size',
+]);
 
 /**
- * Construye el query string PostgREST para una petición a TABLE_1.
+ * Construye el query string PostgREST para una petición a TABLE_0.
  * Solo incluye parámetros que ya tengan valor en formValues (progresivo).
  *
- * @param formValues - Valores acumulados del formulario
- * @param country - Label del país (ej: "Belgium")
- * @returns Query string listo para concatenar a la URL
+ * Como los field IDs coinciden con los column names de TABLE_0 y
+ * label === value, se puede iterar formValues directamente sin mapeos.
  */
 export function buildQueryString(
     formValues: ComparisonFormValues,
@@ -54,53 +46,36 @@ export function buildQueryString(
 ): string {
     const params = new URLSearchParams();
 
+    if (!VALID_COUNTRIES.has(country)) {
+        throw new Error(`Invalid country provided to buildQueryString: ${country}`);
+    }
+
     // Country siempre presente (obligatorio)
-    params.append('COUNTRY', `eq.${country}`);
+    params.append('Country', `eq.${country}`);
 
-    // Campos con operador eq
-    for (const [fieldId, column] of Object.entries(EQ_FIELDS)) {
-        const value = formValues[fieldId as keyof ComparisonFormValues];
-        if (value) {
-            params.append(column, `eq.${resolveLabel(fieldId, value)}`);
+    // Iterar formValues: cada key es un column name de TABLE_0
+    for (const [fieldId, value] of Object.entries(formValues)) {
+        if (!value || EXCLUDED_FIELDS.has(fieldId)) continue;
+
+        if (EQ_FIELDS.has(fieldId)) {
+            params.append(fieldId, `eq.${value}`);
+        } else if (ILIKE_FIELDS.has(fieldId)) {
+            params.append(fieldId, `ilike.*${value}*`);
         }
     }
 
-    // Campos con operador ilike
-    for (const [fieldId, column] of Object.entries(ILIKE_FIELDS)) {
-        const value = formValues[fieldId as keyof ComparisonFormValues];
-        if (value) {
-            params.append(column, `ilike.*${resolveLabel(fieldId, value)}*`);
-        }
-    }
-
-    // Seleccionar solo la columna MEAN_MONTHLY_WAGE para optimizar
-    params.append('select', 'COUNTRY,GENDER,OCCUPATION,OCCUPATION LEVEL,ECONOMIC_ACTIVITY,EDUCATION_LEVEL,MEAN_MONTHLY_WAGE,YEAR');
+    // Seleccionar solo las columnas necesarias para optimizar payload
+    params.append('select', SUPABASE_SELECT_COLUMNS.join(','));
 
     return params.toString();
 }
 
 /**
- * Transforma un row de Supabase (UPPER_CASE keys) a SalaryRecord (camelCase).
- */
-export function mapToSalaryRecord(row: Record<string, unknown>): SalaryRecord {
-    return {
-        country: row['COUNTRY'] as string,
-        gender: row['GENDER'] as string,
-        occupation: row['OCCUPATION'] as string,
-        occupationLevel: row['OCCUPATION LEVEL'] as string,
-        economicActivity: row['ECONOMIC_ACTIVITY'] as string,
-        educationLevel: row['EDUCATION_LEVEL'] as string,
-        meanMonthlyWage: row['MEAN_MONTHLY_WAGE'] as string,
-        year: row['YEAR'] as number,
-    };
-}
-
-/**
  * Extrae los salarios mensuales de un array de SalaryRecord.
- * Parsea de string a number y filtra valores inválidos.
+ * Monthly Wage es numérico en TABLE_0, solo filtramos valores inválidos.
  */
 export function extractWages(records: SalaryRecord[]): number[] {
     return records
-        .map((r) => parseFloat(r.meanMonthlyWage))
-        .filter((n) => !isNaN(n) && n > 0);
+        .map((r) => r['Monthly Wage'])
+        .filter((w) => Number.isFinite(w) && w > 0);
 }
