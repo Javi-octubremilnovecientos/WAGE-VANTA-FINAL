@@ -67,9 +67,6 @@ function ComparisonSheet() {
     const isLoading =
         country1Query.isLoading || country2Query.isLoading || country3Query.isLoading;
 
-    const hasError =
-        country1Query.isError || country2Query.isError || country3Query.isError;
-
     return (
         <div className="container mx-auto px-4 py-6 max-w-6xl">
             {/* Header + Compare Button */}
@@ -119,15 +116,7 @@ function ComparisonSheet() {
                         </div>
                     )}
 
-                    {hasError && !isLoading && (
-                        <div className="flex items-center justify-center w-full aspect-square text-red-400 text-sm">
-                            Error loading salary data. Please try again.
-                        </div>
-                    )}
-
-                    {!isLoading && !hasError && (
-                        <MainChart data={chartData} userWage={userWage} />
-                    )}
+                    <MainChart data={chartData} userWage={userWage} isLoading={isLoading} />
 
                     {/* Record count info */}
                     {!isLoading && chartData.length > 0 && (

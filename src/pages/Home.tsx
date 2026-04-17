@@ -85,13 +85,7 @@ export default function Home() {
                 ) : (
                     /* Active state: chart + compare button */
                     <div className="w-full max-w-[480px] flex flex-col gap-2 animate-[fadeIn_0.4s_ease-in]">
-                        {isLoading ? (
-                            <div className="flex items-center justify-center w-full aspect-square">
-                                <div className="animate-pulse text-gray-400 text-sm">Loading salary data...</div>
-                            </div>
-                        ) : (
-                            <MainChart data={chartData} userWage={userWage} />
-                        )}
+                        <MainChart data={chartData} userWage={userWage} isLoading={isLoading} />
 
                         {/* Selected Countries Badges */}
                         {selectedCountries.length > 0 && (

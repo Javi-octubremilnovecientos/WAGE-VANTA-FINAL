@@ -75,9 +75,37 @@ interface MainChartProps {
     data?: BoxPlotData[];
     userWage?: number | null;
     defaultIndex?: TooltipIndex;
+    isLoading?: boolean;
 }
 
-export default function MainChart({ data = [], userWage, defaultIndex }: MainChartProps) {
+export default function MainChart({ data = [], userWage, defaultIndex, isLoading = false }: MainChartProps) {
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center w-full aspect-square">
+                <div className="w-full h-full p-8 space-y-4 animate-pulse">
+                    {/* Y-axis skeleton */}
+                    <div className="flex gap-2 h-full">
+                        <div className="w-10 flex flex-col justify-between">
+                            {[...Array(6)].map((_, i) => (
+                                <div key={i} className="h-3 bg-gray-700 rounded w-8"></div>
+                            ))}
+                        </div>
+                        {/* Bars skeleton */}
+                        <div className="flex-1 flex items-end justify-around gap-4">
+                            {[...Array(3)].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="bg-gray-700 rounded w-16"
+                                    style={{ height: `${60 + Math.random() * 30}%` }}
+                                ></div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (data.length === 0) {
         return (
             <div className="flex items-center justify-center w-full aspect-square text-gray-500 text-sm">
