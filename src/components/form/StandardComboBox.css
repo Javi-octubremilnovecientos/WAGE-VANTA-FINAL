@@ -24,3 +24,24 @@
 .combobox-options::-webkit-scrollbar-thumb:hover {
   background-color: #e5e7eb;
 }
+
+/* Skeleton shimmer effect para estado de carga */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(55, 65, 81, 0.5) 0%,
+    rgba(75, 85, 99, 0.8) 50%,
+    rgba(55, 65, 81, 0.5) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

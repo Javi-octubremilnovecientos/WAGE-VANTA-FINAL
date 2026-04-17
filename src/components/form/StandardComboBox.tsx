@@ -24,6 +24,26 @@ interface StandardComboBoxProps {
     placeholder?: string;
     required?: boolean;
     className?: string;
+    /** Deshabilita el combobox (campos que dependen de selecciones previas) */
+    disabled?: boolean;
+    /** Muestra skeleton mientras se cargan las opciones */
+    loading?: boolean;
+}
+
+/** Componente Skeleton para estado de carga */
+function ComboBoxSkeleton({ label, id }: { label: string; id: string }) {
+    return (
+        <div className="animate-pulse">
+            {label && (
+                <label htmlFor={id} className="block text-xs font-medium text-white mb-2">
+                    {label}
+                </label>
+            )}
+            <div className="relative">
+                <div className="w-full h-[34px] rounded-md bg-gray-700/50 shimmer" />
+            </div>
+        </div>
+    );
 }
 
 export default function StandardComboBox({
@@ -35,9 +55,20 @@ export default function StandardComboBox({
     placeholder = "Select an option",
     required = false,
     className = "",
+    disabled = false,
+    loading = false,
 }: StandardComboBoxProps) {
     const [internalSelected, setInternalSelected] = useState<SelectOption | null>(null);
     const [query, setQuery] = useState("");
+
+    // Si está cargando, mostrar skeleton
+    if (loading) {
+        return (
+            <div className={className}>
+                <ComboBoxSkeleton label={label} id={id} />
+            </div>
+        );
+    }
 
     // Si es controlado, usar el valor externo; si no, usar el interno
     const selectedOption = controlledValue
@@ -52,14 +83,19 @@ export default function StandardComboBox({
             );
 
     const handleChange = (option: SelectOption | null) => {
-        if (!option) return;
+        if (!option || disabled) return;
         setInternalSelected(option);
         onChange?.(option.value);
     };
 
+    // Estilos para estado deshabilitado
+    const disabledStyles = disabled
+        ? "opacity-50 cursor-not-allowed pointer-events-none"
+        : "";
+
     return (
-        <div className={className}>
-            <Combobox value={selectedOption} onChange={handleChange} onClose={() => setQuery("")}>
+        <div className={`${className} ${disabledStyles}`}>
+            <Combobox value={selectedOption} onChange={handleChange} onClose={() => setQuery("")} disabled={disabled}>
                 <div className="relative">
                     {/* Label */}
                     {label && (

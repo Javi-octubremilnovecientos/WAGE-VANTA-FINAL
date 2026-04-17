@@ -60,7 +60,9 @@ export function buildQueryString(
         if (EQ_FIELDS.has(fieldId)) {
             params.append(fieldId, `eq.${value}`);
         } else if (ILIKE_FIELDS.has(fieldId)) {
-            params.append(fieldId, `ilike.*${value}*`);
+            // Truncar a 15 caracteres para optimizar búsqueda parcial
+            const truncatedValue = value.slice(0, 19);
+            params.append(fieldId, `ilike.*${truncatedValue}*`);
         }
     }
 
@@ -78,4 +80,67 @@ export function extractWages(records: SalaryRecord[]): number[] {
     return records
         .map((r) => r['Monthly Wage'])
         .filter((w) => Number.isFinite(w) && w > 0);
+}
+
+/**
+ * Extrae valores únicos de una columna específica de un array de SalaryRecord.
+ * Se usa para poblar las opciones de los ComboBox dinámicos.
+ * @param records - Registros de salario de la API
+ * @param fieldId - ID del campo/columna a extraer
+ * @returns Array de valores únicos ordenados alfabéticamente
+ */
+export function extractUniqueOptions(
+    records: SalaryRecord[],
+    fieldId: keyof SalaryRecord,
+): string[] {
+    const uniqueSet = new Set<string>();
+
+    for (const record of records) {
+        const value = record[fieldId];
+        if (typeof value === 'string' && value.trim() !== '') {
+            uniqueSet.add(value);
+        }
+    }
+
+    return Array.from(uniqueSet).sort((a, b) => a.localeCompare(b));
+}
+
+/**
+ * Construye query string PostgREST para obtener opciones filtradas.
+ * Similar a buildQueryString pero solo selecciona columnas necesarias
+ * para extraer opciones dinámicas.
+ * @param formValues - Valores actuales del formulario
+ * @param country - País seleccionado
+ * @param targetFields - Columnas a seleccionar en la respuesta
+ */
+export function buildOptionsQueryString(
+    formValues: ComparisonFormValues,
+    country: string,
+    targetFields: string[],
+): string {
+    const params = new URLSearchParams();
+
+    if (!VALID_COUNTRIES.has(country)) {
+        throw new Error(`Invalid country provided to buildOptionsQueryString: ${country}`);
+    }
+
+    // Country siempre presente
+    params.append('Country', `eq.${country}`);
+
+    // Aplicar filtros de campos ya seleccionados
+    for (const [fieldId, value] of Object.entries(formValues)) {
+        if (!value || EXCLUDED_FIELDS.has(fieldId)) continue;
+
+        if (EQ_FIELDS.has(fieldId)) {
+            params.append(fieldId, `eq.${value}`);
+        } else if (ILIKE_FIELDS.has(fieldId)) {
+            const truncatedValue = value.slice(0, 19);
+            params.append(fieldId, `ilike.*${truncatedValue}*`);
+        }
+    }
+
+    // Seleccionar solo las columnas objetivo para minimizar payload
+    params.append('select', targetFields.join(','));
+
+    return params.toString();
 }

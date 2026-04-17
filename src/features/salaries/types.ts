@@ -56,4 +56,21 @@ export interface SalarySliceState {
     selectedCountries: string[];
     formValues: ComparisonFormValues;
     currentStep: number;
+    /** Opciones disponibles por campo, cargadas dinámicamente desde la API */
+    availableOptions: Record<string, string[]>;
+    /** Estado de carga por campo (true = cargando opciones) */
+    loadingOptions: Record<string, boolean>;
+}
+
+/** ID de campo del formulario (coincide con column names de TABLE_0) */
+export type FormFieldId = keyof ComparisonFormValues;
+
+/** Configuración de dependencia entre campos para carga dinámica */
+export interface FieldDependency {
+    /** ID del campo */
+    fieldId: FormFieldId;
+    /** IDs de campos que deben tener valor antes de cargar opciones de este campo */
+    dependsOn: FormFieldId[];
+    /** true si las opciones son estáticas (hardcodeadas), false si se cargan de API */
+    isStatic: boolean;
 }
