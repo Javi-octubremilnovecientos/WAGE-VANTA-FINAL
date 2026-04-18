@@ -51,6 +51,9 @@ export interface ComparisonFormValues {
     'Company Size'?: string;
 }
 
+/** Tipo de vista de gráfico disponible */
+export type ChartViewMode = 'boxplot' | 'bar' | 'line';
+
 /** Estado del slice de salarios en Redux */
 export interface SalarySliceState {
     selectedCountries: string[];
@@ -60,6 +63,8 @@ export interface SalarySliceState {
     availableOptions: Record<string, string[]>;
     /** Estado de carga por campo (true = cargando opciones) */
     loadingOptions: Record<string, boolean>;
+    /** Vista de gráfico actualmente seleccionada (Premium puede alternar entre múltiples) */
+    chartViewMode: ChartViewMode;
 }
 
 /** ID de campo del formulario (coincide con column names de TABLE_0) */

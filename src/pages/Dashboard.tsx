@@ -13,6 +13,8 @@ import FeatureCard from "../components/ui/cards/FeatureCard";
 import type { FeatureCardProps } from "../components/ui/cards/FeatureCard";
 import { useAppSelector } from "@/hooks/useRedux";
 import { selectUser, selectUserPremium } from "@/features/auth/authSlice";
+import { usePlanLimits } from "@/hooks/usePlanLimits";
+import PlanLimitBadge from "@/components/ui/PlanLimitBadge";
 
 const shortcuts: FeatureCardProps[] = [
   {
@@ -53,6 +55,13 @@ const shortcuts: FeatureCardProps[] = [
 function Dashboard() {
   const user = useAppSelector(selectUser);
   const isPremium = useAppSelector(selectUserPremium);
+  const {
+    currentTemplatesCount,
+    currentComparisonsCount,
+    maxTemplates,
+    maxComparisons,
+    maxCountries,
+  } = usePlanLimits();
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-3 sm:px-4 lg:px-6 ">
@@ -62,7 +71,7 @@ function Dashboard() {
             {user?.name || 'Usuario'}
           </h1>
         </div>
-        <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-row justify-between items-center flex-wrap gap-2">
           <span className={`inline-flex w-fit items-center rounded-full border backdrop-blur px-2.5 py-0.5 text-xs font-medium shadow-sm transition-colors ${isPremium
             ? 'border-yellow-600/50 bg-yellow-500/10 text-yellow-300'
             : 'border-gray-700 bg-gray-800/50 text-gray-300'
@@ -76,6 +85,28 @@ function Dashboard() {
             <HomeIcon className="h-3 w-3 md:h-4 md:w-4" />
             Home
           </Link>
+        </div>
+
+        {/* Usage Statistics */}
+        <div className="flex flex-wrap gap-2 mt-2">
+          <PlanLimitBadge
+            current={maxCountries - 1} // 1 país desde FormLayout, resto desde CompareModal
+            max={maxCountries}
+            label="Countries"
+            showWhenZero
+          />
+          <PlanLimitBadge
+            current={currentTemplatesCount}
+            max={maxTemplates}
+            label="Templates"
+            showWhenZero
+          />
+          <PlanLimitBadge
+            current={currentComparisonsCount}
+            max={maxComparisons}
+            label="Comparisons"
+            showWhenZero
+          />
         </div>
       </section>
 

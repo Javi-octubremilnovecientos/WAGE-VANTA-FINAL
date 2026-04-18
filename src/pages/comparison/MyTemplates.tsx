@@ -1,11 +1,35 @@
 import { ArrowLeftIcon, DocumentTextIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import { useAppSelector } from '@/hooks/useRedux';
-import { selectUserTemplates } from '@/features/auth/authSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import { selectUserTemplates, updateTemplates } from '@/features/auth/authSlice';
+import { usePlanLimits } from '@/hooks/usePlanLimits';
+import { useUpdateUserMutation } from '@/features/auth/authApi';
+import PlanLimitBadge from '@/components/ui/PlanLimitBadge';
+import TemplateStack from '@/components/ui/TemplateStack';
 
 function MyTemplates() {
+    const dispatch = useAppDispatch();
     const templates = useAppSelector(selectUserTemplates);
+    const { maxTemplates } = usePlanLimits();
+    const [updateUser] = useUpdateUserMutation();
     const hasTemplates = templates && templates.length > 0;
+
+    const handleDeleteTemplate = async (templateId: number) => {
+        try {
+            const updatedTemplates = templates.filter((t) => t.id !== templateId);
+
+            // Actualizar en Redux
+            dispatch(updateTemplates(updatedTemplates));
+
+            // Sincronizar con Supabase
+            await updateUser({
+                data: { templates: updatedTemplates },
+            }).unwrap();
+        } catch (err) {
+            console.error('Error deleting template:', err);
+        }
+    };
+
     return (
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-5 sm:px-4 lg:px-6">
             {/* Header with Back link */}
@@ -19,9 +43,17 @@ function MyTemplates() {
                 </Link>
 
                 <div className="flex flex-col gap-1.5">
-                    <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                        My Templates
-                    </h1>
+                    <div className="flex items-center justify-between">
+                        <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                            My Templates
+                        </h1>
+                        <PlanLimitBadge
+                            current={templates.length}
+                            max={maxTemplates}
+                            label="Templates"
+                            showWhenZero
+                        />
+                    </div>
                     <p className="text-sm font-medium text-gray-400">
                         Your saved comparison templates for quick setup
                     </p>
@@ -51,22 +83,17 @@ function MyTemplates() {
                 </section>
             )}
 
-            {/* Templates Grid */}
+            {/* Templates Stack */}
             {hasTemplates && (
-                <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {templates.map((template) => (
-                        <div
-                            key={template.id}
-                            className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur p-4 shadow-lg hover:border-[#45d2fd]/50 hover:shadow-lg hover:shadow-[#45d2fd]/10 transition-all cursor-pointer"
-                        >
-                            <div className="flex items-start justify-between mb-3">
-                                <DocumentTextIcon className="h-5 w-5 text-[#45d2fd]" />
-                            </div>
-                            <h3 className="text-sm font-semibold text-white mb-1">{template.country}</h3>
-                            <p className="text-xs text-gray-400 mb-2">Gender: {template.gender}</p>
-                            <p className="text-xs text-gray-300 font-medium">Wage: ${template.monthlyWage.toLocaleString()}</p>
-                        </div>
-                    ))}
+                <section className="w-full">
+                    <TemplateStack
+                        templates={templates}
+                        onTemplateClick={(template) => {
+                            // TODO: Navigate to form with template loaded or open load modal
+                            console.log('Load template:', template);
+                        }}
+                        onTemplateDelete={handleDeleteTemplate}
+                    />
                 </section>
             )}
         </div>

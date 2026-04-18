@@ -5,7 +5,9 @@ export type PremiumFeature =
     | 'compare_countries'
     | 'export'
     | 'chart_views'
-    | 'save_templates';
+    | 'save_templates'
+    | 'save_comparisons'
+    | 'accurate_data';
 
 interface UpgradeModalProps {
     isOpen: boolean;
@@ -38,6 +40,10 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
                 return 'To unlock multiple chart views, you need to upgrade to a Premium plan';
             case 'save_templates':
                 return 'To save up to 4 templates (Free plan allows 1 only), you need to upgrade to a Premium plan';
+            case 'save_comparisons':
+                return 'To save up to 4 comparison sheets (Free plan allows 1 only), you need to upgrade to a Premium plan';
+            case 'accurate_data':
+                return 'To access accurate and detailed salary data, you need to upgrade to a Premium plan';
             default:
                 return 'Upgrade to Premium to unlock this feature';
         }

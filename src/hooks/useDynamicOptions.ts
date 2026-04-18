@@ -16,8 +16,6 @@ import { useAppDispatch, useAppSelector } from './useRedux';
 import { useGetFilteredOptionsQuery } from '@/features/salaries/salaryApi';
 import {
     selectFormValues,
-    selectAvailableOptions,
-    selectLoadingOptions,
     setAvailableOptions,
     setLoadingOptions,
 } from '@/features/salaries/salarySlice';
@@ -29,7 +27,6 @@ import {
 import { extractUniqueOptions } from '@/features/salaries/salaryUtils';
 import {
     DYNAMIC_FIELDS_ORDER,
-    STATIC_FIELDS,
     DYNAMIC_API_FIELDS,
 } from '@/features/salaries/salaryConstants';
 import type { FormFieldId, ComparisonFormValues, SalaryRecord } from '@/features/salaries/types';
@@ -60,7 +57,6 @@ export function useDynamicOptions(fieldId: FormFieldId): UseDynamicOptionsResult
 
     // Determinar si este campo necesita carga dinámica
     const isDynamicField = DYNAMIC_API_FIELDS.has(fieldId);
-    const isStaticField = STATIC_FIELDS.has(fieldId);
 
     // Construir los valores de filtro para la query (solo campos previos con valor)
     const filterValues = useMemo(() => {

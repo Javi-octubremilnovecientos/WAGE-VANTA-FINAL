@@ -1,7 +1,4 @@
 
-
-
-
 import { useState } from "react";
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
@@ -53,7 +50,7 @@ export default function StandardComboBox({
     onChange,
     options,
     placeholder = "Select an option",
-    required = false,
+    // required = false,
     className = "",
     disabled = false,
     loading = false,

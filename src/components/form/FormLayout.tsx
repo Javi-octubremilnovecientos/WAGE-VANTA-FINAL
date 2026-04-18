@@ -1,11 +1,14 @@
 
 import AuthModal from '../ui/modals/AuthModal';
+import TemplateModal from '../ui/modals/TemplateModal';
+import UpgradeModal from '../ui/modals/UpgradeModal';
+import type { PremiumFeature } from '../ui/modals/UpgradeModal';
 import { useState, useCallback } from 'react';
-import { ClipboardDocumentIcon, BookmarkIcon } from '@heroicons/react/24/outline';
+import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
 import StandardComboBox, { type SelectOption } from './StandardComboBox';
 import NumberInput from './NumberInput';
 import StepSlider from './Stepslider';
-import { formSteps, STATIC_FIELDS, DYNAMIC_API_FIELDS, DYNAMIC_FIELDS_ORDER } from '../../features/salaries/salaryConstants';
+import { formSteps, DYNAMIC_API_FIELDS, DYNAMIC_FIELDS_ORDER } from '../../features/salaries/salaryConstants';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import {
   selectCurrentStep,
@@ -15,8 +18,8 @@ import {
   setPrimaryCountry,
   clearDownstreamData,
 } from '../../features/salaries/salarySlice';
-import { selectIsFieldEnabled, selectIsFieldLoading } from '../../features/salaries/salarySelectors';
 import useDynamicOptions from '../../hooks/useDynamicOptions';
+import { usePlanLimits } from '@/hooks/usePlanLimits';
 import type { FormFieldId } from '../../features/salaries/types';
 import './FormLayout.css';
 
@@ -43,36 +46,14 @@ interface DynamicComboBoxFieldProps {
 function DynamicComboBoxField({ field, value, onChange }: DynamicComboBoxFieldProps) {
   const fieldId = field.id as FormFieldId;
   const isDynamic = DYNAMIC_API_FIELDS.has(fieldId);
-  const isStatic = STATIC_FIELDS.has(fieldId);
 
-  // Hook para campos dinámicos
+  // Hook unificado para obtener opciones, loading y enabled
   const { options: dynamicOptions, isLoading, isEnabled } = useDynamicOptions(fieldId);
 
-  // Selector para campos estáticos (también verificamos si está habilitado)
-  const staticIsEnabled = useAppSelector((state) => selectIsFieldEnabled(state, fieldId));
-  const staticIsLoading = useAppSelector((state) => selectIsFieldLoading(state, fieldId));
-
-  // Determinar opciones finales
-  let finalOptions: SelectOption[];
-  let finalIsLoading: boolean;
-  let finalIsEnabled: boolean;
-
-  if (isDynamic) {
-    // Campo dinámico: usar opciones de la API
-    finalOptions = dynamicOptions.map((opt) => ({ label: opt, value: opt }));
-    finalIsLoading = isLoading;
-    finalIsEnabled = isEnabled;
-  } else if (isStatic && field.options) {
-    // Campo estático: usar opciones de formSteps
-    finalOptions = field.options;
-    finalIsLoading = false;
-    finalIsEnabled = staticIsEnabled;
-  } else {
-    // Fallback
-    finalOptions = field.options ?? [];
-    finalIsLoading = staticIsLoading;
-    finalIsEnabled = staticIsEnabled;
-  }
+  // Para campos dinámicos, usar opciones de la API; para estáticos, usar las de formSteps
+  const finalOptions: SelectOption[] = isDynamic
+    ? dynamicOptions.map((opt) => ({ label: opt, value: opt }))
+    : (field.options ?? []);
 
   return (
     <StandardComboBox
@@ -84,8 +65,8 @@ function DynamicComboBoxField({ field, value, onChange }: DynamicComboBoxFieldPr
       required={field.required}
       value={value}
       onChange={(newValue) => onChange(field.id, newValue)}
-      disabled={!finalIsEnabled}
-      loading={finalIsLoading}
+      disabled={!isEnabled}
+      loading={isLoading}
     />
   );
 }
@@ -94,9 +75,14 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
   const dispatch = useAppDispatch();
   const currentStep = useAppSelector(selectCurrentStep);
   const formValues = useAppSelector(selectFormValues);
+  const { isAuthenticated, canSaveTemplate, maxTemplates } = usePlanLimits();
 
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [templateModalOpen, setTemplateModalOpen] = useState(false);
+  const [templateModalMode, setTemplateModalMode] = useState<'save' | 'load'>('load');
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+  const [upgradeFeature, setUpgradeFeature] = useState<PremiumFeature>('save_templates');
 
   const totalSteps = formSteps.length;
   const currentStepData = formSteps[currentStep];
@@ -181,7 +167,15 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
             type="button"
             className="flex items-center gap-1.5 text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none"
             aria-label="Fill with a template"
-            onClick={() => setAuthModalOpen(true)}
+            onClick={() => {
+              if (!isAuthenticated) {
+                setAuthMode('login');
+                setAuthModalOpen(true);
+              } else {
+                setTemplateModalMode('load');
+                setTemplateModalOpen(true);
+              }
+            }}
           >
             <ClipboardDocumentIcon className="w-3 h-3" />
             <span className="text-xs font-medium">Fill with a template</span>
@@ -229,12 +223,22 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
           <div className="flex justify-end animate-fade-in">
             <button
               type="button"
-              className="flex items-center gap-1 text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none h-fit mt-1.5"
-              aria-label="Save as a template"
-              onClick={() => setAuthModalOpen(true)}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  setAuthMode('signup');
+                  setAuthModalOpen(true);
+                } else if (!canSaveTemplate) {
+                  setUpgradeFeature('save_templates');
+                  setUpgradeModalOpen(true);
+                } else {
+                  setTemplateModalMode('save');
+                  setTemplateModalOpen(true);
+                }
+              }}
+              className="inline-flex items-center gap-1.5 rounded-md bg-gray-700 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-gray-600 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-gray-900"
             >
-              <BookmarkIcon className="w-3 h-3" />
-              <span className="text-xs font-medium">Save as a template</span>
+              <ClipboardDocumentIcon className="h-3.5 w-3.5" />
+              Save as Template
             </button>
           </div>
         )}
@@ -262,12 +266,31 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
         </div>
       </form>
 
-      {/* Auth Modal */}
+      {/* Modals */}
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
-        mode={authMode}  // ← usar el estado en vez de hardcodear
-        onSwitchMode={(newMode) => setAuthMode(newMode)}  // ← permitir cambio
+        mode={authMode}
+        onSwitchMode={(newMode) => setAuthMode(newMode)}
+      />
+
+      <TemplateModal
+        isOpen={templateModalOpen}
+        onClose={() => setTemplateModalOpen(false)}
+        mode={templateModalMode}
+        canSaveTemplate={canSaveTemplate}
+        maxTemplates={maxTemplates}
+        onUpgradeRequired={() => {
+          setTemplateModalOpen(false);
+          setUpgradeFeature('save_templates');
+          setUpgradeModalOpen(true);
+        }}
+      />
+
+      <UpgradeModal
+        isOpen={upgradeModalOpen}
+        onClose={() => setUpgradeModalOpen(false)}
+        feature={upgradeFeature}
       />
     </div>
   );

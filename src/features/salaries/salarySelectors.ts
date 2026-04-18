@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import type { RootState } from '@/core/store';
 import { DYNAMIC_FIELDS_ORDER, STATIC_FIELDS, DYNAMIC_API_FIELDS } from './salaryConstants';
 import type { FormFieldId } from './types';
+import { getPlanLimits, getCurrentPlanType } from '@/lib/planLimits';
 
 const selectSalary = (state: RootState) => state.salary;
 const selectAuth = (state: RootState) => state.auth;
@@ -18,12 +19,12 @@ export const selectComparisonReady = createSelector(
     },
 );
 
-/** Valida si se puede añadir otro país según el plan (FREE: max 2, PREMIUM: max 3) */
+/** Valida si se puede añadir otro país según el plan (GUEST: max 1, FREE: max 2, PREMIUM: max 3) */
 export const selectCanAddCountry = createSelector(
     [selectSalary, selectAuth],
     (salary, auth) => {
-        const max = auth.user?.premium ? 3 : 2;
-        return salary.selectedCountries.length < max;
+        const limits = getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
+        return salary.selectedCountries.length < limits.maxCountries;
     },
 );
 
@@ -96,27 +97,127 @@ export const selectIsFieldLoading = createSelector(
     },
 );
 
+// ==========================================
+// Plan Limits & Validation Selectors
+// ==========================================
+
 /**
- * Obtiene los IDs de campos que deben usarse como filtro para cargar opciones de un campo.
- * Devuelve todos los campos anteriores en DYNAMIC_FIELDS_ORDER que tengan valor.
+ * Retorna el número máximo de países permitidos según el plan actual
  */
-export const selectFilterFieldsFor = createSelector(
-    [selectSalary, (_state: RootState, fieldId: FormFieldId) => fieldId],
-    (salary, fieldId): FormFieldId[] => {
-        const fieldIndex = DYNAMIC_FIELDS_ORDER.indexOf(fieldId);
-        if (fieldIndex <= 0) {
-            return [];
-        }
+export const selectMaxCountries = createSelector(
+    [selectAuth],
+    (auth) => {
+        const limits = getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
+        return limits.maxCountries;
+    },
+);
 
-        const filterFields: FormFieldId[] = [];
-        for (let i = 0; i < fieldIndex; i++) {
-            const prevFieldId = DYNAMIC_FIELDS_ORDER[i];
-            const value = (salary.formValues as Record<string, string>)[prevFieldId];
-            if (value && value.trim() !== '') {
-                filterFields.push(prevFieldId);
-            }
-        }
+/**
+ * Retorna el número máximo de templates permitidos según el plan actual
+ */
+export const selectMaxTemplates = createSelector(
+    [selectAuth],
+    (auth) => {
+        const limits = getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
+        return limits.maxTemplates;
+    },
+);
 
-        return filterFields;
+/**
+ * Retorna el número máximo de comparisons guardadas permitidas según el plan actual
+ */
+export const selectMaxComparisons = createSelector(
+    [selectAuth],
+    (auth) => {
+        const limits = getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
+        return limits.maxComparisons;
+    },
+);
+
+/**
+ * Valida si el usuario puede guardar un nuevo template
+ */
+export const selectCanSaveTemplate = createSelector(
+    [selectAuth],
+    (auth) => {
+        const limits = getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
+        const currentCount = auth.user?.templates?.length ?? 0;
+        return currentCount < limits.maxTemplates;
+    },
+);
+
+/**
+ * Valida si el usuario puede guardar una nueva comparison
+ */
+export const selectCanSaveComparison = createSelector(
+    [selectAuth],
+    (auth) => {
+        const limits = getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
+        const currentCount = auth.user?.comparisons?.length ?? 0;
+        return currentCount < limits.maxComparisons;
+    },
+);
+
+/**
+ * Valida si el usuario puede exportar gráficos (solo Premium)
+ */
+export const selectCanExport = createSelector(
+    [selectAuth],
+    (auth) => {
+        const limits = getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
+        return limits.canExport;
+    },
+);
+
+/**
+ * Valida si el usuario puede acceder a múltiples vistas de gráfico (solo Premium)
+ */
+export const selectCanAccessMultipleChartViews = createSelector(
+    [selectAuth],
+    (auth) => {
+        const limits = getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
+        return limits.maxChartViews > 1;
+    },
+);
+
+/**
+ * Retorna el número de vistas de gráfico disponibles
+ */
+export const selectMaxChartViews = createSelector(
+    [selectAuth],
+    (auth) => {
+        const limits = getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
+        return limits.maxChartViews;
+    },
+);
+
+/**
+ * Valida si el usuario puede acceder a datos precisos/detallados (solo Premium)
+ */
+export const selectCanAccessAccurateData = createSelector(
+    [selectAuth],
+    (auth) => {
+        const limits = getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
+        return limits.hasAccurateData;
+    },
+);
+
+/**
+ * Retorna el tipo de plan actual del usuario
+ */
+export const selectCurrentPlanType = createSelector(
+    [selectAuth],
+    (auth) => {
+        return getCurrentPlanType(auth.isAuthenticated, auth.user?.premium ?? false);
+    },
+);
+
+/**
+ * Retorna todos los límites del plan actual en un objeto
+ */
+export const selectPlanLimits = createSelector(
+    [selectAuth],
+    (auth) => {
+        return getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
     },
 );

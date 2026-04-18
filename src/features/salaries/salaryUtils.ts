@@ -34,6 +34,28 @@ const EXCLUDED_FIELDS = new Set<string>([
 ]);
 
 /**
+ * Función auxiliar para aplicar filtros comunes de formValues a un URLSearchParams.
+ * Reduce duplicación entre buildQueryString y buildOptionsQueryString.
+ */
+function applyFormFilters(
+    params: URLSearchParams,
+    formValues: ComparisonFormValues,
+): void {
+    // Iterar formValues: cada key es un column name de TABLE_0
+    for (const [fieldId, value] of Object.entries(formValues)) {
+        if (!value || EXCLUDED_FIELDS.has(fieldId)) continue;
+
+        if (EQ_FIELDS.has(fieldId)) {
+            params.append(fieldId, `eq.${value}`);
+        } else if (ILIKE_FIELDS.has(fieldId)) {
+            // Truncar a 19 caracteres para optimizar búsqueda parcial
+            const truncatedValue = value.slice(0, 19);
+            params.append(fieldId, `ilike.*${truncatedValue}*`);
+        }
+    }
+}
+
+/**
  * Construye el query string PostgREST para una petición a TABLE_0.
  * Solo incluye parámetros que ya tengan valor en formValues (progresivo).
  *
@@ -53,18 +75,8 @@ export function buildQueryString(
     // Country siempre presente (obligatorio)
     params.append('Country', `eq.${country}`);
 
-    // Iterar formValues: cada key es un column name de TABLE_0
-    for (const [fieldId, value] of Object.entries(formValues)) {
-        if (!value || EXCLUDED_FIELDS.has(fieldId)) continue;
-
-        if (EQ_FIELDS.has(fieldId)) {
-            params.append(fieldId, `eq.${value}`);
-        } else if (ILIKE_FIELDS.has(fieldId)) {
-            // Truncar a 15 caracteres para optimizar búsqueda parcial
-            const truncatedValue = value.slice(0, 19);
-            params.append(fieldId, `ilike.*${truncatedValue}*`);
-        }
-    }
+    // Aplicar filtros comunes
+    applyFormFilters(params, formValues);
 
     // Seleccionar solo las columnas necesarias para optimizar payload
     params.append('select', SUPABASE_SELECT_COLUMNS.join(','));
@@ -107,7 +119,7 @@ export function extractUniqueOptions(
 
 /**
  * Construye query string PostgREST para obtener opciones filtradas.
- * Similar a buildQueryString pero solo selecciona columnas necesarias
+ * Similar a buildQueryString pero solo selecciona las columnas especificadas
  * para extraer opciones dinámicas.
  * @param formValues - Valores actuales del formulario
  * @param country - País seleccionado
@@ -127,17 +139,8 @@ export function buildOptionsQueryString(
     // Country siempre presente
     params.append('Country', `eq.${country}`);
 
-    // Aplicar filtros de campos ya seleccionados
-    for (const [fieldId, value] of Object.entries(formValues)) {
-        if (!value || EXCLUDED_FIELDS.has(fieldId)) continue;
-
-        if (EQ_FIELDS.has(fieldId)) {
-            params.append(fieldId, `eq.${value}`);
-        } else if (ILIKE_FIELDS.has(fieldId)) {
-            const truncatedValue = value.slice(0, 19);
-            params.append(fieldId, `ilike.*${truncatedValue}*`);
-        }
-    }
+    // Aplicar filtros comunes (misma lógica que buildQueryString)
+    applyFormFilters(params, formValues);
 
     // Seleccionar solo las columnas objetivo para minimizar payload
     params.append('select', targetFields.join(','));

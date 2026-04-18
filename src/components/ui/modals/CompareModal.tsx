@@ -3,12 +3,8 @@ import CompareComboBox from '../CompareComboBox';
 import type { CountryOption } from '../CompareComboBox';
 import { formSteps } from '../../../features/salaries/salaryConstants';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
-import { addCountry } from '../../../features/salaries/salarySlice';
-import { selectCanAddCountry } from '../../../features/salaries/salarySelectors';
-import {
-    selectIsAuthenticated,
-    selectUserPremium,
-} from '../../../features/auth/authSlice';
+import { addCountry, selectSelectedCountries } from '../../../features/salaries/salarySlice';
+import { usePlanLimits } from '../../../hooks/usePlanLimits';
 
 interface CompareModalProps {
     isOpen: boolean;
@@ -33,9 +29,8 @@ export default function CompareModal({
 }: CompareModalProps) {
     const [selectedCountry, setSelectedCountry] = useState<CountryOption | null>(null);
     const dispatch = useAppDispatch();
-    const canAddCountry = useAppSelector(selectCanAddCountry);
-    const isAuthenticated = useAppSelector(selectIsAuthenticated);
-    const isPremium = useAppSelector(selectUserPremium);
+    const selectedCountries = useAppSelector(selectSelectedCountries);
+    const { canAddCountry, isAuthenticated, isPremium, maxCountries } = usePlanLimits();
 
     if (!isOpen) return null;
 
@@ -72,12 +67,28 @@ export default function CompareModal({
 
     // Mensaje dinámico según el estado del plan
     const getHelperText = () => {
+        const remainingSlots = maxCountries - selectedCountries.length;
+
+        // Si no puede agregar más países (límite alcanzado)
+        if (!canAddCountry) {
+            if (!isAuthenticated) {
+                return `You've reached the limit (${maxCountries} countries). Login for Premium (3 countries)`;
+            }
+            if (!isPremium) {
+                return 'Upgrade to Premium to compare 3 countries';
+            }
+            return 'Maximum countries reached';
+        }
+
+        // Si puede agregar más países
         if (!isAuthenticated) {
-            return 'Login to compare up to 2 countries';
+            return `You can add ${remainingSlots} more ${remainingSlots === 1 ? 'country' : 'countries'}`;
         }
-        if (!isPremium && !canAddCountry) {
-            return 'Upgrade to Premium to compare 3 countries';
+
+        if (!isPremium && remainingSlots === 1) {
+            return 'Add 1 more country (Upgrade to Premium for 3 total)';
         }
+
         return selectedCountry ? `Selected: ${selectedCountry.label}` : '';
     };
 

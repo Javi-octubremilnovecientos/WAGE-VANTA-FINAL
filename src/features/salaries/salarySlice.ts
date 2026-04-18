@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { SalarySliceState, ComparisonFormValues, FormFieldId } from './types';
+import type { SalarySliceState, ComparisonFormValues, FormFieldId, ChartViewMode } from './types';
 import { DYNAMIC_FIELDS_ORDER } from './salaryConstants';
 
 const initialState: SalarySliceState = {
@@ -8,6 +8,7 @@ const initialState: SalarySliceState = {
     currentStep: 0,
     availableOptions: {},
     loadingOptions: {},
+    chartViewMode: 'boxplot', // Vista por defecto
 };
 
 const salarySlice = createSlice({
@@ -84,6 +85,10 @@ const salarySlice = createSlice({
                 delete state.loadingOptions[fieldId];
             }
         },
+        /** Establece la vista de gráfico actual (solo accesible para usuarios Premium con múltiples vistas) */
+        setChartViewMode(state, action: PayloadAction<ChartViewMode>) {
+            state.chartViewMode = action.payload;
+        },
     },
 });
 
@@ -99,18 +104,17 @@ export const {
     setAvailableOptions,
     setLoadingOptions,
     clearDownstreamData,
+    setChartViewMode,
 } = salarySlice.actions;
 
-// Selectores inline
+// Selectores inline básicos
 export const selectSelectedCountries = (state: { salary: SalarySliceState }) =>
     state.salary.selectedCountries;
 export const selectFormValues = (state: { salary: SalarySliceState }) =>
     state.salary.formValues;
 export const selectCurrentStep = (state: { salary: SalarySliceState }) =>
     state.salary.currentStep;
-export const selectAvailableOptions = (state: { salary: SalarySliceState }) =>
-    state.salary.availableOptions;
-export const selectLoadingOptions = (state: { salary: SalarySliceState }) =>
-    state.salary.loadingOptions;
+export const selectChartViewMode = (state: { salary: SalarySliceState }) =>
+    state.salary.chartViewMode;
 
 export default salarySlice.reducer;

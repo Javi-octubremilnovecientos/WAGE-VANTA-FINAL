@@ -2,9 +2,12 @@ import { ArrowLeftIcon, ChartBarSquareIcon, PlusIcon } from '@heroicons/react/24
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '@/hooks/useRedux';
 import { selectUserComparisons } from '@/features/auth/authSlice';
+import { usePlanLimits } from '@/hooks/usePlanLimits';
+import PlanLimitBadge from '@/components/ui/PlanLimitBadge';
 
 function SavedComparisons() {
     const comparisons = useAppSelector(selectUserComparisons);
+    const { maxComparisons } = usePlanLimits();
     const hasComparisons = comparisons && comparisons.length > 0;
     return (
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-5 sm:px-4 lg:px-6">
@@ -19,9 +22,17 @@ function SavedComparisons() {
                 </Link>
 
                 <div className="flex flex-col gap-1.5">
-                    <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                        Saved Comparisons
-                    </h1>
+                    <div className="flex items-center justify-between">
+                        <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                            Saved Comparisons
+                        </h1>
+                        <PlanLimitBadge
+                            current={comparisons.length}
+                            max={maxComparisons}
+                            label="Comparisons"
+                            showWhenZero
+                        />
+                    </div>
                     <p className="text-sm font-medium text-gray-400">
                         Your previously saved wage comparisons
                     </p>
