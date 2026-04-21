@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { SalarySliceState, ComparisonFormValues, FormFieldId, ChartViewMode } from './types';
+import type { SalarySliceState, ComparisonFormValues, FormFieldId, ChartViewMode, BoxPlotData } from './types';
 import { DYNAMIC_FIELDS_ORDER } from './salaryConstants';
 
 const initialState: SalarySliceState = {
@@ -9,6 +9,7 @@ const initialState: SalarySliceState = {
     availableOptions: {},
     loadingOptions: {},
     chartViewMode: 'boxplot', // Vista por defecto
+    computedStats: [],
 };
 
 const salarySlice = createSlice({
@@ -89,6 +90,10 @@ const salarySlice = createSlice({
         setChartViewMode(state, action: PayloadAction<ChartViewMode>) {
             state.chartViewMode = action.payload;
         },
+        /** Persiste los BoxPlotData computados para uso en ComparisonSheet */
+        setComputedStats(state, action: PayloadAction<BoxPlotData[]>) {
+            state.computedStats = action.payload;
+        },
     },
 });
 
@@ -105,6 +110,7 @@ export const {
     setLoadingOptions,
     clearDownstreamData,
     setChartViewMode,
+    setComputedStats,
 } = salarySlice.actions;
 
 // Selectores inline básicos

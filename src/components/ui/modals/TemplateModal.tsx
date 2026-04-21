@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { DocumentTextIcon, SparklesIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { selectUserTemplates, updateTemplates } from '@/features/auth/authSlice';
-import { selectFormValues, setFormValues } from '@/features/salaries/salarySlice';
+import { selectFormValues, setFormValues, setPrimaryCountry } from '@/features/salaries/salarySlice';
 import { useUpdateUserMutation } from '@/features/auth/authApi';
 import type { Template } from '@/lib/User';
 import PlanLimitBadge from '../PlanLimitBadge';
@@ -121,6 +121,12 @@ function TemplateModal({
 
         // Actualizar formulario
         dispatch(setFormValues(loadedValues));
+
+        // También actualizar el país primario para que se muestre el chart
+        if (template.country) {
+            dispatch(setPrimaryCountry(template.country));
+        }
+
         onClose();
     };
 

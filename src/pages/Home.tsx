@@ -1,12 +1,15 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { EyeIcon } from "@heroicons/react/24/outline";
 import MainChart from "../components/charts/MainChart";
 import FormLayout from "../components/form/FormLayout";
 import CompareModal from "../components/ui/modals/CompareModal";
 import UpgradeModal from "../components/ui/modals/UpgradeModal";
-import { useAppSelector } from "../hooks/useRedux";
+import { useAppSelector, useAppDispatch } from "../hooks/useRedux";
 import {
     selectSelectedCountries,
     selectFormValues,
+    setComputedStats,
 } from "../features/salaries/salarySlice";
 import { selectUserMonthlyWage } from "../features/salaries/salarySelectors";
 import { useGetSalaryDataQuery } from "../features/salaries/salaryApi";
@@ -16,9 +19,12 @@ import type { BoxPlotData } from "../features/salaries/types";
 const CHART_COLORS = ['#8884d8', '#82ca9d', '#fbbf24'];
 
 export default function Home() {
+    const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+    const [chartView, setChartView] = useState<'boxplot' | 'barchart'>('boxplot');
 
+    const dispatch = useAppDispatch();
     const selectedCountries = useAppSelector(selectSelectedCountries);
     const formValues = useAppSelector(selectFormValues);
     const userWage = useAppSelector(selectUserMonthlyWage);
@@ -50,6 +56,11 @@ export default function Home() {
     );
 
     const isLoading = country1Query.isLoading || country2Query.isLoading || country3Query.isLoading;
+
+    // Persistir los stats computados en Redux para usarlos en ComparisonSheet
+    useEffect(() => {
+        dispatch(setComputedStats(chartData));
+    }, [chartData, dispatch]);
 
     const handleCompare = () => {
         setIsModalOpen(true);
@@ -84,24 +95,33 @@ export default function Home() {
                     </div>
                 ) : (
                     /* Active state: chart + compare button */
-                    <div className="w-full max-w-[480px] flex flex-col gap-2 animate-[fadeIn_0.4s_ease-in]">
+                    <div className="w-full max-w-[480px] flex flex-col gap-4 lg:gap-2 animate-[fadeIn_0.4s_ease-in]">
                         <MainChart data={chartData} userWage={userWage} isLoading={isLoading} />
 
-                        {/* Selected Countries Badges */}
-                        {selectedCountries.length > 0 && (
-                            <div className="flex flex-wrap justify-center gap-2 mb-1">
-                                {selectedCountries.map((country, i) => (
-                                    <span
-                                        key={country}
-                                        className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium text-white"
-                                        style={{ backgroundColor: CHART_COLORS[i] + '40', borderColor: CHART_COLORS[i], borderWidth: 1 }}
-                                    >
-                                        <span className="h-2 w-2 rounded-full" style={{ backgroundColor: CHART_COLORS[i] }} />
-                                        {country}
-                                    </span>
-                                ))}
-                            </div>
-                        )}
+                        {/* Chart View Toggle Button and Countries Badges */}
+                        <div className="flex items-center justify-center gap-4 mb-4 lg:mb-1">
+                            {selectedCountries.length > 0 && (
+                                <div className="flex flex-wrap justify-center gap-2">
+                                    {selectedCountries.map((country, i) => (
+                                        <span
+                                            key={country}
+                                            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium text-white"
+                                            style={{ backgroundColor: CHART_COLORS[i] + '40', borderColor: CHART_COLORS[i], borderWidth: 1 }}
+                                        >
+                                            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: CHART_COLORS[i] }} />
+                                            {country}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                            <button
+                                onClick={() => setChartView(chartView === 'boxplot' ? 'barchart' : 'boxplot')}
+                                className="px-2 py-1 text-xs font-medium text-gray-300 bg-gray-700/60 hover:bg-gray-600/60 rounded border border-gray-600 transition-all flex-shrink-0 flex items-center justify-center"
+                                aria-label="Toggle chart view"
+                            >
+                                <EyeIcon className="h-4 w-4" />
+                            </button>
+                        </div>
 
                         <div className="flex items-center justify-center">
                             <button
@@ -118,7 +138,7 @@ export default function Home() {
 
             {/* Right Side: Form Section */}
             <div className="w-full lg:w-1/2 px-4 lg:px-6">
-                <FormLayout />
+                <FormLayout onNavigateToSheet={() => navigate('/comparison')} />
             </div>
 
             {/* Compare Modal */}
@@ -137,6 +157,7 @@ export default function Home() {
             <UpgradeModal
                 isOpen={isUpgradeModalOpen}
                 onClose={() => setIsUpgradeModalOpen(false)}
+                feature="compare_countries"
             />
         </div>
     )

@@ -14,6 +14,7 @@ interface AuthState {
     isAuthenticated: boolean;
     isLoading: boolean;
     error: string | null;
+    rememberMe: boolean; // Flag para persistencia
 }
 
 const initialState: AuthState = {
@@ -23,6 +24,7 @@ const initialState: AuthState = {
     isAuthenticated: false,
     isLoading: false,
     error: null,
+    rememberMe: false,
 };
 
 const authSlice = createSlice({
@@ -83,6 +85,9 @@ const authSlice = createSlice({
                 state.user = { ...state.user, ...action.payload };
             }
         },
+        setRememberMe: (state, action: PayloadAction<boolean>) => {
+            state.rememberMe = action.payload;
+        },
     },
 });
 
@@ -96,6 +101,7 @@ export const {
     updateComparisons,
     updatePayData,
     patchUser,
+    setRememberMe,
 } = authSlice.actions;
 
 // Selectores

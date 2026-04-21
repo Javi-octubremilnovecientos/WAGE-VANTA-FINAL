@@ -4,6 +4,7 @@ import MainLayout from '../layout/MainLayout';
 // Pages - Level 1
 import Home from '../../pages/Home';
 import Dashboard from '../../pages/Dashboard';
+import Welcome from '../../pages/Welcome';
 import About from '../../pages/About';
 import Plans from '../../pages/Plans';
 import NotFound from '../../pages/404';
@@ -32,6 +33,10 @@ export const routes: RouteObject[] = [
             {
                 path: 'dashboard',
                 element: <Dashboard />,
+            },
+            {
+                path: 'welcome',
+                element: <Welcome />,
             },
             {
                 path: 'comparison',

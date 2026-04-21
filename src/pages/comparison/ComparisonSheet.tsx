@@ -1,245 +1,243 @@
-import { useState, useMemo } from 'react';
+import { useState, useCallback } from 'react';
+import { ArrowDownTrayIcon, BookmarkIcon, CheckIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import {
-    selectSelectedCountries,
-    selectFormValues,
-    selectChartViewMode,
-    setChartViewMode,
-} from '@/features/salaries/salarySlice';
-import { selectUserMonthlyWage } from '@/features/salaries/salarySelectors';
-import { useGetSalaryDataQuery } from '@/features/salaries/salaryApi';
-import { useComputeSalaryStats } from '@/hooks/useComputeSalaryStats';
-import { usePlanLimits } from '@/hooks/usePlanLimits';
-import { ArrowDownTrayIcon, BookmarkIcon, CheckBadgeIcon } from '@heroicons/react/24/outline';
-import ChartViewTabs from '@/components/ui/ChartViewTabs';
+    selectComputedStats,
+    selectUserMonthlyWage,
+    selectCanExport,
+    selectCanSaveComparison,
+} from '@/features/salaries/salarySelectors';
+import { selectSelectedCountries, selectFormValues } from '@/features/salaries/salarySlice';
+import { selectIsAuthenticated, selectUserComparisons, updateComparisons } from '@/features/auth/authSlice';
 import ExportModal from '@/components/ui/modals/ExportModal';
-import type { PremiumFeature } from '@/components/ui/modals/UpgradeModal';
-import FormLayout from '@/components/form/FormLayout';
-import MainChart from '@/components/charts/MainChart';
-import CompareModal from '@/components/ui/modals/CompareModal';
 import UpgradeModal from '@/components/ui/modals/UpgradeModal';
-import type { BoxPlotData } from '@/features/salaries/types';
+import AuthModal from '@/components/ui/modals/AuthModal';
+import MainChart from '@/components/charts/MainChart';
+import { SalaryGrowthChart } from '@/components/charts/SalaryGrowthChart';
+import { EconomicActivityChart } from '@/components/charts/EconomicActivityChart';
+import { OccupationComparisonChart } from '@/components/charts/OccupationComparisonChart';
 
-const CHART_COLORS = ['#8884d8', '#82ca9d', '#fbbf24'];
 
 function ComparisonSheet() {
     const dispatch = useAppDispatch();
-    const [compareModalOpen, setCompareModalOpen] = useState(false);
-    const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
-    const [upgradeFeature, setUpgradeFeature] = useState<PremiumFeature>('export');
+    const navigate = useNavigate();
     const [exportModalOpen, setExportModalOpen] = useState(false);
+    const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+    const [authModalOpen, setAuthModalOpen] = useState(false);
+    const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+    const [savedFeedback, setSavedFeedback] = useState(false);
 
+    const isAuthenticated = useAppSelector(selectIsAuthenticated);
+    const computedStats = useAppSelector(selectComputedStats);
     const selectedCountries = useAppSelector(selectSelectedCountries);
     const formValues = useAppSelector(selectFormValues);
     const userWage = useAppSelector(selectUserMonthlyWage);
-    const chartViewMode = useAppSelector(selectChartViewMode);
+    const canExport = useAppSelector(selectCanExport);
+    const canSaveComparison = useAppSelector(selectCanSaveComparison);
+    const existingComparisons = useAppSelector(selectUserComparisons);
 
-    const {
-        canExport,
-        canSaveComparison,
-        canAccessMultipleChartViews,
-        canAccessAccurateData,
-        isPremium,
-    } = usePlanLimits();
+    const economicActivity = formValues['Economic Activity'];
+    const occupation = formValues['Occupation'];
 
-    // Query para País 1
-    const country1Query = useGetSalaryDataQuery(
-        { country: selectedCountries[0], formValues },
-        { skip: !selectedCountries[0] },
-    );
+    const handleSaveComparison = useCallback(() => {
+        // Requiere autenticación
+        if (!isAuthenticated) {
+            setAuthMode('login');
+            setAuthModalOpen(true);
+            return;
+        }
+        // Requiere capacidad de guardar según el plan
+        if (!canSaveComparison) {
+            setUpgradeModalOpen(true);
+            return;
+        }
 
-    // Query para País 2
-    const country2Query = useGetSalaryDataQuery(
-        { country: selectedCountries[1], formValues },
-        { skip: !selectedCountries[1] },
-    );
+        const newComparison = {
+            id: Date.now(),
+            savedAt: new Date().toISOString(),
+            selectedCountries,
+            formValues,
+            computedStats,
+            userWage,
+        };
 
-    // Query para País 3 (solo premium)
-    const country3Query = useGetSalaryDataQuery(
-        { country: selectedCountries[2], formValues },
-        { skip: !selectedCountries[2] },
-    );
+        dispatch(updateComparisons([...existingComparisons, newComparison]));
 
-    // Computar BoxPlot stats para cada país
-    const stats1 = useComputeSalaryStats(
-        country1Query.data,
-        selectedCountries[0] ?? '',
-        CHART_COLORS[0],
-    );
-    const stats2 = useComputeSalaryStats(
-        country2Query.data,
-        selectedCountries[1] ?? '',
-        CHART_COLORS[1],
-    );
-    const stats3 = useComputeSalaryStats(
-        country3Query.data,
-        selectedCountries[2] ?? '',
-        CHART_COLORS[2],
-    );
-
-    // Combinar datos para el chart
-    const chartData: BoxPlotData[] = useMemo(
-        () => [stats1, stats2, stats3].filter((s): s is BoxPlotData => s !== null),
-        [stats1, stats2, stats3],
-    );
-
-    const isLoading =
-        country1Query.isLoading || country2Query.isLoading || country3Query.isLoading;
+        // Feedback temporal de 2 segundos
+        setSavedFeedback(true);
+        setTimeout(() => setSavedFeedback(false), 2000);
+    }, [isAuthenticated, canSaveComparison, selectedCountries, formValues, computedStats, userWage, existingComparisons, dispatch]);
 
     return (
-        <div className="container mx-auto px-4 py-6 max-w-6xl">
-            {/* Header + Buttons */}
-            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-                <h1 className="text-xl font-bold text-white">Comparison Tool</h1>
+        <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:py-12">
 
-                <div className="flex items-center gap-2">
-                    {/* Save Comparison Button */}
+            {/* Back to Home */}
+            <button
+                onClick={() => navigate('/')}
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-[#45d2fd] transition-colors mb-6"
+                aria-label="Back to home"
+            >
+                <ArrowLeftIcon className="h-3 w-3" />
+                Back to Home
+            </button>
+
+            {/* Header */}
+            <div className="flex flex-col items-center justify-center gap-4 mb-8 sm:mb-12 text-center">
+                <div>
+                    <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-3">
+                        Comparison Sheet
+                    </h1>
+                    {selectedCountries.length > 0 && (
+                        <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2">
+                            {selectedCountries.map((country) => (
+                                <span
+                                    key={country}
+                                    className="inline-flex items-center rounded-full border border-gray-600 bg-gray-800/60 px-2 py-0.5 text-xs text-gray-300"
+                                >
+                                    {country}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className="flex flex-shrink-0 items-center gap-2 w-full justify-center">
+                    {/* Save Comparison */}
                     <button
-                        type="button"
-                        onClick={() => {
-                            if (!canSaveComparison) {
-                                setUpgradeFeature('save_comparisons');
-                                setUpgradeModalOpen(true);
-                            } else {
-                                // TODO: Implementar guardado de comparison
-                                alert('Save comparison feature coming soon!');
-                            }
-                        }}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-gray-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={handleSaveComparison}
+                        aria-label="Save comparison"
+                        className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 ${savedFeedback
+                            ? 'border-green-500/40 bg-green-500/10 text-green-400 focus:ring-green-500'
+                            : 'border-gray-600 bg-gray-800/60 text-gray-300 hover:border-gray-500 hover:text-white focus:ring-gray-500'
+                            }`}
                     >
-                        <BookmarkIcon className="h-4 w-4" />
-                        Save
+                        {savedFeedback ? (
+                            <>
+                                <CheckIcon className="h-4 w-4" />
+                                <span className="hidden sm:inline">Saved!</span>
+                            </>
+                        ) : (
+                            <>
+                                <BookmarkIcon className="h-4 w-4" />
+                                <span className="hidden sm:inline">Save</span>
+                            </>
+                        )}
                     </button>
 
-                    {/* Export Button */}
+                    {/* Export */}
                     <button
-                        type="button"
                         onClick={() => setExportModalOpen(true)}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-gray-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-600 transition-all"
+                        aria-label="Export comparison"
+                        className="inline-flex items-center gap-2 rounded-lg border border-[#45d2fd]/30 bg-[#45d2fd]/10 px-3 py-2 text-xs font-medium text-[#45d2fd] transition-colors hover:bg-[#45d2fd]/20 focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-gray-900"
                     >
                         <ArrowDownTrayIcon className="h-4 w-4" />
-                        Export
-                    </button>
-
-                    {/* Compare Button */}
-                    <button
-                        type="button"
-                        onClick={() => setCompareModalOpen(true)}
-                        disabled={!selectedCountries[0]}
-                        className="rounded-md bg-[#45d2fd] px-3 py-1.5 text-xs font-semibold text-gray-900 shadow-sm hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                    >
-                        Compare Now
+                        <span className="hidden sm:inline">Export</span>
                     </button>
                 </div>
             </div>
 
-            {/* Selected Countries Badges + Accurate Data Badge */}
-            <div className="flex flex-wrap gap-2 mb-4 items-center">
-                {selectedCountries.length > 0 && selectedCountries.map((country, i) => (
-                    <span
-                        key={country}
-                        className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium text-white"
-                        style={{ backgroundColor: CHART_COLORS[i] + '40', borderColor: CHART_COLORS[i], borderWidth: 1 }}
-                    >
-                        <span
-                            className="h-2 w-2 rounded-full"
-                            style={{ backgroundColor: CHART_COLORS[i] }}
-                        />
-                        {country}
-                    </span>
-                ))}
+            {/* Charts Grid — 2 columnas en lg, 1 en mobile */}
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
 
-                {/* Accurate Data Badge (solo Premium) */}
-                {canAccessAccurateData && (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-green-600/50 bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-300">
-                        <CheckBadgeIcon className="h-3 w-3" />
-                        Accurate Data Enabled
-                    </span>
-                )}
-            </div>
-
-            {/* Main Content: Form + Chart */}
-            <div className="flex flex-col lg:flex-row gap-6">
-                {/* Form */}
-                <div className="w-full lg:w-1/2">
-                    <FormLayout />
+                {/* 1 — BoxPlot: distribución salarial */}
+                <div className="rounded-xl border border-gray-700 bg-gray-800/50 p-4 backdrop-blur">
+                    <h2 className="mb-3 text-sm font-semibold text-gray-300">
+                        Salary Distribution
+                    </h2>
+                    <MainChart
+                        data={computedStats}
+                        userWage={userWage}
+                        isLoading={false}
+                    />
                 </div>
 
-                {/* Chart */}
-                <div className="w-full lg:w-1/2 flex flex-col items-center justify-center gap-4">
-                    {/* Chart View Tabs (solo si es Premium) */}
-                    {canAccessMultipleChartViews && (
-                        <ChartViewTabs
-                            activeView={chartViewMode}
-                            onViewChange={(view) => dispatch(setChartViewMode(view))}
-                            availableViews={isPremium ? ['boxplot', 'bar', 'line'] : ['boxplot']}
-                            isPremium={isPremium}
-                            onUpgradeRequired={() => {
-                                setUpgradeFeature('chart_views');
-                                setUpgradeModalOpen(true);
-                            }}
-                        />
-                    )}
+                {/* 2 — Bar Chart: crecimiento salarial últimos 10 años */}
+                <div className="rounded-xl border border-gray-700 bg-gray-800/50 p-4 backdrop-blur">
+                    <h2 className="mb-1 text-sm font-semibold text-gray-300">
+                        Salary Growth — Last 10 Years
+                    </h2>
+                    <p className="mb-3 text-xs text-gray-500">
+                        Estimated monthly median wage (€) · provisional data
+                    </p>
+                    <SalaryGrowthChart selectedCountries={selectedCountries} height={280} />
+                </div>
 
-                    {isLoading && (
-                        <div className="flex items-center justify-center w-full aspect-square">
-                            <div className="animate-pulse text-gray-400 text-sm">Loading salary data...</div>
-                        </div>
-                    )}
+                {/* 3 — Area: distribución dentro de la misma actividad económica */}
+                <div className="rounded-xl border border-gray-700 bg-gray-800/50 p-4 backdrop-blur">
+                    <h2 className="mb-1 text-sm font-semibold text-gray-300">
+                        Sector Distribution
+                        {economicActivity && (
+                            <span className="ml-1.5 font-normal text-[#45d2fd]">
+                                · {economicActivity}
+                            </span>
+                        )}
+                    </h2>
+                    <p className="mb-3 text-xs text-gray-500">
+                        Share of workers per salary bracket · dashed lines = your median
+                    </p>
+                    <EconomicActivityChart
+                        computedStats={computedStats}
+                        economicActivity={economicActivity}
+                        height={280}
+                    />
+                </div>
 
-                    <MainChart data={chartData} userWage={userWage} isLoading={isLoading} />
-
-                    {/* Record count info */}
-                    {!isLoading && chartData.length > 0 && (
-                        <div className="flex gap-4 mt-2 text-xs text-gray-400">
-                            {country1Query.data && (
-                                <span>{selectedCountries[0]}: {country1Query.data.length} records</span>
-                            )}
-                            {country2Query.data && (
-                                <span>{selectedCountries[1]}: {country2Query.data.length} records</span>
-                            )}
-                            {country3Query.data && (
-                                <span>{selectedCountries[2]}: {country3Query.data.length} records</span>
-                            )}
-                        </div>
-                    )}
+                {/* 4 — Area + Band: comparativa por nivel dentro de la ocupación */}
+                <div className="rounded-xl border border-gray-700 bg-gray-800/50 p-4 backdrop-blur">
+                    <h2 className="mb-1 text-sm font-semibold text-gray-300">
+                        Occupation Salary Bands
+                        {occupation && (
+                            <span className="ml-1.5 font-normal text-[#45d2fd]">
+                                · {occupation}
+                            </span>
+                        )}
+                    </h2>
+                    <p className="mb-3 text-xs text-gray-500">
+                        P25–P75 range by level · cyan line = sector median · dashed = your median
+                    </p>
+                    <OccupationComparisonChart
+                        computedStats={computedStats}
+                        occupation={occupation}
+                        height={280}
+                    />
                 </div>
             </div>
 
-            {/* Compare Modal */}
-            <CompareModal
-                isOpen={compareModalOpen}
-                onCancel={() => setCompareModalOpen(false)}
-                onConfirm={() => setCompareModalOpen(false)}
-                onUpgradeRequired={() => {
-                    setCompareModalOpen(false);
-                    setUpgradeFeature('compare_countries');
-                    setUpgradeModalOpen(true);
-                }}
-            />
-
-            {/* Export Modal */}
+            {/* Modals */}
             <ExportModal
                 isOpen={exportModalOpen}
                 onClose={() => setExportModalOpen(false)}
-                chartData={chartData}
+                chartData={computedStats}
                 userWage={userWage}
                 canExport={canExport}
                 onUpgradeRequired={() => {
                     setExportModalOpen(false);
-                    setUpgradeFeature('export');
                     setUpgradeModalOpen(true);
                 }}
             />
 
-            {/* Upgrade Modal */}
             <UpgradeModal
                 isOpen={upgradeModalOpen}
                 onClose={() => setUpgradeModalOpen(false)}
-                feature={upgradeFeature}
+                feature="save_comparisons"
+            />
+
+            <AuthModal
+                isOpen={authModalOpen}
+                onClose={() => setAuthModalOpen(false)}
+                mode={authMode}
+                onSwitchMode={(m) => setAuthMode(m)}
             />
         </div>
     );
 }
+
+
+
+
+
+
+
 
 export default ComparisonSheet;

@@ -65,6 +65,8 @@ export interface SalarySliceState {
     loadingOptions: Record<string, boolean>;
     /** Vista de gráfico actualmente seleccionada (Premium puede alternar entre múltiples) */
     chartViewMode: ChartViewMode;
+    /** Stats computados (BoxPlot) persistidos para usarlos en ComparisonSheet */
+    computedStats: BoxPlotData[];
 }
 
 /** ID de campo del formulario (coincide con column names de TABLE_0) */

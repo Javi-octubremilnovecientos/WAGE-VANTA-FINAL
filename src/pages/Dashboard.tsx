@@ -8,13 +8,11 @@ import {
   HomeIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FeatureCard from "../components/ui/cards/FeatureCard";
 import type { FeatureCardProps } from "../components/ui/cards/FeatureCard";
-import { useAppSelector } from "@/hooks/useRedux";
-import { selectUser, selectUserPremium } from "@/features/auth/authSlice";
-import { usePlanLimits } from "@/hooks/usePlanLimits";
-import PlanLimitBadge from "@/components/ui/PlanLimitBadge";
+import { useAppSelector, useAppDispatch } from "@/hooks/useRedux";
+import { selectUser, selectUserPremium, logout } from "@/features/auth/authSlice";
 
 const shortcuts: FeatureCardProps[] = [
   {
@@ -53,15 +51,15 @@ const shortcuts: FeatureCardProps[] = [
 ];
 
 function Dashboard() {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const isPremium = useAppSelector(selectUserPremium);
-  const {
-    currentTemplatesCount,
-    currentComparisonsCount,
-    maxTemplates,
-    maxComparisons,
-    maxCountries,
-  } = usePlanLimits();
+
+  const handleSignOut = () => {
+    dispatch(logout());
+    navigate('/');
+  };
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-3 sm:px-4 lg:px-6 ">
@@ -87,30 +85,7 @@ function Dashboard() {
           </Link>
         </div>
 
-        {/* Usage Statistics */}
-        <div className="flex flex-wrap gap-2 mt-2">
-          <PlanLimitBadge
-            current={maxCountries - 1} // 1 país desde FormLayout, resto desde CompareModal
-            max={maxCountries}
-            label="Countries"
-            showWhenZero
-          />
-          <PlanLimitBadge
-            current={currentTemplatesCount}
-            max={maxTemplates}
-            label="Templates"
-            showWhenZero
-          />
-          <PlanLimitBadge
-            current={currentComparisonsCount}
-            max={maxComparisons}
-            label="Comparisons"
-            showWhenZero
-          />
-        </div>
-      </section>
-
-      <section className="grid gap-4 md:grid-cols-2">
+        {/* Recent Comparisons */}
         {shortcuts.map((shortcut) => (
           <FeatureCard key={shortcut.title} {...shortcut} />
         ))}
@@ -172,6 +147,16 @@ function Dashboard() {
           </Link>
         </section>
       )}
+
+      {/* Sign Out Button */}
+      <section>
+        <button
+          onClick={handleSignOut}
+          className="w-full rounded-md bg-red-500/20 text-red-400 py-2 text-sm font-semibold hover:bg-red-500/30 transition-colors border border-red-500/30"
+        >
+          Sign Out
+        </button>
+      </section>
     </div>
   );
 }

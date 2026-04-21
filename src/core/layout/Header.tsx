@@ -47,7 +47,7 @@ export default function Header() {
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
                 <span>{user?.name || 'Usuario'}</span>
-                <span className="h-2 w-2 bg-green-500 rounded-full inline-block"></span>
+                <span className="h-2 w-2 bg-green-500 rounded-full inline-block mt-1"></span>
               </div>
             ) : (
               'Log in'

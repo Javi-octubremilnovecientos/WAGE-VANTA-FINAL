@@ -1,14 +1,5 @@
 
-import AuthModal from '../ui/modals/AuthModal';
-import TemplateModal from '../ui/modals/TemplateModal';
-import UpgradeModal from '../ui/modals/UpgradeModal';
-import type { PremiumFeature } from '../ui/modals/UpgradeModal';
 import { useState, useCallback } from 'react';
-import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
-import StandardComboBox, { type SelectOption } from './StandardComboBox';
-import NumberInput from './NumberInput';
-import StepSlider from './Stepslider';
-import { formSteps, DYNAMIC_API_FIELDS, DYNAMIC_FIELDS_ORDER } from '../../features/salaries/salaryConstants';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import {
   selectCurrentStep,
@@ -16,10 +7,18 @@ import {
   updateFormValue,
   setCurrentStep,
   setPrimaryCountry,
-  clearDownstreamData,
 } from '../../features/salaries/salarySlice';
-import useDynamicOptions from '../../hooks/useDynamicOptions';
-import { usePlanLimits } from '@/hooks/usePlanLimits';
+import { selectIsAuthenticated } from '../../features/auth/authSlice';
+import AuthModal from '../ui/modals/AuthModal';
+import TemplateModal from '../ui/modals/TemplateModal';
+import UpgradeModal from '../ui/modals/UpgradeModal';
+import { ClipboardDocumentIcon, BookmarkIcon } from '@heroicons/react/24/outline';
+import StandardComboBox from './StandardComboBox';
+import NumberInput from './NumberInput';
+import StepSlider from './Stepslider';
+import { formSteps } from '../../features/salaries/salaryConstants';
+import { useDynamicOptions } from '../../hooks/useDynamicOptions';
+import { usePlanLimits } from '../../hooks/usePlanLimits';
 import type { FormFieldId } from '../../features/salaries/types';
 import './FormLayout.css';
 
@@ -28,45 +27,33 @@ interface FormLayoutProps {
 }
 
 /**
- * Componente wrapper para campos ComboBox con carga dinámica.
- * Usa el hook useDynamicOptions para obtener opciones filtradas desde la API.
+ * Subcomponente para campos con opciones dinámicas.
+ * Debe existir como componente separado para que el hook useDynamicOptions
+ * se pueda llamar en el nivel de componente correcto (no dentro de un loop).
  */
-interface DynamicComboBoxFieldProps {
-  field: {
-    id: string;
-    type: string;
-    placeholder?: string;
-    required?: boolean;
-    options?: SelectOption[];
-  };
+interface DynamicComboFieldProps {
+  fieldId: FormFieldId;
+  placeholder?: string;
   value: string;
-  onChange: (fieldId: string, value: string) => void;
+  onChange: (value: string) => void;
 }
 
-function DynamicComboBoxField({ field, value, onChange }: DynamicComboBoxFieldProps) {
-  const fieldId = field.id as FormFieldId;
-  const isDynamic = DYNAMIC_API_FIELDS.has(fieldId);
+function DynamicComboField({ fieldId, placeholder, value, onChange }: DynamicComboFieldProps) {
+  const { options, isLoading, isEnabled } = useDynamicOptions(fieldId);
 
-  // Hook unificado para obtener opciones, loading y enabled
-  const { options: dynamicOptions, isLoading, isEnabled } = useDynamicOptions(fieldId);
-
-  // Para campos dinámicos, usar opciones de la API; para estáticos, usar las de formSteps
-  const finalOptions: SelectOption[] = isDynamic
-    ? dynamicOptions.map((opt) => ({ label: opt, value: opt }))
-    : (field.options ?? []);
+  const selectOptions = options.map((opt) => ({ label: opt, value: opt }));
 
   return (
     <StandardComboBox
-      key={field.id}
-      id={field.id}
-      label={field.id}
-      options={finalOptions}
-      placeholder={field.placeholder}
-      required={field.required}
+      id={fieldId}
+      label={fieldId}
+      options={selectOptions}
+      placeholder={placeholder}
+      required
       value={value}
-      onChange={(newValue) => onChange(field.id, newValue)}
+      onChange={onChange}
       disabled={!isEnabled}
-      loading={isLoading}
+      loading={isLoading && isEnabled}
     />
   );
 }
@@ -75,14 +62,15 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
   const dispatch = useAppDispatch();
   const currentStep = useAppSelector(selectCurrentStep);
   const formValues = useAppSelector(selectFormValues);
-  const { isAuthenticated, canSaveTemplate, maxTemplates } = usePlanLimits();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const { canSaveTemplate, maxTemplates } = usePlanLimits();
 
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const [templateModalOpen, setTemplateModalOpen] = useState(false);
-  const [templateModalMode, setTemplateModalMode] = useState<'save' | 'load'>('load');
+  const [templateMode, setTemplateMode] = useState<'save' | 'load'>('load');
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
-  const [upgradeFeature, setUpgradeFeature] = useState<PremiumFeature>('save_templates');
+  const [editingValues, setEditingValues] = useState<Record<string, string>>({});
 
   const totalSteps = formSteps.length;
   const currentStepData = formSteps[currentStep];
@@ -93,50 +81,69 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
   };
 
   const handleNext = () => {
+    // Blur SOLO el NumberInput (si existe) para triggear commit
+    const numberInput = document.querySelector('input[type="number"]') as HTMLInputElement;
+    if (numberInput) {
+      numberInput.blur();
+    }
+
     if (currentStep < totalSteps - 1) {
       dispatch(setCurrentStep(currentStep + 1));
+      setEditingValues({}); // Limpiar valores siendo editados al cambiar de paso
     }
   };
 
   const handleBack = () => {
+    // Blur SOLO el NumberInput (si existe) para triggear commit
+    const numberInput = document.querySelector('input[type="number"]') as HTMLInputElement;
+    if (numberInput) {
+      numberInput.blur();
+    }
+
     if (currentStep > 0) {
       dispatch(setCurrentStep(currentStep - 1));
+      setEditingValues({}); // Limpiar valores siendo editados al cambiar de paso
     }
   };
 
-  /**
-   * Maneja el cambio de valor de un campo.
-   * Si el campo está en DYNAMIC_FIELDS_ORDER, limpia los campos downstream.
-   */
   const handleFieldChange = useCallback((fieldId: string, value: string) => {
-    const typedFieldId = fieldId as FormFieldId;
-
-    // Verificar si el campo está en el orden dinámico para limpiar downstream
-    if (DYNAMIC_FIELDS_ORDER.includes(typedFieldId)) {
-      // Primero limpiamos los campos posteriores antes de actualizar
-      dispatch(clearDownstreamData(typedFieldId));
-    }
-
-    // Actualizar el valor del campo
     dispatch(updateFormValue({ fieldId, value }));
 
-    // Cuando el usuario selecciona un país en Step 1, reemplazamos el país principal
+    // Cuando el usuario selecciona un país en Step 1, lo añadimos/actualizamos
     if (fieldId === 'Country') {
       dispatch(setPrimaryCountry(value));
     }
   }, [dispatch]);
 
+  /**
+   * Handler para cambios en tiempo real mientras se escribe (NumberInput).
+   * Actualiza estado local para habilitar/deshabilitar botones en tiempo real.
+   */
+  const handleInputChange = useCallback((fieldId: string, value: string) => {
+    setEditingValues(prev => ({
+      ...prev,
+      [fieldId]: value
+    }));
+  }, []);
+
   const isLastStep = currentStep === totalSteps - 1;
 
   // Verificar si se puede avanzar al siguiente paso
-  // En Step 1: necesita Country seleccionado
-  // En otros steps: verificar que todos los campos requeridos del step actual tengan valor
+  // Verificar que todos los campos requeridos del step actual tengan valor
+  // Chequea TANTO formValues (Redux) como editingValues (siendo editados)
   const isNextDisabled = (() => {
     const currentFields = currentStepData.fields;
 
     for (const field of currentFields) {
       if (field.required) {
-        const value = (formValues as Record<string, string>)[field.id];
+        // Primer chequeo: valor en Redux
+        let value = (formValues as Record<string, string>)[field.id];
+
+        // Segundo chequeo: valor siendo editado (para NumberInput en tiempo real)
+        if (!value || value.trim() === '') {
+          value = editingValues[field.id];
+        }
+
         if (!value || value.trim() === '') {
           return true;
         }
@@ -165,15 +172,15 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
           {/* Fill with template button */}
           <button
             type="button"
-            className="flex items-center gap-1.5 text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none"
+            className="flex items-center  gap-1.5 text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none"
             aria-label="Fill with a template"
             onClick={() => {
-              if (!isAuthenticated) {
+              if (isAuthenticated) {
+                setTemplateMode('load');
+                setTemplateModalOpen(true);
+              } else {
                 setAuthMode('login');
                 setAuthModalOpen(true);
-              } else {
-                setTemplateModalMode('load');
-                setTemplateModalOpen(true);
               }
             }}
           >
@@ -188,13 +195,31 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
           className="flex flex-col gap-6 animate-slide-in"
         >
           {currentStepData.fields.map((field) => {
-            if (field.type === 'select') {
+            if (field.type === 'select' && field.options) {
+              // Campos con opciones dinámicas (vacías en formSteps): usar DynamicComboField
+              if (field.options.length === 0) {
+                return (
+                  <DynamicComboField
+                    key={field.id}
+                    fieldId={field.id as FormFieldId}
+                    placeholder={field.placeholder}
+                    value={(formValues as Record<string, string>)[field.id] || ''}
+                    onChange={(value) => handleFieldChange(field.id, value)}
+                  />
+                );
+              }
+
+              // Campos con opciones estáticas (Country, Gender, etc.)
               return (
-                <DynamicComboBoxField
+                <StandardComboBox
                   key={field.id}
-                  field={field}
+                  id={field.id}
+                  label={field.id}
+                  options={field.options}
+                  placeholder={field.placeholder}
+                  required={field.required}
                   value={(formValues as Record<string, string>)[field.id] || ''}
-                  onChange={handleFieldChange}
+                  onChange={(value) => handleFieldChange(field.id, value)}
                 />
               );
             }
@@ -209,6 +234,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
                   required={field.required}
                   value={(formValues as Record<string, string>)[field.id] || ''}
                   onChange={(value) => handleFieldChange(field.id, value)}
+                  onInputChange={(value) => handleInputChange(field.id, value)}
                 />
               );
             }
@@ -223,22 +249,20 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
           <div className="flex justify-end animate-fade-in">
             <button
               type="button"
+              className="flex items-center gap-1 text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none h-fit mt-1.5"
+              aria-label="Save as a template"
               onClick={() => {
-                if (!isAuthenticated) {
-                  setAuthMode('signup');
-                  setAuthModalOpen(true);
-                } else if (!canSaveTemplate) {
-                  setUpgradeFeature('save_templates');
-                  setUpgradeModalOpen(true);
-                } else {
-                  setTemplateModalMode('save');
+                if (isAuthenticated) {
+                  setTemplateMode('save');
                   setTemplateModalOpen(true);
+                } else {
+                  setAuthMode('login');
+                  setAuthModalOpen(true);
                 }
               }}
-              className="inline-flex items-center gap-1.5 rounded-md bg-gray-700 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-gray-600 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-gray-900"
             >
-              <ClipboardDocumentIcon className="h-3.5 w-3.5" />
-              Save as Template
+              <BookmarkIcon className="w-3 h-3" />
+              <span className="text-xs font-medium">Save as a template</span>
             </button>
           </div>
         )}
@@ -266,7 +290,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
         </div>
       </form>
 
-      {/* Modals */}
+      {/* Auth Modal */}
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
@@ -274,23 +298,21 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
         onSwitchMode={(newMode) => setAuthMode(newMode)}
       />
 
+      {/* Template Modal */}
       <TemplateModal
         isOpen={templateModalOpen}
         onClose={() => setTemplateModalOpen(false)}
-        mode={templateModalMode}
+        mode={templateMode}
         canSaveTemplate={canSaveTemplate}
         maxTemplates={maxTemplates}
-        onUpgradeRequired={() => {
-          setTemplateModalOpen(false);
-          setUpgradeFeature('save_templates');
-          setUpgradeModalOpen(true);
-        }}
+        onUpgradeRequired={() => setUpgradeModalOpen(true)}
       />
 
+      {/* Upgrade Modal */}
       <UpgradeModal
         isOpen={upgradeModalOpen}
         onClose={() => setUpgradeModalOpen(false)}
-        feature={upgradeFeature}
+        feature="save_templates"
       />
     </div>
   );

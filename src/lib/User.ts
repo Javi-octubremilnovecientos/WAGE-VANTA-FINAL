@@ -11,24 +11,49 @@ export interface Template {
   experienceYears?: number;
 }
 
-export interface ChartData {
+/**
+ * Snapshot de BoxPlot serializable para persistir en Redux/storage.
+ * Replica la shape de BoxPlotData (features/salaries/types) sin importarla
+ * para evitar dependencias circulares desde lib/.
+ */
+export interface SavedBoxPlotEntry {
+  category: string;
   min: number;
-  max: number;
-  median: number;
   q1: number;
+  median: number;
   q3: number;
-  mean: number;
-  mw: number;
+  max: number;
+  color?: string;
 }
 
-export interface SurveyYear extends ChartData {
-  year: number;
+/**
+ * Snapshot de los valores del formulario guardados junto a la comparación.
+ * Réplica de ComparisonFormValues para mantener lib/ libre de dependencias de features/.
+ */
+export interface SavedFormValues {
+  Country?: string;
+  Gender?: string;
+  'Monthly Wage'?: string;
+  'Economic Activity'?: string;
+  Occupation?: string;
+  'Occupation Level'?: string;
+  'Education Level'?: string;
+  'Years Of Experience'?: string;
+  'Company Size'?: string;
 }
 
+/**
+ * Comparison guardada por el usuario.
+ * Contiene todos los datos necesarios para volver a renderizar un ComparisonSheet
+ * sin necesidad de re-fetchear la API.
+ */
 export interface Comparison {
   id: number;
-  median: ChartData;
-  history: SurveyYear[];
+  savedAt: string;                  // ISO date string
+  selectedCountries: string[];      // Países comparados
+  formValues: SavedFormValues;      // Filtros del formulario
+  computedStats: SavedBoxPlotEntry[]; // BoxPlot stats por país
+  userWage?: number | null;         // Salario de referencia del usuario
 }
 
 export interface CardData {

@@ -221,3 +221,12 @@ export const selectPlanLimits = createSelector(
         return getPlanLimits(auth.isAuthenticated, auth.user?.premium ?? false);
     },
 );
+
+/**
+ * Retorna los BoxPlotData computados persistidos en el slice de salarios.
+ * Se persisten desde Home.tsx para que estén disponibles en ComparisonSheet.
+ */
+export const selectComputedStats = createSelector(
+    [selectSalary],
+    (salary) => salary.computedStats,
+);

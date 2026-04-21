@@ -13,6 +13,8 @@ interface NumberInputProps {
     value: string | number;
     /** Change handler — only fires on blur or Enter, not on every keystroke */
     onChange: (value: string) => void;
+    /** Input change handler — fires on every keystroke (for real-time UI updates) */
+    onInputChange?: (value: string) => void;
     /** Additional CSS classes */
     className?: string;
     /** Minimum value */
@@ -30,6 +32,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
     required = false,
     value,
     onChange,
+    onInputChange,
     className = '',
     min,
     max,
@@ -47,6 +50,13 @@ const NumberInput: React.FC<NumberInputProps> = ({
         }
     };
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value;
+        setLocalValue(newValue);
+        // Notify parent en tiempo real para actualizar UI
+        onInputChange?.(newValue);
+    };
+
     return (
         <div className={className}>
             <label htmlFor={id} className="block text-xs font-medium text-white mb-2">
@@ -60,7 +70,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
                 placeholder={placeholder}
                 required={required}
                 value={localValue}
-                onChange={(e) => setLocalValue(e.target.value)}
+                onChange={handleInputChange}
                 onBlur={commit}
                 onKeyDown={(e) => { if (e.key === 'Enter') commit(); }}
                 min={min}
