@@ -7,16 +7,8 @@ function PasswordRecovery() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
-    // DEBUG: Verificar que el componente se renderiza
-    console.log('🎯 PasswordRecovery component rendered');
-    console.log('📍 Current URL:', window.location.href);
-    console.log('🔗 Hash:', window.location.hash);
-    console.log('❓ Search:', window.location.search);
-
     // Detectar tokens desde query params o hash fragment
     const { token, type } = useMemo(() => {
-        console.log('🔄 useMemo ejecutándose...');
-
         // 1. Intentar desde query params (?access_token=xxx)
         const accessTokenFromQuery = searchParams.get('access_token');
         const tokenHashFromQuery = searchParams.get('token_hash') || searchParams.get('token');
@@ -32,31 +24,6 @@ function PasswordRecovery() {
         // Priorizar access_token sobre token_hash, y query params sobre hash
         const finalToken = accessTokenFromQuery || accessTokenFromHash || tokenHashFromQuery || tokenHashFromHash;
         const finalType = typeFromQuery || typeFromHash;
-
-        // DEBUG: Ver qué token estamos recibiendo
-        console.log('🔍 Password Recovery Debug:', {
-            queryParams: {
-                access_token: accessTokenFromQuery?.substring(0, 20) + '...',
-                token_hash: tokenHashFromQuery?.substring(0, 20) + '...',
-                type: typeFromQuery,
-            },
-            hashParams: {
-                access_token: accessTokenFromHash?.substring(0, 20) + '...',
-                token_hash: tokenHashFromHash?.substring(0, 20) + '...',
-                type: typeFromHash,
-            },
-            finalToken: finalToken ? finalToken.substring(0, 50) + '...' : 'NULL',
-            finalType,
-            fullHash: window.location.hash,
-            fullSearch: window.location.search,
-        });
-
-        // Alert visible para el usuario (TEMPORAL)
-        if (!finalToken) {
-            console.error('❌ NO SE DETECTÓ NINGÚN TOKEN');
-        } else {
-            console.log('✅ Token detectado:', finalToken.substring(0, 30) + '...');
-        }
 
         return { token: finalToken, type: finalType };
     }, [searchParams]);
@@ -98,17 +65,13 @@ function PasswordRecovery() {
 
         try {
             // PASO 1: Verificar el token hash y obtener access_token
-            console.log('🔄 Verificando token hash...');
             const verifyResponse = await verifyRecoveryToken({ token, type }).unwrap();
-            console.log('✅ Token verificado, access_token obtenido');
 
             // PASO 2: Usar el access_token para actualizar la contraseña
-            console.log('🔄 Actualizando contraseña...');
             await resetPasswordWithToken({
                 password,
                 accessToken: verifyResponse.access_token,
             }).unwrap();
-            console.log('✅ Contraseña actualizada exitosamente');
 
             // Mostrar éxito
             setSuccess(true);
@@ -118,8 +81,6 @@ function PasswordRecovery() {
                 navigate('/');
             }, 3000);
         } catch (err: unknown) {
-            // Manejar errores específicos
-            console.error('❌ Error:', err);
             const error = err as { status?: number; data?: { message?: string; error_description?: string } };
             const errorMessage = error.data?.error_description || error.data?.message;
 
@@ -152,15 +113,6 @@ function PasswordRecovery() {
                     <p className="text-sm text-gray-400 text-center mb-6">
                         Enter your new password below
                     </p>
-
-                    {/* DEBUG INFO - TEMPORAL */}
-                    <div className="mb-4 p-3 bg-blue-900/30 border border-blue-700 rounded-lg text-xs">
-                        <p className="text-blue-300 font-mono mb-1">DEBUG INFO (temporal):</p>
-                        <p className="text-blue-200">URL: {window.location.href}</p>
-                        <p className="text-blue-200">Token detectado: {token ? 'SÍ ✅' : 'NO ❌'}</p>
-                        <p className="text-blue-200">Type: {type || 'NO DETECTADO'}</p>
-                        <p className="text-blue-200">isValidToken: {isValidToken ? 'true' : 'false'}</p>
-                    </div>
 
                     {/* Error Message */}
                     {error && (

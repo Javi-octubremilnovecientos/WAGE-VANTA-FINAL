@@ -52,6 +52,33 @@ export interface AuthResponse {
 }
 
 /**
+ * Helper: Obtiene la URL base de Supabase desde variables de entorno
+ */
+export const getSupabaseUrl = (): string => {
+    return import.meta.env.VITE_SUPABASE_URL || 'https://idrgqvtgllamddukkkvx.supabase.co';
+};
+
+/**
+ * Helper: Construye la URL de OAuth authorize para un provider
+ * @param provider - OAuth provider (google, github, etc)
+ * @param redirectTo - URL de callback después de auth exitoso
+ */
+export const buildOAuthUrl = (provider: string, redirectTo: string): string => {
+    return `${getSupabaseUrl()}/auth/v1/authorize?provider=${provider}&redirect_to=${encodeURIComponent(redirectTo)}`;
+};
+
+/**
+ * Helper: Detecta si un usuario es nuevo (registrado hace menos de 5 minutos)
+ * @param createdAt - Timestamp ISO de created_at del usuario
+ */
+export const isNewUser = (createdAt: string): boolean => {
+    const created = new Date(createdAt).getTime();
+    const now = Date.now();
+    const fiveMinutes = 5 * 60 * 1000;
+    return (now - created) < fiveMinutes;
+};
+
+/**
  * Mapea la respuesta de Supabase a nuestro modelo de User en Redux.
  * Aplica valores por defecto para campos que aún no existan en user_metadata.
  */
@@ -156,20 +183,27 @@ export const authApi = apiSlice.injectEndpoints({
 
         /**
          * Verificar token de recuperación y obtener session
-         * GET auth/v1/verify
-         * 
-         * Este endpoint convierte el token hash del email en un access_token (JWT) válido.
-         * Se usa cuando el usuario hace click en el link del email de recuperación.
-         * 
+         * POST auth/v1/verify
+         *
+         * Intercambia el token_hash del email por un access_token (JWT) válido.
+         * Se usa cuando el usuario llega a /password-recovery con ?token=xxx&type=recovery.
+         *
          * IMPORTANTE:
-         * - El token es el hash que viene en la URL (?token=xxx)
+         * - Se debe usar POST con el token en el body (token_hash), NO GET con query params.
+         *   El endpoint GET es un flow de redirección para navegador (303 See Other) y no
+         *   devuelve JSON — fetch/RTK Query no puede consumirlo correctamente.
+         * - POST /auth/v1/verify es lo que usa internamente el Supabase JS SDK en
+         *   supabase.auth.verifyOtp({ token_hash, type }) y devuelve AuthResponse como JSON.
          * - type debe ser "recovery"
-         * - Devuelve un access_token válido que se puede usar para actualizar la contraseña
          */
         verifyRecoveryToken: builder.mutation<AuthResponse, { token: string; type: string }>({
             query: ({ token, type }) => ({
-                url: `auth/v1/verify?token=${encodeURIComponent(token)}&type=${type}`,
-                method: 'GET',
+                url: 'auth/v1/verify',
+                method: 'POST',
+                body: {
+                    token_hash: token,
+                    type,
+                },
             }),
         }),
 
@@ -195,6 +229,28 @@ export const authApi = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Auth', 'Profile'],
         }),
+
+        /**
+         * Obtener datos del usuario desde access_token (OAuth callback)
+         * GET auth/v1/user
+         * 
+         * Obtiene los datos completos del usuario usando un access_token válido.
+         * Se usa principalmente después del callback de OAuth para obtener user_metadata.
+         * 
+         * IMPORTANTE:
+         * - Requiere access_token válido en el header Authorization
+         * - Retorna SupabaseUser completo con metadata
+         * - No invalida tags (es solo lectura)
+         */
+        getSessionFromTokens: builder.mutation<SupabaseUser, { accessToken: string }>({
+            query: ({ accessToken }) => ({
+                url: 'auth/v1/user',
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }),
+        }),
     }),
 });
 
@@ -205,4 +261,5 @@ export const {
     useSendResetEmailMutation,
     useVerifyRecoveryTokenMutation,
     useResetPasswordWithTokenMutation,
+    useGetSessionFromTokensMutation,
 } = authApi;

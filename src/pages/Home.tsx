@@ -8,6 +8,7 @@ import AuthModal from "../components/ui/modals/AuthModal";
 import UpgradeModal from "../components/ui/modals/UpgradeModal";
 import { useAppSelector, useAppDispatch } from "../hooks/useRedux";
 import { usePlanLimits } from "../hooks/usePlanLimits";
+import { useOAuthCallback } from "../hooks/useOAuthCallback";
 import type { PremiumFeature } from "../components/ui/modals/UpgradeModal";
 import {
     selectSelectedCountries,
@@ -16,6 +17,8 @@ import {
 } from "../features/salaries/salarySlice";
 import { selectUserMonthlyWage } from "../features/salaries/salarySelectors";
 import { useGetSalaryDataQuery } from "../features/salaries/salaryApi";
+import { useGetSessionFromTokensMutation, mapSupabaseResponseToUser, isNewUser } from "@/features/auth/authApi";
+import { setCredentials } from "@/features/auth/authSlice";
 import { useComputeSalaryStats } from "../hooks/useComputeSalaryStats";
 import type { BoxPlotData } from "../features/salaries/types";
 
@@ -29,12 +32,63 @@ export default function Home() {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [authModalMode, setAuthModalMode] = useState<'login' | 'signup' | 'recovery'>('login');
     const [chartView, setChartView] = useState<'boxplot' | 'barchart'>('boxplot');
+    const [oauthError, setOauthError] = useState<string | null>(null);
 
     const dispatch = useAppDispatch();
     const { isAuthenticated, canAccessMultipleChartViews } = usePlanLimits();
     const selectedCountries = useAppSelector(selectSelectedCountries);
     const formValues = useAppSelector(selectFormValues);
     const userWage = useAppSelector(selectUserMonthlyWage);
+
+    // Capturar tokens OAuth del URL hash
+    const { accessToken, refreshToken, error: oauthCallbackError, errorDescription } = useOAuthCallback();
+    const [getSessionFromTokens] = useGetSessionFromTokensMutation();
+
+    // Procesar OAuth callback
+    useEffect(() => {
+        // Manejar error de OAuth
+        if (oauthCallbackError) {
+            setOauthError(errorDescription || 'OAuth authentication failed');
+            setAuthModalMode('login');
+            setIsAuthModalOpen(true);
+            return;
+        }
+
+        // Manejar tokens válidos
+        if (accessToken && refreshToken) {
+            const processOAuthLogin = async () => {
+                try {
+                    // Obtener datos del usuario usando el access_token
+                    const supabaseUser = await getSessionFromTokens({ accessToken }).unwrap();
+
+                    // Mapear a nuestro modelo de User
+                    const user = mapSupabaseResponseToUser(supabaseUser);
+
+                    // Despachar credenciales a Redux
+                    dispatch(setCredentials({
+                        user,
+                        token: accessToken,
+                        refreshToken,
+                    }));
+
+                    // Detectar si es signup nuevo (< 5 minutos) o login existente
+                    if (supabaseUser.created_at && isNewUser(supabaseUser.created_at)) {
+                        // Nuevo usuario → redirigir a welcome
+                        navigate('/welcome', { replace: true });
+                    }
+                    // Usuario existente → mantener en Home (/)
+
+                } catch (err) {
+                    console.error('OAuth login error:', err);
+                    setOauthError('Failed to complete OAuth login. Please try again.');
+                    setAuthModalMode('login');
+                    setIsAuthModalOpen(true);
+                }
+            };
+
+            processOAuthLogin();
+        }
+    }, [accessToken, refreshToken, oauthCallbackError, errorDescription, getSessionFromTokens, dispatch, navigate]);
 
     const hasCountry = selectedCountries.length > 0;
 
@@ -188,9 +242,13 @@ export default function Home() {
             {/* Auth Modal */}
             <AuthModal
                 isOpen={isAuthModalOpen}
-                onClose={() => setIsAuthModalOpen(false)}
+                onClose={() => {
+                    setIsAuthModalOpen(false);
+                    setOauthError(null); // Limpiar error OAuth al cerrar
+                }}
                 mode={authModalMode}
                 onSwitchMode={(mode) => setAuthModalMode(mode)}
+                initialError={oauthError}
             />
 
             {/* Upgrade Modal */}

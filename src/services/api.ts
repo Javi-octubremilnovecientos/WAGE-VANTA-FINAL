@@ -10,7 +10,7 @@ import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolk
 
 // Configuración del baseQuery con fetchBaseQuery
 const baseQuery = fetchBaseQuery({
-    baseUrl: 'https://idrgqvtgllamddukkkvx.supabase.co/',
+    baseUrl: import.meta.env.VITE_SUPABASE_URL || 'https://idrgqvtgllamddukkkvx.supabase.co/',
     prepareHeaders: (headers, { getState }) => {
         // Supabase API Key requerida en todas las peticiones
         const apiKey = import.meta.env.VITE_SUPABASE_API_KEY;

@@ -2,7 +2,7 @@ import { type ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { XMarkIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/20/solid';
 import { Google, Github } from '../../../assets/icons/Solidicons';
-import { useSignInMutation, useSignUpMutation, useSendResetEmailMutation, mapSupabaseResponseToUser } from '@/features/auth/authApi';
+import { useSignInMutation, useSignUpMutation, useSendResetEmailMutation, mapSupabaseResponseToUser, buildOAuthUrl } from '@/features/auth/authApi';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { setCredentials, setRememberMe as setRememberMeAction } from '@/features/auth/authSlice';
 import { createDefaultUserData } from '@/lib/User';
@@ -34,9 +34,10 @@ interface AuthModalProps {
     onClose: () => void;
     mode: 'login' | 'signup' | 'recovery';
     onSwitchMode?: (mode: 'login' | 'signup' | 'recovery') => void;
+    initialError?: string | null; // Error inicial (ej: de OAuth callback)
 }
 
-function AuthModal({ isOpen, onClose, mode, onSwitchMode }: AuthModalProps) {
+function AuthModal({ isOpen, onClose, mode, onSwitchMode, initialError }: AuthModalProps) {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
@@ -70,7 +71,7 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode }: AuthModalProps) {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [name, setName] = useState('');
-    const [formError, setFormError] = useState<string | null>(null);
+    const [formError, setFormError] = useState<string | null>(initialError || null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [emailSent, setEmailSent] = useState(false);
 
@@ -79,6 +80,9 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode }: AuthModalProps) {
     const [sendResetEmail, { isLoading: isSendingReset }] = useSendResetEmailMutation();
 
     const isLoading = isSigningIn || isSigningUp || isSendingReset;
+
+    // Error a mostrar: priorizar initialError (OAuth) sobre formError (validación)
+    const displayError = initialError || formError;
 
     const resetForm = () => {
         setEmail('');
@@ -96,6 +100,15 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode }: AuthModalProps) {
     const handleClose = () => {
         resetForm();
         onClose();
+    };
+
+    const handleGoogleSignIn = () => {
+        // Construir URL de OAuth con Google provider
+        const redirectUrl = `${window.location.origin}/`;
+        const oauthUrl = buildOAuthUrl('google', redirectUrl);
+
+        // Redirigir al flujo de OAuth de Google
+        window.location.href = oauthUrl;
     };
 
     const handleRecovery = async (e: React.FormEvent) => {
@@ -211,9 +224,9 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode }: AuthModalProps) {
                 </h1>
 
                 {/* Error message */}
-                {formError && (
+                {displayError && (
                     <div className="mb-3 p-2.5 bg-red-900/30 border border-red-700 rounded-lg">
-                        <p className="text-xs text-red-400">{formError}</p>
+                        <p className="text-xs text-red-400">{displayError}</p>
                     </div>
                 )}
 
@@ -418,6 +431,7 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode }: AuthModalProps) {
                         <div className="grid grid-cols-2 gap-2">
                             <button
                                 type="button"
+                                onClick={handleGoogleSignIn}
                                 disabled={isLoading}
                                 className="flex items-center justify-center gap-1.5 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-600 disabled:opacity-50"
                             >
