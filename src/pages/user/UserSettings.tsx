@@ -18,6 +18,16 @@ function UserSettings() {
         password: { value: '', editing: false },
     });
 
+    // Estados específicos para cambio de password
+    const [passwordFields, setPasswordFields] = useState({
+        current: '',
+        new: '',
+        confirm: '',
+    });
+
+    const [passwordError, setPasswordError] = useState<string | null>(null);
+    const [passwordSuccess, setPasswordSuccess] = useState(false);
+
     const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
 
     const handleFieldChange = (field: string, value: string) => {
@@ -30,6 +40,14 @@ function UserSettings() {
     const handleToggleEdit = (field: string) => {
         setFields(prev => {
             const isNowEditing = !prev[field].editing;
+
+            // Reset password fields y errores cuando se activa/desactiva edición de password
+            if (field === 'password') {
+                setPasswordFields({ current: '', new: '', confirm: '' });
+                setPasswordError(null);
+                setPasswordSuccess(false);
+            }
+
             return {
                 ...prev,
                 [field]: {
@@ -47,12 +65,67 @@ function UserSettings() {
     };
 
     const handleSaveField = async (field: string) => {
+        // Validación especial para password
+        if (field === 'password') {
+            setPasswordError(null);
+            setPasswordSuccess(false);
+
+            // Validar que todos los campos estén llenos
+            if (!passwordFields.current || !passwordFields.new || !passwordFields.confirm) {
+                setPasswordError('All password fields are required');
+                return;
+            }
+
+            // Validar que la nueva password tenga al menos 6 caracteres
+            if (passwordFields.new.length < 6) {
+                setPasswordError('New password must be at least 6 characters');
+                return;
+            }
+
+            // Validar que las nuevas passwords coincidan
+            if (passwordFields.new !== passwordFields.confirm) {
+                setPasswordError('New passwords do not match');
+                return;
+            }
+
+            try {
+                // Supabase requiere current_password para validar que el usuario conoce la contraseña actual
+                await updateUser({
+                    password: passwordFields.new,
+                    current_password: passwordFields.current
+                }).unwrap();
+
+                // Mostrar mensaje de éxito
+                setPasswordSuccess(true);
+                setPasswordFields({ current: '', new: '', confirm: '' });
+
+                // Cerrar modo edición después de 3 segundos
+                setTimeout(() => {
+                    setFields(prev => ({
+                        ...prev,
+                        password: { ...prev.password, editing: false }
+                    }));
+                    setPasswordSuccess(false);
+                }, 3000);
+            } catch (error: any) {
+                // Manejar errores específicos de Supabase
+                if (error?.data?.error_code === 'current_password_required') {
+                    setPasswordError('Current password is required');
+                } else if (error?.data?.msg?.includes('Invalid current password')) {
+                    setPasswordError('Current password is incorrect');
+                } else {
+                    setPasswordError('Failed to update password. Please try again.');
+                }
+            }
+            return;
+        }
+
+        // Lógica original para name y email
         const value = fields[field].value;
         try {
             const updatePayload =
                 field === 'email' ? { email: value }
-                    : field === 'password' ? { password: value }
-                        : { data: { name: value } };
+                    : { data: { name: value } };
 
             const response = await updateUser(updatePayload).unwrap();
 
@@ -65,7 +138,6 @@ function UserSettings() {
                 // Name sí se actualiza inmediatamente
                 dispatch(patchUser({ name: value }));
             }
-            // password no se persiste en user_metadata, no actualizar Redux
         } catch { /* error silenciado, el input revierte al valor anterior */ }
 
         setFields(prev => ({
@@ -170,30 +242,118 @@ function UserSettings() {
                     <h2 className="text-base font-semibold text-white">Security</h2>
                 </div>
                 <div className="space-y-3">
-                    <div className="flex items-center justify-between pb-3 border-b border-gray-700">
-                        <div className="flex-1 min-w-0 mr-3">
-                            <p className="text-xs font-medium text-gray-400">Password</p>
-                            <input
-                                type="password"
-                                value={fields.password.editing ? fields.password.value : '••••••••'}
-                                onChange={(e) => handleFieldChange('password', e.target.value)}
-                                disabled={!fields.password.editing || isUpdatingUser}
-                                aria-label="Password"
-                                placeholder="Enter new password"
-                                className="bg-transparent text-gray-300 text-sm mt-0.5 w-full focus:outline-none disabled:cursor-default enabled:border-b enabled:border-[#45d2fd]/60 transition-all"
-                            />
+                    {!fields.password.editing ? (
+                        /* Vista normal - password oculta */
+                        <div className="flex items-center justify-between pb-3 border-b border-gray-700">
+                            <div className="flex-1 min-w-0 mr-3">
+                                <p className="text-xs font-medium text-gray-400">Password</p>
+                                <p className="text-gray-300 text-sm mt-0.5">••••••••</p>
+                            </div>
+                            <button
+                                onClick={() => handleToggleEdit('password')}
+                                disabled={isUpdatingUser}
+                                aria-label="Edit password"
+                                className="text-[#45d2fd] hover:text-[#22b8d9] transition-colors shrink-0 disabled:opacity-50"
+                            >
+                                <PencilIcon className="h-4 w-4" />
+                            </button>
                         </div>
-                        <button
-                            onClick={fields.password.editing ? () => handleSaveField('password') : () => handleToggleEdit('password')}
-                            disabled={isUpdatingUser}
-                            aria-label={fields.password.editing ? 'Save password' : 'Edit password'}
-                            className="text-[#45d2fd] hover:text-[#22b8d9] transition-colors shrink-0 disabled:opacity-50"
-                        >
-                            {fields.password.editing
-                                ? <Save />
-                                : <PencilIcon className="h-4 w-4" />}
-                        </button>
-                    </div>
+                    ) : (
+                        /* Modo edición - tres campos de password */
+                        <div className="space-y-3 pb-3 border-b border-gray-700">
+                            <div className="flex items-start justify-between">
+                                <div className="flex-1 min-w-0 mr-3 space-y-3">
+                                    {/* Current Password */}
+                                    <div>
+                                        <label htmlFor="current-password" className="text-xs font-medium text-gray-400 block mb-1">
+                                            Current Password
+                                        </label>
+                                        <input
+                                            id="current-password"
+                                            type="password"
+                                            value={passwordFields.current}
+                                            onChange={(e) => setPasswordFields(prev => ({ ...prev, current: e.target.value }))}
+                                            disabled={isUpdatingUser}
+                                            placeholder="Enter current password"
+                                            className="bg-transparent text-gray-300 text-sm w-full focus:outline-none border-b border-gray-600 focus:border-[#45d2fd]/60 transition-all pb-1 disabled:opacity-50"
+                                        />
+                                    </div>
+
+                                    {/* New Password */}
+                                    <div>
+                                        <label htmlFor="new-password" className="text-xs font-medium text-gray-400 block mb-1">
+                                            New Password
+                                        </label>
+                                        <input
+                                            id="new-password"
+                                            type="password"
+                                            value={passwordFields.new}
+                                            onChange={(e) => setPasswordFields(prev => ({ ...prev, new: e.target.value }))}
+                                            disabled={isUpdatingUser}
+                                            placeholder="Enter new password (min 6 characters)"
+                                            className="bg-transparent text-gray-300 text-sm w-full focus:outline-none border-b border-gray-600 focus:border-[#45d2fd]/60 transition-all pb-1 disabled:opacity-50"
+                                        />
+                                    </div>
+
+                                    {/* Confirm New Password */}
+                                    <div>
+                                        <label htmlFor="confirm-password" className="text-xs font-medium text-gray-400 block mb-1">
+                                            Confirm New Password
+                                        </label>
+                                        <input
+                                            id="confirm-password"
+                                            type="password"
+                                            value={passwordFields.confirm}
+                                            onChange={(e) => setPasswordFields(prev => ({ ...prev, confirm: e.target.value }))}
+                                            disabled={isUpdatingUser}
+                                            placeholder="Re-enter new password"
+                                            className="bg-transparent text-gray-300 text-sm w-full focus:outline-none border-b border-gray-600 focus:border-[#45d2fd]/60 transition-all pb-1 disabled:opacity-50"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Save Button */}
+                                <button
+                                    onClick={() => handleSaveField('password')}
+                                    disabled={isUpdatingUser}
+                                    aria-label="Save password"
+                                    className="text-[#45d2fd] hover:text-[#22b8d9] transition-colors shrink-0 disabled:opacity-50 mt-6"
+                                >
+                                    <Save />
+                                </button>
+                            </div>
+
+                            {/* Error Message */}
+                            {passwordError && (
+                                <div className="rounded-md bg-red-500/10 border border-red-600/50 px-3 py-2 text-xs text-red-300 flex items-center gap-2">
+                                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400" />
+                                    {passwordError}
+                                </div>
+                            )}
+
+                            {/* Success Message */}
+                            {passwordSuccess && (
+                                <div className="rounded-md bg-green-500/10 border border-green-600/50 px-3 py-2 text-xs text-green-300">
+                                    <div className="flex items-start gap-2">
+                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse mt-1" />
+                                        <div>
+                                            <p className="font-semibold">Password updated successfully!</p>
+                                            <p className="text-green-400/80 mt-0.5">Your password has been changed. You can now use it to log in.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Cancel Button */}
+                            <button
+                                onClick={() => handleToggleEdit('password')}
+                                disabled={isUpdatingUser}
+                                className="text-xs text-gray-400 hover:text-gray-300 transition-colors disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    )}
                 </div>
             </section>
 

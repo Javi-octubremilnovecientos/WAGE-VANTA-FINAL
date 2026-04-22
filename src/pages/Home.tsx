@@ -1,11 +1,14 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { EyeIcon } from "@heroicons/react/24/outline";
+import { ChartBarIcon, WindowIcon } from "@heroicons/react/24/outline";
 import MainChart from "../components/charts/MainChart";
 import FormLayout from "../components/form/FormLayout";
 import CompareModal from "../components/ui/modals/CompareModal";
+import AuthModal from "../components/ui/modals/AuthModal";
 import UpgradeModal from "../components/ui/modals/UpgradeModal";
 import { useAppSelector, useAppDispatch } from "../hooks/useRedux";
+import { usePlanLimits } from "../hooks/usePlanLimits";
+import type { PremiumFeature } from "../components/ui/modals/UpgradeModal";
 import {
     selectSelectedCountries,
     selectFormValues,
@@ -22,9 +25,13 @@ export default function Home() {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+    const [upgradeFeature, setUpgradeFeature] = useState<PremiumFeature>('compare_countries');
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [authModalMode, setAuthModalMode] = useState<'login' | 'signup' | 'recovery'>('login');
     const [chartView, setChartView] = useState<'boxplot' | 'barchart'>('boxplot');
 
     const dispatch = useAppDispatch();
+    const { isAuthenticated, canAccessMultipleChartViews } = usePlanLimits();
     const selectedCountries = useAppSelector(selectSelectedCountries);
     const formValues = useAppSelector(selectFormValues);
     const userWage = useAppSelector(selectUserMonthlyWage);
@@ -76,7 +83,27 @@ export default function Home() {
 
     const handleUpgradeRequired = () => {
         setIsModalOpen(false);
+        setUpgradeFeature('compare_countries');
         setIsUpgradeModalOpen(true);
+    };
+
+    const handleChartViewToggle = () => {
+        // Si no está autenticado, mostrar AuthModal
+        if (!isAuthenticated) {
+            setAuthModalMode('login');
+            setIsAuthModalOpen(true);
+            return;
+        }
+
+        // Si está autenticado pero no tiene permisos de múltiples vistas, mostrar UpgradeModal
+        if (!canAccessMultipleChartViews) {
+            setUpgradeFeature('chart_views');
+            setIsUpgradeModalOpen(true);
+            return;
+        }
+
+        // Si tiene permisos, cambiar la vista del gráfico
+        setChartView(chartView === 'boxplot' ? 'barchart' : 'boxplot');
     };
 
     return (
@@ -115,11 +142,16 @@ export default function Home() {
                                 </div>
                             )}
                             <button
-                                onClick={() => setChartView(chartView === 'boxplot' ? 'barchart' : 'boxplot')}
+                                onClick={handleChartViewToggle}
                                 className="px-2 py-1 text-xs font-medium text-gray-300 bg-gray-700/60 hover:bg-gray-600/60 rounded border border-gray-600 transition-all flex-shrink-0 flex items-center justify-center"
                                 aria-label="Toggle chart view"
+                                title={chartView === 'boxplot' ? 'Switch to bar chart' : 'Switch to box plot'}
                             >
-                                <EyeIcon className="h-4 w-4" />
+                                {chartView === 'boxplot' ? (
+                                    <ChartBarIcon className="h-4 w-4" />
+                                ) : (
+                                    <WindowIcon className="h-4 w-4" />
+                                )}
                             </button>
                         </div>
 
@@ -153,11 +185,19 @@ export default function Home() {
                 confirmButtonColor="#45d2fd"
             />
 
+            {/* Auth Modal */}
+            <AuthModal
+                isOpen={isAuthModalOpen}
+                onClose={() => setIsAuthModalOpen(false)}
+                mode={authModalMode}
+                onSwitchMode={(mode) => setAuthModalMode(mode)}
+            />
+
             {/* Upgrade Modal */}
             <UpgradeModal
                 isOpen={isUpgradeModalOpen}
                 onClose={() => setIsUpgradeModalOpen(false)}
-                feature="compare_countries"
+                feature={upgradeFeature}
             />
         </div>
     )
