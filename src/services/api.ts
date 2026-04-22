@@ -25,12 +25,37 @@ const baseQuery = fetchBaseQuery({
             headers.set('authorization', `Bearer ${token}`);
         }
 
-        // Content-Type para JSON
-        headers.set('Content-Type', 'application/json');
+        // Content-Type para JSON (pero NO para FormData - el navegador lo setea automáticamente)
+        // Esto se sobrescribe en cada request si es necesario
+        if (!headers.has('Content-Type')) {
+            headers.set('Content-Type', 'application/json');
+        }
 
         return headers;
     },
 });
+
+/**
+ * Custom baseQuery que envuelve fetchBaseQuery para manejar FormData correctamente
+ * Cuando el body es FormData, no seteamos Content-Type para que el navegador lo maneje
+ */
+const baseQueryWithFormData: BaseQueryFn<
+    string | FetchArgs,
+    unknown,
+    FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+    // Si args es un objeto FetchArgs y el body es FormData
+    if (typeof args === 'object' && args.body instanceof FormData) {
+        // No setear Content-Type manualmente - dejar que el navegador lo haga
+        // Crear nuevos headers sin Content-Type
+        const headers = new Headers(args.headers);
+        headers.delete('Content-Type');
+        args.headers = headers;
+    }
+
+    // Llamar al baseQuery original
+    return baseQuery(args, api, extraOptions);
+};
 
 /**
  * API Slice principal
@@ -41,11 +66,7 @@ const baseQuery = fetchBaseQuery({
  */
 export const apiSlice = createApi({
     reducerPath: 'api',
-    baseQuery: baseQuery as BaseQueryFn<
-        string | FetchArgs,
-        unknown,
-        FetchBaseQueryError
-    >,
+    baseQuery: baseQueryWithFormData,
     tagTypes: [
         'Salaries',
         'Users',

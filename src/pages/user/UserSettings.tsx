@@ -5,6 +5,7 @@ import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import { selectUser, selectUserPremium, logout, patchUser } from '@/features/auth/authSlice';
 import { useUpdateUserMutation } from '@/features/auth/authApi';
 import { Save } from '@/assets/icons/Solidicons';
+import AvatarUploader from '@/components/ui/AvatarUploader';
 
 function UserSettings() {
     const user = useAppSelector(selectUser);
@@ -27,6 +28,10 @@ function UserSettings() {
 
     const [passwordError, setPasswordError] = useState<string | null>(null);
     const [passwordSuccess, setPasswordSuccess] = useState(false);
+
+    // Estados para avatar upload
+    const [avatarSuccess, setAvatarSuccess] = useState(false);
+    const [avatarError, setAvatarError] = useState<string | null>(null);
 
     const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
 
@@ -151,6 +156,23 @@ function UserSettings() {
         navigate('/');
     };
 
+    const handleAvatarUploadSuccess = (url: string) => {
+        // Actualizar Redux inmediatamente
+        dispatch(patchUser({ avatarUrl: url || null }));
+        setAvatarSuccess(true);
+        setAvatarError(null);
+
+        // Ocultar mensaje de éxito después de 3 segundos
+        setTimeout(() => {
+            setAvatarSuccess(false);
+        }, 3000);
+    };
+
+    const handleAvatarUploadError = (error: string) => {
+        setAvatarError(error);
+        setAvatarSuccess(false);
+    };
+
     return (
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-5 sm:px-4 lg:px-6">
             {/* Header with Back link */}
@@ -177,6 +199,29 @@ function UserSettings() {
                 <p className="text-gray-400 text-xs font-medium mb-4">
                     Manage your profile details and preferences
                 </p>
+
+                {/* Avatar Upload Section */}
+                <div className="mb-6 pb-6 border-b border-gray-700">
+                    <p className="text-xs font-medium text-gray-400 mb-4">Profile Picture</p>
+                    <AvatarUploader
+                        currentAvatarUrl={user?.avatarUrl}
+                        userId={user?.id ?? ''}
+                        userName={user?.name}
+                        onUploadSuccess={handleAvatarUploadSuccess}
+                        onUploadError={handleAvatarUploadError}
+                    />
+
+                    {/* Success Message */}
+                    {avatarSuccess && (
+                        <div className="mt-4 rounded-md bg-green-500/10 border border-green-600/50 px-3 py-2 text-xs text-green-300">
+                            <div className="flex items-center gap-2">
+                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                                <p className="font-semibold">Avatar updated successfully!</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
                 <div className="space-y-3 pt-3">
                     <div className="flex items-center justify-between pb-3 border-b border-gray-700">
                         <div className="flex-1 min-w-0 mr-3">

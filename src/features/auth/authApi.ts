@@ -2,6 +2,7 @@ import { apiSlice } from '@/services/api';
 import type { UserData, PayData } from '@/lib/User';
 import type { User } from '@/features/auth/authSlice';
 import type { Template, Comparison } from '@/lib/User';
+import { AVATAR_BUCKET_NAME } from '@/lib/imageUtils';
 
 /**
  * Interfaces para autenticación con Supabase
@@ -93,8 +94,19 @@ export function mapSupabaseResponseToUser(supabaseUser: SupabaseUser): User {
         templates: (meta.templates as Template[]) ?? [],
         comparisons: (meta.comparisons as Comparison[]) ?? [],
         payData: (meta.payData as PayData) ?? { card: null, history: [] },
+        avatarUrl: (meta.avatarUrl as string | null) ?? null,
     };
 }
+
+/**
+ * Helper: Construye la URL pública para un avatar en Supabase Storage
+ * @param userId - ID del usuario propietario del avatar
+ * @param filename - Nombre del archivo (ej: avatar_1234567890.jpg)
+ */
+export const getAvatarPublicUrl = (userId: string, filename: string): string => {
+    const supabaseUrl = getSupabaseUrl();
+    return `${supabaseUrl}/storage/v1/object/public/${AVATAR_BUCKET_NAME}/${userId}/${filename}`;
+};
 
 /**
  * RTK Query API para Autenticación
@@ -251,6 +263,58 @@ export const authApi = apiSlice.injectEndpoints({
                 },
             }),
         }),
+
+        /**
+         * Subir avatar a Supabase Storage
+         * POST storage/v1/object/{bucket}/{userId}/{filename}
+         * 
+         * Sube un archivo de imagen al bucket de avatares en Supabase Storage.
+         * El bucket debe estar configurado como público y tener policies para INSERT (authenticated).
+         * 
+         * IMPORTANTE:
+         * - El body debe ser FormData con el file
+         * - FormData se maneja automáticamente en baseQueryWithFormData (api.ts)
+         * - El path incluye userId para organizar avatares por usuario
+         * - Retorna el path relativo del archivo en el bucket
+         * 
+         * @param userId - ID del usuario propietario
+         * @param filename - Nombre del archivo (ej: avatar_1234567890.jpg)
+         * @param file - Archivo de imagen (File object)
+         */
+        uploadAvatar: builder.mutation<{ path: string }, { userId: string; filename: string; file: File }>({
+            query: ({ userId, filename, file }) => {
+                const formData = new FormData();
+                formData.append('', file); // Supabase Storage espera el file sin key o con key vacía
+
+                return {
+                    url: `storage/v1/object/${AVATAR_BUCKET_NAME}/${userId}/${filename}`,
+                    method: 'POST',
+                    body: formData,
+                };
+            },
+            invalidatesTags: ['Profile'],
+        }),
+
+        /**
+         * Eliminar avatar de Supabase Storage
+         * DELETE storage/v1/object/{bucket}/{path}
+         * 
+         * Elimina un archivo del bucket de avatares.
+         * El bucket debe tener policies para DELETE (authenticated).
+         * 
+         * IMPORTANTE:
+         * - El path debe ser la ruta completa: {userId}/{filename}
+         * - Se usa para eliminar avatares antiguos antes de subir uno nuevo
+         * 
+         * @param path - Path completo del archivo (ej: "user123/avatar_1234567890.jpg")
+         */
+        deleteAvatar: builder.mutation<void, { path: string }>({
+            query: ({ path }) => ({
+                url: `storage/v1/object/${AVATAR_BUCKET_NAME}/${path}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Profile'],
+        }),
     }),
 });
 
@@ -262,4 +326,6 @@ export const {
     useVerifyRecoveryTokenMutation,
     useResetPasswordWithTokenMutation,
     useGetSessionFromTokensMutation,
+    useUploadAvatarMutation,
+    useDeleteAvatarMutation,
 } = authApi;

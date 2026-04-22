@@ -8,8 +8,7 @@ import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
 import { useAppSelector } from "@/hooks/useRedux";
 import { selectUser } from "@/features/auth/authSlice";
 import AuthModal from "@/components/ui/modals/AuthModal";
-
-
+import UserAvatar from "@/components/ui/UserAvatar";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -41,16 +40,26 @@ export default function Header() {
           <button
             type="button"
             onClick={handleAuthClick}
-            className="flex items-center -m-0.5 p-0.5 gap-x-1.5 text-white hover:opacity-80 transition-opacity focus:outline-none text-sm"
+            className="flex items-center -m-0.5 p-0.5 gap-x-2 text-white hover:opacity-80 transition-opacity focus:outline-none text-sm"
           >
-            <UserIcon className="size-6" aria-hidden="true" />
             {isAuthenticated ? (
-              <div className="flex items-center gap-2">
-                <span>{user?.name || 'Usuario'}</span>
-                <span className="h-2 w-2 bg-green-500 rounded-full inline-block mt-1"></span>
-              </div>
+              <>
+                <UserAvatar
+                  avatarUrl={user?.avatarUrl}
+                  userName={user?.name}
+                  size="sm"
+                  className="ring-2 ring-gray-600 hover:ring-[#45d2fd] transition-all"
+                />
+                <div className="flex items-center gap-2">
+                  <span>{user?.name || 'Usuario'}</span>
+                  <span className="h-2 w-2 bg-green-500 rounded-full inline-block mt-1"></span>
+                </div>
+              </>
             ) : (
-              'Log in'
+              <>
+                <UserIcon className="size-6" aria-hidden="true" />
+                <span>Log in</span>
+              </>
             )}
           </button>
         </div>

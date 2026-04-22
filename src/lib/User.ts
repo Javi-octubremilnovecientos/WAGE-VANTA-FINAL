@@ -82,6 +82,7 @@ export interface UserData {
   templates: Template[];
   comparisons: Comparison[];
   payData: PayData;
+  avatarUrl?: string | null;
 }
 
 export function createDefaultUserData(name: string): UserData {
@@ -94,5 +95,6 @@ export function createDefaultUserData(name: string): UserData {
       card: null,
       history: [],
     },
+    avatarUrl: null,
   };
 }
