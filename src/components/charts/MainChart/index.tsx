@@ -52,7 +52,7 @@ const TooltipContent = (props: TooltipContentProps) => {
     if (active && payload && payload.length) {
         const entry: BoxPlotDatum = payload[0].payload;
         const isDark = document.documentElement.classList.contains('dark');
-        
+
         return (
             <div
                 style={{
@@ -119,6 +119,10 @@ export default function MainChart({ data = [], userWage, defaultIndex, isLoading
         );
     }
 
+    // Detectar dark mode para los ticks
+    const isDark = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
+    const tickColor = isDark ? '#e5e7eb' : '#4b5563'; // gray-200 for dark, gray-700 for light
+
     return (
         <ResponsiveContainer width="90%" aspect={1 / 1}>
             <BarChart data={data}>
@@ -126,7 +130,7 @@ export default function MainChart({ data = [], userWage, defaultIndex, isLoading
                     width={40}
                     domain={[0, 13000]}
                     ticks={[0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000]}
-                    tick={{ fontSize: 10, fill: 'currentColor' }}
+                    tick={{ fontSize: 10, fill: tickColor }}
                     className="text-gray-600 dark:text-gray-400"
                     stroke="currentColor"
                     tickFormatter={(value) => `${value}€`}
