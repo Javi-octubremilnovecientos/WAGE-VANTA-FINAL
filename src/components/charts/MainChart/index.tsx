@@ -145,7 +145,7 @@ export default function MainChart({ data = [], userWage, defaultIndex, isLoading
                         label={{ value: `Your wage: ${userWage}€`, position: 'right', fill: '#45d2fd', fontSize: 10 }}
                     />
                 )}
-                <Tooltip content={TooltipContent} defaultIndex={defaultIndex} />
+                <Tooltip content={TooltipContent} defaultIndex={defaultIndex} cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }} />
             </BarChart>
         </ResponsiveContainer>
     );
