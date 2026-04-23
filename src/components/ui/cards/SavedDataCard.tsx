@@ -31,7 +31,7 @@ function SavedDataCard({
         return (
             <button
                 onClick={onView}
-                className="w-full rounded-lg border border-blue-200 dark:border-gray-700 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur px-4 py-4 shadow-lg hover:shadow-xl hover:border-blue-400 dark:hover:bg-gray-800/60 dark:hover:border-gray-600 transition-all text-left"
+                className="w-full rounded-lg border border-transparent dark:border-gray-700 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur px-4 py-4 shadow-lg hover:shadow-xl hover:border-[#45d2fd] dark:hover:bg-gray-800/60 dark:hover:border-gray-600 transition-all text-left"
             >
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 space-y-2">
@@ -63,7 +63,7 @@ function SavedDataCard({
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && onView()}
                 aria-label={`Load comparison from ${savedDate}`}
-                className="flex-1 rounded-lg border border-blue-200 dark:border-gray-700 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur p-3 sm:p-4 shadow-lg hover:shadow-xl hover:border-[#45d2fd] dark:hover:border-[#45d2fd]/50 hover:shadow-[#45d2fd]/20 dark:hover:shadow-[#45d2fd]/10 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+                className="flex-1 rounded-lg border border-transparent dark:border-gray-700 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur p-3 sm:p-4 shadow-lg hover:shadow-xl hover:border-[#45d2fd] dark:hover:border-[#45d2fd]/50 hover:shadow-[#45d2fd]/20 dark:hover:shadow-[#45d2fd]/10 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
             >
                 {/* Top row */}
                 <div className="flex items-start justify-between mb-3">
@@ -94,7 +94,7 @@ function SavedDataCard({
 
                 {/* Context */}
                 {(activity || occupation) && (
-                    <div className="border-t border-blue-200 dark:border-gray-700 pt-2 space-y-0.5">
+                    <div className="border-t border-transparent dark:border-gray-700 pt-2 space-y-0.5\">
                         {activity && (
                             <p className="text-xs break-words">
                                 <span className="text-gray-500 dark:text-gray-400">Sector:</span> <span style={{ color: '#45d2fd' }}>{activity}</span>

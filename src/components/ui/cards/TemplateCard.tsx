@@ -32,7 +32,7 @@ function TemplateCard({ template, onClick, showIcon = true }: TemplateCardProps)
 
     return (
         <div
-            className="group relative rounded-lg border border-blue-200 dark:border-gray-700 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur p-3 sm:p-4 hover:bg-gradient-to-br hover:from-blue-100 hover:to-blue-50 dark:hover:bg-gray-700/50 hover:border-[#45d2fd] dark:hover:border-[#45d2fd]/50 transition-all cursor-pointer shadow-lg hover:shadow-xl hover:shadow-[#45d2fd]/20 dark:hover:shadow-[#45d2fd]/10"
+            className="group relative rounded-lg border border-transparent dark:border-gray-700 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur p-3 sm:p-4 hover:bg-gradient-to-br hover:from-blue-100 hover:to-blue-50 dark:hover:bg-gray-700/50 hover:border-[#45d2fd] dark:hover:border-[#45d2fd]/50 transition-all cursor-pointer shadow-lg hover:shadow-xl hover:shadow-[#45d2fd]/20 dark:hover:shadow-[#45d2fd]/10"
             onClick={handleCardClick}
         >
             {/* Header with icon */}
@@ -53,7 +53,7 @@ function TemplateCard({ template, onClick, showIcon = true }: TemplateCardProps)
             </p>
 
             {/* Details grid */}
-            <div className="space-y-1.5 text-xs border-t border-blue-200 dark:border-gray-700/50 pt-3">
+            <div className="space-y-1.5 text-xs border-t border-transparent dark:border-gray-700/50 pt-3\">
                 {template.occupation && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
                         <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Role:</span>
