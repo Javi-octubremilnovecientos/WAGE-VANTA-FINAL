@@ -46,7 +46,7 @@ function ManagePlan() {
             <div>
                 <Link
                     to="/dashboard"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-[#45d2fd] transition-colors mb-4"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-[#45d2fd] transition-colors mb-4"
                 >
                     <ArrowLeftIcon className="h-3 w-3" />
                     Back to Dashboard

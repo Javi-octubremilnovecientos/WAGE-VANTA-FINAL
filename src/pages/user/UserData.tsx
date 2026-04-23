@@ -5,12 +5,12 @@ function UserData() {
             <div className="bg-white rounded-lg shadow p-6">
                 <div className="space-y-4">
                     <div>
-                        <h3 className="font-semibold text-gray-700">Templates</h3>
-                        <p className="text-gray-600">0 templates saved</p>
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-700">Templates</h3>
+                        <p className="text-gray-500 dark:text-gray-600">0 templates saved</p>
                     </div>
                     <div>
-                        <h3 className="font-semibold text-gray-700">Comparisons</h3>
-                        <p className="text-gray-600">0 comparisons saved</p>
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-700">Comparisons</h3>
+                        <p className="text-gray-500 dark:text-gray-600">0 comparisons saved</p>
                     </div>
                 </div>
             </div>

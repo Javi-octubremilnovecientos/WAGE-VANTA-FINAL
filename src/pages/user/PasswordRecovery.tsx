@@ -95,10 +95,10 @@ function PasswordRecovery() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gray-950">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-white dark:bg-gray-950">
             <div className="w-full max-w-md">
                 {/* Card */}
-                <div className="bg-gray-900 border border-gray-800 rounded-xl shadow-2xl p-6">
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl p-6">
                     {/* Icon */}
                     <div className="flex justify-center mb-4">
                         <div className="inline-flex rounded-full bg-[#45d2fd]/20 p-3">
@@ -110,7 +110,7 @@ function PasswordRecovery() {
                     <h1 className="text-2xl font-bold text-white text-center mb-2">
                         Reset Your Password
                     </h1>
-                    <p className="text-sm text-gray-400 text-center mb-6">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">
                         Enter your new password below
                     </p>
 
@@ -142,7 +142,7 @@ function PasswordRecovery() {
                     ) : !isValidToken ? (
                         /* Invalid Token State */
                         <div className="py-4">
-                            <p className="text-sm text-gray-400 text-center mb-4">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
                                 The recovery link is invalid or has expired.
                             </p>
                             <Link
@@ -225,7 +225,7 @@ function PasswordRecovery() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full bg-[#45d2fd] hover:bg-[#22b8d9] text-gray-900 font-semibold py-2.5 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-gray-900 text-sm disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                                className="w-full bg-[#45d2fd] hover:bg-[#22b8d9] text-gray-900 font-semibold py-2.5 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 text-sm disabled:opacity-50 disabled:cursor-not-allowed mt-2"
                             >
                                 {isLoading ? 'Resetting password...' : 'Reset Password'}
                             </button>
@@ -234,7 +234,7 @@ function PasswordRecovery() {
                             <div className="text-center pt-2">
                                 <Link
                                     to="/"
-                                    className="text-xs text-gray-400 hover:text-[#45d2fd] transition-colors"
+                                    className="text-xs text-gray-500 dark:text-gray-400 hover:text-[#45d2fd] transition-colors"
                                 >
                                     ← Back to Home
                                 </Link>

@@ -179,38 +179,38 @@ function UserSettings() {
             <div>
                 <Link
                     to="/dashboard"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-[#45d2fd] transition-colors mb-4"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-[#45d2fd] transition-colors mb-4"
                 >
                     <ArrowLeftIcon className="h-3 w-3" />
                     Back to Dashboard
                 </Link>
 
-                <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
                     Settings
                 </h1>
             </div>
 
             {/* Profile Information Section */}
-            <section className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-4 py-5 shadow-lg sm:px-6">
+            <section className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 backdrop-blur px-4 py-5 shadow-lg sm:px-6">
                 <div className="flex items-center gap-2 mb-4">
                     <Cog6ToothIcon className="h-4 w-4 text-[#45d2fd]" />
-                    <h2 className="text-base font-semibold text-white">Profile Information</h2>
+                    <h2 className="text-base font-semibold text-gray-900 dark:text-white">Profile Information</h2>
                 </div>
-                <p className="text-gray-400 text-xs font-medium mb-4">
+                <p className="text-gray-500 dark:text-gray-400 text-xs font-medium mb-4">
                     Manage your profile details and preferences
                 </p>
 
                 <div className="space-y-3 pt-3">
-                    <div className="flex items-center justify-between pb-3 border-b border-gray-700">
+                    <div className="flex items-center justify-between pb-3 border-b border-gray-300 dark:border-gray-700">
                         <div className="flex-1 min-w-0 mr-3">
-                            <p className="text-xs font-medium text-gray-400">Full Name</p>
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Full Name</p>
                             <input
                                 type="text"
                                 value={fields.name.editing ? fields.name.value : (user?.name ?? '')}
                                 onChange={(e) => handleFieldChange('name', e.target.value)}
                                 disabled={!fields.name.editing || isUpdatingUser}
                                 aria-label="Full name"
-                                className="bg-transparent text-gray-300 text-sm mt-0.5 w-full focus:outline-none disabled:cursor-default enabled:border-b enabled:border-[#45d2fd]/60 transition-all"
+                                className="bg-transparent text-gray-700 dark:text-gray-300 text-sm mt-0.5 w-full focus:outline-none disabled:cursor-default enabled:border-b enabled:border-[#45d2fd]/60 transition-all"
                             />
                         </div>
                         <button
@@ -224,17 +224,17 @@ function UserSettings() {
                                 : <PencilIcon className="h-4 w-4" />}
                         </button>
                     </div>
-                    <div className="pb-3 border-b border-gray-700">
+                    <div className="pb-3 border-b border-gray-300 dark:border-gray-700">
                         <div className="flex items-center justify-between">
                             <div className="flex-1 min-w-0 mr-3">
-                                <p className="text-xs font-medium text-gray-400">Email Address</p>
+                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Email Address</p>
                                 <input
                                     type="email"
                                     value={fields.email.editing ? fields.email.value : (user?.email ?? '')}
                                     onChange={(e) => handleFieldChange('email', e.target.value)}
                                     disabled={!fields.email.editing || isUpdatingUser}
                                     aria-label="Email address"
-                                    className="bg-transparent text-gray-300 text-sm mt-0.5 w-full focus:outline-none disabled:cursor-default enabled:border-b enabled:border-[#45d2fd]/60 transition-all"
+                                    className="bg-transparent text-gray-700 dark:text-gray-300 text-sm mt-0.5 w-full focus:outline-none disabled:cursor-default enabled:border-b enabled:border-[#45d2fd]/60 transition-all"
                                 />
                             </div>
                             <button
@@ -257,8 +257,8 @@ function UserSettings() {
                     </div>
 
                     {/* Avatar Upload Section - moved to bottom */}
-                    <div className="pt-3 mt-6 border-t border-gray-700">
-                        <p className="text-xs font-medium text-gray-400 mb-3">Profile Picture</p>
+                    <div className="pt-3 mt-6 border-t border-gray-300 dark:border-gray-700">
+                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Profile Picture</p>
                         <AvatarUploader
                             currentAvatarUrl={user?.avatarUrl}
                             userId={user?.id ?? ''}
@@ -283,18 +283,18 @@ function UserSettings() {
             </section>
 
             {/* Security Section */}
-            <section className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-4 py-5 shadow-lg sm:px-6">
+            <section className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 backdrop-blur px-4 py-5 shadow-lg sm:px-6">
                 <div className="flex items-center gap-2 mb-4">
                     <LockClosedIcon className="h-4 w-4 text-[#45d2fd]" />
-                    <h2 className="text-base font-semibold text-white">Security</h2>
+                    <h2 className="text-base font-semibold text-gray-900 dark:text-white">Security</h2>
                 </div>
                 <div className="space-y-3">
                     {!fields.password.editing ? (
                         /* Vista normal - password oculta */
-                        <div className="flex items-center justify-between pb-3 border-b border-gray-700">
+                        <div className="flex items-center justify-between pb-3 border-b border-gray-300 dark:border-gray-700">
                             <div className="flex-1 min-w-0 mr-3">
-                                <p className="text-xs font-medium text-gray-400">Password</p>
-                                <p className="text-gray-300 text-sm mt-0.5">••••••••</p>
+                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Password</p>
+                                <p className="text-gray-700 dark:text-gray-300 text-sm mt-0.5">••••••••</p>
                             </div>
                             <button
                                 onClick={() => handleToggleEdit('password')}
@@ -307,12 +307,12 @@ function UserSettings() {
                         </div>
                     ) : (
                         /* Modo edición - tres campos de password */
-                        <div className="space-y-3 pb-3 border-b border-gray-700">
+                        <div className="space-y-3 pb-3 border-b border-gray-300 dark:border-gray-700">
                             <div className="flex items-start justify-between">
                                 <div className="flex-1 min-w-0 mr-3 space-y-3">
                                     {/* Current Password */}
                                     <div>
-                                        <label htmlFor="current-password" className="text-xs font-medium text-gray-400 block mb-1">
+                                        <label htmlFor="current-password" className="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-1">
                                             Current Password
                                         </label>
                                         <input
@@ -322,13 +322,13 @@ function UserSettings() {
                                             onChange={(e) => setPasswordFields(prev => ({ ...prev, current: e.target.value }))}
                                             disabled={isUpdatingUser}
                                             placeholder="Enter current password"
-                                            className="bg-transparent text-gray-300 text-sm w-full focus:outline-none border-b border-gray-600 focus:border-[#45d2fd]/60 transition-all pb-1 disabled:opacity-50"
+                                            className="bg-transparent text-gray-700 dark:text-gray-300 text-sm w-full focus:outline-none border-b border-gray-300 dark:border-gray-600 focus:border-[#45d2fd]/60 transition-all pb-1 disabled:opacity-50"
                                         />
                                     </div>
 
                                     {/* New Password */}
                                     <div>
-                                        <label htmlFor="new-password" className="text-xs font-medium text-gray-400 block mb-1">
+                                        <label htmlFor="new-password" className="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-1">
                                             New Password
                                         </label>
                                         <input
@@ -338,13 +338,13 @@ function UserSettings() {
                                             onChange={(e) => setPasswordFields(prev => ({ ...prev, new: e.target.value }))}
                                             disabled={isUpdatingUser}
                                             placeholder="Enter new password (min 6 characters)"
-                                            className="bg-transparent text-gray-300 text-sm w-full focus:outline-none border-b border-gray-600 focus:border-[#45d2fd]/60 transition-all pb-1 disabled:opacity-50"
+                                            className="bg-transparent text-gray-700 dark:text-gray-300 text-sm w-full focus:outline-none border-b border-gray-300 dark:border-gray-600 focus:border-[#45d2fd]/60 transition-all pb-1 disabled:opacity-50"
                                         />
                                     </div>
 
                                     {/* Confirm New Password */}
                                     <div>
-                                        <label htmlFor="confirm-password" className="text-xs font-medium text-gray-400 block mb-1">
+                                        <label htmlFor="confirm-password" className="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-1">
                                             Confirm New Password
                                         </label>
                                         <input
@@ -354,7 +354,7 @@ function UserSettings() {
                                             onChange={(e) => setPasswordFields(prev => ({ ...prev, confirm: e.target.value }))}
                                             disabled={isUpdatingUser}
                                             placeholder="Re-enter new password"
-                                            className="bg-transparent text-gray-300 text-sm w-full focus:outline-none border-b border-gray-600 focus:border-[#45d2fd]/60 transition-all pb-1 disabled:opacity-50"
+                                            className="bg-transparent text-gray-700 dark:text-gray-300 text-sm w-full focus:outline-none border-b border-gray-300 dark:border-gray-600 focus:border-[#45d2fd]/60 transition-all pb-1 disabled:opacity-50"
                                         />
                                     </div>
                                 </div>
@@ -395,7 +395,7 @@ function UserSettings() {
                             <button
                                 onClick={() => handleToggleEdit('password')}
                                 disabled={isUpdatingUser}
-                                className="text-xs text-gray-400 hover:text-gray-300 transition-colors disabled:opacity-50"
+                                className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors disabled:opacity-50"
                             >
                                 Cancel
                             </button>
@@ -405,16 +405,16 @@ function UserSettings() {
             </section>
 
             {/* Payment Method Section */}
-            <section className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-4 py-5 shadow-lg sm:px-6">
+            <section className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 backdrop-blur px-4 py-5 shadow-lg sm:px-6">
                 <div className="flex items-center gap-2 mb-4">
                     <CreditCardIcon className="h-4 w-4 text-[#45d2fd]" />
-                    <h2 className="text-base font-semibold text-white">Payment Method</h2>
+                    <h2 className="text-base font-semibold text-gray-900 dark:text-white">Payment Method</h2>
                 </div>
                 <div className="space-y-3">
-                    <div className="flex items-center justify-between pb-3 border-b border-gray-700">
+                    <div className="flex items-center justify-between pb-3 border-b border-gray-300 dark:border-gray-700">
                         <div>
-                            <p className="text-xs font-medium text-gray-400">Current Plan</p>
-                            <p className="text-gray-300 mt-0.5">{isPremium ? 'Premium Plan' : 'Free Plan'}</p>
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Current Plan</p>
+                            <p className="text-gray-700 dark:text-gray-300 mt-0.5">{isPremium ? 'Premium Plan' : 'Free Plan'}</p>
                         </div>
                         <Link
                             to="/manage-plan"
@@ -425,8 +425,8 @@ function UserSettings() {
                     </div>
                     <div className="flex items-center justify-between pt-3">
                         <div>
-                            <p className="text-xs font-medium text-gray-400">Saved Card</p>
-                            <p className="text-gray-300 mt-0.5">No card on file</p>
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Saved Card</p>
+                            <p className="text-gray-700 dark:text-gray-300 mt-0.5">No card on file</p>
                         </div>
                         <button className="text-[#45d2fd] hover:text-[#22b8d9] transition-colors text-xs font-semibold">
                             Add card →

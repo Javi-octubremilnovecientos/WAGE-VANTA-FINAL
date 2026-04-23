@@ -5,7 +5,7 @@ export const GrowthCustomTooltip: React.FC<GrowthTooltipProps> = ({ active, payl
     if (!active || !payload || payload.length === 0) return null;
 
     return (
-        <div className="bg-gray-900/95 border border-gray-700 rounded-lg p-3 shadow-xl backdrop-blur-sm">
+        <div className="bg-white dark:bg-gray-900/95 border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-xl backdrop-blur-sm">
             <p className="text-xs font-semibold text-gray-300 mb-2">{label}</p>
             <div className="space-y-1">
                 {payload.map((entry) => (
