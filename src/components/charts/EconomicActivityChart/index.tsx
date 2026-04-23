@@ -19,7 +19,7 @@ const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
     height = 300,
 }) => {
     const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const axisColor = isDark ? '#e5e7eb' : '#111827';
+    const axisColor = isDark ? '#ffffff' : '#000000';
 
     /** Líneas de referencia verticales en la posición del salario mediano computado */
     const referenceLines = useMemo(

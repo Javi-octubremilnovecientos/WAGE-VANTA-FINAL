@@ -84,7 +84,7 @@ interface MainChartProps {
 export default function MainChart({ data = [], userWage, defaultIndex, isLoading = false }: MainChartProps) {
     const skeletonHeights = [75, 90, 65]; // Fixed heights for skeleton bars
     const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const yAxisColor = isDark ? '#e5e7eb' : '#111827';
+    const yAxisColor = isDark ? '#ffffff' : '#000000';
 
     if (isLoading) {
         return (
