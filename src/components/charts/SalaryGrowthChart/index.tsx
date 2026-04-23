@@ -28,7 +28,7 @@ const SalaryGrowthChartComponent: React.FC<SalaryGrowthChartProps> = ({
     );
 
     const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const axisColor = isDark ? '#d1d5db' : '#1f2937';
+    const axisColor = isDark ? '#e5e7eb' : '#1f2937';
 
     if (selectedCountries.length === 0) {
         return (
