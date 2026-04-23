@@ -84,7 +84,7 @@ interface MainChartProps {
 export default function MainChart({ data = [], userWage, defaultIndex, isLoading = false }: MainChartProps) {
     const skeletonHeights = [75, 90, 65]; // Fixed heights for skeleton bars
     const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const yAxisColor = isDark ? '#9ca3af' : '#1f2937';
+    const yAxisColor = isDark ? '#d1d5db' : '#1f2937';
 
     if (isLoading) {
         return (
@@ -132,7 +132,7 @@ export default function MainChart({ data = [], userWage, defaultIndex, isLoading
                     stroke={yAxisColor}
                     tickFormatter={(value) => `${value}€`}
                 />
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-700" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-600" />
                 <Bar dataKey={boxDataKey} shape={BoxShape}>
                     <ErrorBar dataKey={whiskerDataKey} width={0} zIndex={DefaultZIndexes.bar - 1} />
                 </Bar>

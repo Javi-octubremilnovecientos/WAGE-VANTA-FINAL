@@ -20,7 +20,7 @@ const OccupationComparisonChartComponent: React.FC<OccupationComparisonChartProp
 }) => {
     const bandData = useMemo(() => transformToBandData(MOCK_OCCUPATION_BANDS), []);
     const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const axisColor = isDark ? '#9ca3af' : '#1f2937';
+    const axisColor = isDark ? '#d1d5db' : '#1f2937';
 
     return (
         <ResponsiveContainer width="100%" height={height}>
@@ -35,7 +35,7 @@ const OccupationComparisonChartComponent: React.FC<OccupationComparisonChartProp
                     </linearGradient>
                 </defs>
 
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-700" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-600" />
 
                 <XAxis
                     dataKey="level"

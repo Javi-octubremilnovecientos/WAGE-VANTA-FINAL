@@ -19,7 +19,7 @@ const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
     height = 300,
 }) => {
     const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const axisColor = isDark ? '#9ca3af' : '#1f2937';
+    const axisColor = isDark ? '#d1d5db' : '#1f2937';
 
     /** Líneas de referencia verticales en la posición del salario mediano computado */
     const referenceLines = useMemo(
@@ -45,7 +45,7 @@ const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
                     </linearGradient>
                 </defs>
 
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-700" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-600" />
 
                 {/* Eje X numérico para permitir ReferenceLine en posición exacta */}
                 <XAxis

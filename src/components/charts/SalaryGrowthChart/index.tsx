@@ -28,7 +28,7 @@ const SalaryGrowthChartComponent: React.FC<SalaryGrowthChartProps> = ({
     );
 
     const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const axisColor = isDark ? '#9ca3af' : '#1f2937';
+    const axisColor = isDark ? '#d1d5db' : '#1f2937';
 
     if (selectedCountries.length === 0) {
         return (
@@ -46,7 +46,7 @@ const SalaryGrowthChartComponent: React.FC<SalaryGrowthChartProps> = ({
                 barCategoryGap="20%"
                 barGap={2}
             >
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-700" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-600" />
                 <XAxis
                     dataKey="year"
                     tick={{ fill: axisColor, fontSize: 10 }}
