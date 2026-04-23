@@ -113,7 +113,7 @@ function SavedDataCard({
             {onDelete && (
                 <button
                     onClick={onDelete}
-                    className="self-start sm:mt-2 p-2 text-gray-500 dark:text-gray-400 hover:text-[#45d2fd] transition-colors rounded-lg hover:bg-[#45d2fd]/10 flex-shrink-0"
+                    className="self-start sm:mt-2 p-2 text-[#45d2fd] hover:text-[#22b8d9] transition-colors rounded-lg hover:bg-[#45d2fd]/10 flex-shrink-0"
                     aria-label="Delete comparison"
                 >
                     <TrashIcon className="h-5 w-5" />
