@@ -51,7 +51,7 @@ function TemplateStack({ templates, onTemplateClick, onTemplateDelete }: Templat
                 {onTemplateDelete && (
                     <button
                         onClick={() => onTemplateDelete(templates[0].id)}
-                        className="self-start sm:mt-2 p-2 text-gray-400 hover:text-red-400 transition-colors rounded-lg hover:bg-red-400/10 flex-shrink-0"
+                        className="self-start sm:mt-2 p-2 text-[#45d2fd] hover:text-[#22b8d9] transition-colors rounded-lg hover:bg-[#45d2fd]/10 flex-shrink-0"
                         aria-label="Delete template"
                     >
                         <TrashIcon className="h-5 w-5" />
@@ -135,7 +135,7 @@ function TemplateStack({ templates, onTemplateClick, onTemplateDelete }: Templat
                 {onTemplateDelete && (
                     <button
                         onClick={() => onTemplateDelete(activeTemplate.id)}
-                        className="self-start sm:mt-2 p-2 text-gray-400 hover:text-red-400 transition-colors rounded-lg hover:bg-red-400/10 flex-shrink-0"
+                        className="self-start sm:mt-2 p-2 text-[#45d2fd] hover:text-[#22b8d9] transition-colors rounded-lg hover:bg-[#45d2fd]/10 flex-shrink-0"
                         aria-label="Delete template"
                     >
                         <TrashIcon className="h-5 w-5" />
