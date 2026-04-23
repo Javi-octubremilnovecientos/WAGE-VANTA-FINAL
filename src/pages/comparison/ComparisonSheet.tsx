@@ -26,7 +26,7 @@ function ComparisonSheet() {
     const [exportModalOpen, setExportModalOpen] = useState(false);
     const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
     const [authModalOpen, setAuthModalOpen] = useState(false);
-    const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+    const [authMode, setAuthMode] = useState<'login' | 'signup' | 'recovery'>('login');
     const [savedFeedback, setSavedFeedback] = useState(false);
 
     const [updateUser] = useUpdateUserMutation();

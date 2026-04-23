@@ -107,7 +107,7 @@ function PasswordRecovery() {
                     </div>
 
                     {/* Title */}
-                    <h1 className="text-2xl font-bold text-white text-center mb-2">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-2">
                         Reset Your Password
                     </h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">
@@ -157,7 +157,7 @@ function PasswordRecovery() {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             {/* New Password */}
                             <div>
-                                <label htmlFor="new-password" className="block text-xs font-medium text-white mb-1.5">
+                                <label htmlFor="new-password" className="block text-xs font-medium text-gray-900 dark:text-white mb-1.5">
                                     New Password
                                 </label>
                                 <div className="relative">
@@ -190,7 +190,7 @@ function PasswordRecovery() {
 
                             {/* Confirm Password */}
                             <div>
-                                <label htmlFor="confirm-password" className="block text-xs font-medium text-white mb-1.5">
+                                <label htmlFor="confirm-password" className="block text-xs font-medium text-gray-900 dark:text-white mb-1.5">
                                     Confirm New Password
                                 </label>
                                 <div className="relative">

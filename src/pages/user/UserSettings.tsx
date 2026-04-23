@@ -31,7 +31,6 @@ function UserSettings() {
 
     // Estados para avatar upload
     const [avatarSuccess, setAvatarSuccess] = useState(false);
-    const [avatarError, setAvatarError] = useState<string | null>(null);
 
     const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
 
@@ -112,7 +111,7 @@ function UserSettings() {
                     }));
                     setPasswordSuccess(false);
                 }, 3000);
-            } catch (error: any) {
+            } catch (error: unknown) {
                 // Manejar errores específicos de Supabase
                 if (error?.data?.error_code === 'current_password_required') {
                     setPasswordError('Current password is required');

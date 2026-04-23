@@ -51,8 +51,8 @@ export default function PlanLimitBadge({
             {/* Badge de contador */}
             <span
                 className={`inline-flex items-center rounded-full border backdrop-blur px-2.5 py-0.5 text-xs font-medium shadow-sm transition-colors ${isLimitReached
-                        ? 'border-orange-600/50 bg-orange-500/10 text-orange-300'
-                        : 'border-gray-700 bg-gray-800/50 text-gray-300'
+                    ? 'border-orange-600/50 bg-orange-500/10 text-orange-300'
+                    : 'border-gray-300 dark:border-gray-700 bg-gray-100/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-300'
                     }`}
             >
                 {label}: {current} / {max}

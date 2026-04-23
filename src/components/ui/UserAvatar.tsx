@@ -86,7 +86,7 @@ function UserAvatar({ avatarUrl, userName = '', size = 'md', className = '' }: U
 
         return (
             <div
-                className={`${sizeClass} rounded-full ${bgColor} flex items-center justify-center text-white font-semibold border-2 border-gray-600 ${className}`}
+                className={`${sizeClass} rounded-full ${bgColor} flex items-center justify-center text-gray-900 dark:text-white font-semibold border-2 border-gray-300 dark:border-gray-600 ${className}`}
                 aria-label={`${userName}'s avatar`}
             >
                 {initials}
@@ -97,7 +97,7 @@ function UserAvatar({ avatarUrl, userName = '', size = 'md', className = '' }: U
     // Fallback final: icono genérico de usuario
     return (
         <div
-            className={`${sizeClass} rounded-full bg-gray-700 flex items-center justify-center text-gray-400 border-2 border-gray-600 ${className}`}
+            className={`${sizeClass} rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 border-2 border-gray-300 dark:border-gray-600 ${className}`}
             aria-label="Default user avatar"
         >
             <svg

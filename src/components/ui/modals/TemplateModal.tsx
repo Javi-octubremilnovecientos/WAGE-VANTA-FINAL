@@ -137,11 +137,11 @@ function TemplateModal({
             aria-modal="true"
             aria-labelledby="template-modal-title"
         >
-            <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-lg p-5 shadow-xl">
+            <div className="w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow-xl">
                 {/* Title */}
                 <h2
                     id="template-modal-title"
-                    className="text-lg font-bold mb-3 text-white flex items-center gap-2"
+                    className="text-lg font-bold mb-3 text-gray-900 dark:text-white flex items-center gap-2"
                 >
                     <DocumentTextIcon className="h-5 w-5 text-[#45d2fd]" />
                     {mode === 'save' ? 'Save Template' : 'Load Template'}
@@ -186,7 +186,7 @@ function TemplateModal({
                             </div>
                         ) : (
                             /* Confirmación de guardado */
-                            <div className="rounded-lg border border-gray-700 bg-gray-800/40 p-4">
+                            <div className="rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 p-4">
                                 <p className="text-sm text-gray-300 mb-3">
                                     Save current form values as a template for quick reuse.
                                 </p>

@@ -27,7 +27,8 @@ const themeSlice = createSlice({
         toggleTheme: (state) => {
             if (state.mode === 'light') {
                 state.mode = 'dark';
-            } else if (state.mode === 'dark') {
+            } else {
+                // Si está en 'dark' o 'system', siempre pasa a 'light' o 'dark' respectivamente
                 state.mode = 'light';
             }
         },

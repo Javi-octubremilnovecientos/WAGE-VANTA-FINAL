@@ -56,7 +56,7 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
             aria-modal="true"
             aria-labelledby="upgrade-modal-title"
         >
-            <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-lg p-4 shadow-xl">
+            <div className="w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-xl">
                 {/* Title */}
                 <h2
                     id="upgrade-modal-title"
@@ -74,13 +74,13 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
                 <div className="flex gap-2">
                     <button
                         onClick={handleUpgrade}
-                        className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-gray-900"
+                        className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
                     >
                         Upgrade to Premium
                     </button>
                     <button
                         onClick={onClose}
-                        className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-gray-300 bg-gray-800 hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                        className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
                     >
                         Not now
                     </button>

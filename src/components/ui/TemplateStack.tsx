@@ -78,8 +78,8 @@ function TemplateStack({ templates, onTemplateClick, onTemplateDelete }: Templat
                                 rounded-t-lg border-t-2 border-x-2 border-b-0
                                 min-w-[120px] max-w-[180px] truncate
                                 ${isActive
-                                    ? 'bg-gray-800/40 border-[#45d2fd] text-white z-10 -mb-[2px]'
-                                    : 'bg-gray-900/60 border-gray-700 text-gray-400 hover:text-gray-300 hover:border-gray-600'
+                                    ? 'bg-gray-100/40 dark:bg-gray-800/40 border-[#45d2fd] text-gray-900 dark:text-white z-10 -mb-[2px]'
+                                    : 'bg-gray-50/60 dark:bg-gray-900/60 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-400 dark:hover:border-gray-600'
                                 }
                             `}
                             style={{
@@ -92,7 +92,7 @@ function TemplateStack({ templates, onTemplateClick, onTemplateDelete }: Templat
                                 {template.country} • {template.gender}
                             </span>
                             {isActive && (
-                                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gray-800/40" />
+                                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gray-100/40 dark:bg-gray-800/40" />
                             )}
                         </button>
                     );
@@ -106,12 +106,12 @@ function TemplateStack({ templates, onTemplateClick, onTemplateDelete }: Templat
                     {templates.length > 1 && (
                         <>
                             <div
-                                className="absolute top-2 left-2 right-2 h-full rounded-lg bg-gray-800/20 border border-gray-700/30 -z-10"
+                                className="absolute top-2 left-2 right-2 h-full rounded-lg bg-gray-100/20 dark:bg-gray-800/20 border border-gray-300/30 dark:border-gray-700/30 -z-10"
                                 style={{ transform: 'translateY(4px)' }}
                             />
                             {templates.length > 2 && (
                                 <div
-                                    className="absolute top-4 left-4 right-4 h-full rounded-lg bg-gray-800/10 border border-gray-700/20 -z-20"
+                                    className="absolute top-4 left-4 right-4 h-full rounded-lg bg-gray-100/10 dark:bg-gray-800/10 border border-gray-300/20 dark:border-gray-700/20 -z-20"
                                     style={{ transform: 'translateY(8px)' }}
                                 />
                             )}

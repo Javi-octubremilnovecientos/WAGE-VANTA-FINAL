@@ -150,11 +150,11 @@ export default function ExportModal({
             aria-modal="true"
             aria-labelledby="export-modal-title"
         >
-            <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-lg p-5 shadow-xl">
+            <div className="w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow-xl">
                 {/* Title */}
                 <h2
                     id="export-modal-title"
-                    className="text-lg font-bold mb-3 text-white"
+                    className="text-lg font-bold mb-3 text-gray-900 dark:text-white"
                 >
                     Export Comparison
                 </h2>
@@ -182,13 +182,13 @@ export default function ExportModal({
                                     onClose();
                                     onUpgradeRequired();
                                 }}
-                                className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-gray-900"
+                                className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
                             >
                                 Upgrade to Premium
                             </button>
                             <button
                                 onClick={onClose}
-                                className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-gray-300 bg-gray-800 hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                                className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
                             >
                                 Close
                             </button>
@@ -208,9 +208,9 @@ export default function ExportModal({
                                     key={option.format}
                                     onClick={option.handler}
                                     disabled={!option.available || isExporting}
-                                    className="w-full flex items-center justify-between gap-3 rounded-md border border-gray-700 bg-gray-800/40 px-4 py-3 text-left transition-all hover:bg-gray-700/50 hover:border-[#45d2fd]/50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-gray-900"
+                                    className="w-full flex items-center justify-between gap-3 rounded-md border border-gray-300 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 px-4 py-3 text-left transition-all hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:border-[#45d2fd]/50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
                                 >
-                                    <span className="text-sm font-medium text-white">
+                                    <span className="text-sm font-medium text-gray-900 dark:text-white">
                                         {option.label}
                                     </span>
                                     <ArrowDownTrayIcon className="h-4 w-4 text-gray-400" />
@@ -227,7 +227,7 @@ export default function ExportModal({
                         <button
                             onClick={onClose}
                             disabled={isExporting}
-                            className="w-full rounded-md px-3 py-2 text-sm font-semibold text-gray-300 bg-gray-800 hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                            className="w-full rounded-md px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
                         >
                             Cancel
                         </button>
