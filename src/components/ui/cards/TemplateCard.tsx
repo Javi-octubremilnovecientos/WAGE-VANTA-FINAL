@@ -57,7 +57,7 @@ function TemplateCard({ template, onClick, showIcon = true }: TemplateCardProps)
                 {template.occupation && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
                         <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Role:</span>
-                        <span className="text-blue-700 dark:text-blue-300 font-medium break-words">
+                        <span className="font-medium break-words" style={{ color: '#45d2fd' }}>
                             {template.occupation}
                         </span>
                     </div>
@@ -65,7 +65,7 @@ function TemplateCard({ template, onClick, showIcon = true }: TemplateCardProps)
                 {template.position && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
                         <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Level:</span>
-                        <span className="text-blue-700 dark:text-blue-300 font-medium break-words">
+                        <span className="font-medium break-words" style={{ color: '#45d2fd' }}>
                             {template.position}
                         </span>
                     </div>
@@ -73,7 +73,7 @@ function TemplateCard({ template, onClick, showIcon = true }: TemplateCardProps)
                 {template.economicActivity && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
                         <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Sector:</span>
-                        <span className="text-blue-700 dark:text-blue-300 font-medium break-words">
+                        <span className="font-medium break-words" style={{ color: '#45d2fd' }}>
                             {template.economicActivity}
                         </span>
                     </div>
@@ -81,7 +81,7 @@ function TemplateCard({ template, onClick, showIcon = true }: TemplateCardProps)
                 {template.educationLevel && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
                         <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Education:</span>
-                        <span className="text-blue-700 dark:text-blue-300 font-medium break-words">
+                        <span className="font-medium break-words" style={{ color: '#45d2fd' }}>
                             {template.educationLevel}
                         </span>
                     </div>
@@ -89,7 +89,7 @@ function TemplateCard({ template, onClick, showIcon = true }: TemplateCardProps)
                 {template.companySize && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
                         <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Company:</span>
-                        <span className="text-blue-700 dark:text-blue-300 font-medium break-words">
+                        <span className="font-medium break-words" style={{ color: '#45d2fd' }}>
                             {template.companySize}
                         </span>
                     </div>
@@ -97,7 +97,7 @@ function TemplateCard({ template, onClick, showIcon = true }: TemplateCardProps)
                 {template.experienceYears !== undefined && template.experienceYears > 0 && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
                         <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Experience:</span>
-                        <span className="text-blue-700 dark:text-blue-300 font-medium">
+                        <span className="font-medium" style={{ color: '#45d2fd' }}>
                             {template.experienceYears} {template.experienceYears === 1 ? 'year' : 'years'}
                         </span>
                     </div>
