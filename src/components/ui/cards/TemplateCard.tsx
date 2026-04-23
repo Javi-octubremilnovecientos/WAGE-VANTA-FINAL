@@ -53,51 +53,51 @@ function TemplateCard({ template, onClick, showIcon = true }: TemplateCardProps)
             </p>
 
             {/* Details grid */}
-            <div className="space-y-1.5 text-xs text-gray-700 dark:text-gray-300 border-t border-blue-200 dark:border-gray-700/50 pt-3">
+            <div className="space-y-1.5 text-xs border-t border-blue-200 dark:border-gray-700/50 pt-3">
                 {template.occupation && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
-                        <span className="text-gray-500 flex-shrink-0">Role:</span>
-                        <span className="text-white font-medium break-words">
+                        <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Role:</span>
+                        <span className="text-blue-700 dark:text-blue-300 font-medium break-words">
                             {template.occupation}
                         </span>
                     </div>
                 )}
                 {template.position && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
-                        <span className="text-gray-500 flex-shrink-0">Level:</span>
-                        <span className="text-white font-medium break-words">
+                        <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Level:</span>
+                        <span className="text-blue-700 dark:text-blue-300 font-medium break-words">
                             {template.position}
                         </span>
                     </div>
                 )}
                 {template.economicActivity && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
-                        <span className="text-gray-500 flex-shrink-0">Sector:</span>
-                        <span className="text-white font-medium break-words">
+                        <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Sector:</span>
+                        <span className="text-blue-700 dark:text-blue-300 font-medium break-words">
                             {template.economicActivity}
                         </span>
                     </div>
                 )}
                 {template.educationLevel && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
-                        <span className="text-gray-500 flex-shrink-0">Education:</span>
-                        <span className="text-white font-medium break-words">
+                        <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Education:</span>
+                        <span className="text-blue-700 dark:text-blue-300 font-medium break-words">
                             {template.educationLevel}
                         </span>
                     </div>
                 )}
                 {template.companySize && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
-                        <span className="text-gray-500 flex-shrink-0">Company:</span>
-                        <span className="text-white font-medium break-words">
+                        <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Company:</span>
+                        <span className="text-blue-700 dark:text-blue-300 font-medium break-words">
                             {template.companySize}
                         </span>
                     </div>
                 )}
                 {template.experienceYears !== undefined && template.experienceYears > 0 && (
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
-                        <span className="text-gray-500 flex-shrink-0">Experience:</span>
-                        <span className="text-white font-medium">
+                        <span className="text-gray-500 dark:text-gray-400 flex-shrink-0">Experience:</span>
+                        <span className="text-blue-700 dark:text-blue-300 font-medium">
                             {template.experienceYears} {template.experienceYears === 1 ? 'year' : 'years'}
                         </span>
                     </div>
