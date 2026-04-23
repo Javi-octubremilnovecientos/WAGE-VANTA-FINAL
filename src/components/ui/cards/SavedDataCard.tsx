@@ -86,8 +86,8 @@ function SavedDataCard({
                 {/* Medians */}
                 <div className="space-y-1 mb-3">
                     {medians.map((m) => (
-                        <p key={m} className="text-xs text-gray-600 dark:text-gray-400">
-                            Median — {m}
+                        <p key={m} className="text-xs text-gray-500 dark:text-gray-400">
+                            Median — <span style={{ color: '#45d2fd' }}>{m.split(': ')[1]}</span>
                         </p>
                     ))}
                 </div>
@@ -96,13 +96,13 @@ function SavedDataCard({
                 {(activity || occupation) && (
                     <div className="border-t border-blue-200 dark:border-gray-700 pt-2 space-y-0.5">
                         {activity && (
-                            <p className="text-xs text-gray-600 dark:text-gray-500 break-words">
-                                <span className="text-gray-700 dark:text-gray-400">Sector:</span> {activity}
+                            <p className="text-xs break-words">
+                                <span className="text-gray-500 dark:text-gray-400">Sector:</span> <span style={{ color: '#45d2fd' }}>{activity}</span>
                             </p>
                         )}
                         {occupation && (
-                            <p className="text-xs text-gray-600 dark:text-gray-500 break-words">
-                                <span className="text-gray-700 dark:text-gray-400">Occupation:</span> {occupation}
+                            <p className="text-xs break-words">
+                                <span className="text-gray-500 dark:text-gray-400">Occupation:</span> <span style={{ color: '#45d2fd' }}>{occupation}</span>
                             </p>
                         )}
                     </div>
