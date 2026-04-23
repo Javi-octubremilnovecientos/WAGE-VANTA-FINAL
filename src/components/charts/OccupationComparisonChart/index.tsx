@@ -20,7 +20,7 @@ const OccupationComparisonChartComponent: React.FC<OccupationComparisonChartProp
 }) => {
     const bandData = useMemo(() => transformToBandData(MOCK_OCCUPATION_BANDS), []);
     const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const axisColor = isDark ? '#e5e7eb' : '#1f2937';
+    const axisColor = isDark ? '#e5e7eb' : '#111827';
 
     return (
         <ResponsiveContainer width="100%" height={height}>
