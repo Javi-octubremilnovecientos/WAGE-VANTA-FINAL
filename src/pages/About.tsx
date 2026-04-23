@@ -51,16 +51,16 @@ function About() {
             <div>
                 <Link
                     to="/"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-[#45d2fd] transition-colors mb-4"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-[#45d2fd] transition-colors mb-4"
                 >
                     <ArrowLeftIcon className="h-3 w-3" />
                     Back to Home
                 </Link>
 
-                <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl mb-3">
+                <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl mb-3">
                     About Wage Comparator
                 </h1>
-                <p className="text-sm font-medium text-gray-400 max-w-3xl">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 max-w-3xl">
                     Understanding how your salary compares to wage distributions across Europe couldn't be easier or more precise. We make it visual, intuitive, and accessible—whether you're negotiating a raise, planning a move abroad, or just curious.
                 </p>
             </div>
@@ -80,44 +80,44 @@ function About() {
             </section>
 
             {/* Data Sources */}
-            <section className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-5 py-5 shadow-lg">
+            <section className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 backdrop-blur px-5 py-5 shadow-lg">
                 <div className="flex items-center gap-2 mb-3">
                     <CircleStackIcon className="h-4 w-4 text-[#45d2fd]" />
-                    <h2 className="text-lg font-semibold text-white">Data Sources</h2>
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Data Sources</h2>
                 </div>
-                <p className="text-gray-400 text-sm font-medium leading-relaxed">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed">
                     Our wage data is sourced from Eurostat's Structure of Earnings Survey (SES) and complementary national statistical office publications. Data is updated quarterly and tied to the most recent pan-European employment reports.
                 </p>
             </section>
 
             {/* Privacy & Support */}
-            <section className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-5 py-5 shadow-lg">
+            <section className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 backdrop-blur px-5 py-5 shadow-lg">
                 <div className="flex items-center gap-2 mb-4">
                     <LockClosedIcon className="h-4 w-4 text-[#45d2fd]" />
-                    <h2 className="text-lg font-semibold text-white">Privacy & Support</h2>
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Privacy & Support</h2>
                 </div>
 
                 {/* Your Privacy */}
                 <div className="mb-5">
-                    <h3 className="text-base font-semibold text-white mb-2">Your Privacy</h3>
-                    <p className="text-gray-400 text-sm font-medium leading-relaxed mb-2">
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">Your Privacy</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed mb-2">
                         We collect only the minimum data necessary to provide the service: your account email (if you register) and any explicit data.
                     </p>
-                    <p className="text-gray-400 text-sm font-medium leading-relaxed mb-2">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed mb-2">
                         Your wage inputs are never stored unless you choose to save them as a template or comparison sheet.
                     </p>
-                    <p className="text-gray-400 text-sm font-medium leading-relaxed">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed">
                         We never (re-)sell, re-share your personal data with third parties.
                     </p>
-                    <p className="text-gray-400 text-sm font-medium leading-relaxed mt-2">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed mt-2">
                         You have the right to request deletion of your account and all associated data at any time from your account settings.
                     </p>
                 </div>
 
                 {/* GDPR Rights */}
                 <div className="mb-5">
-                    <h3 className="text-base font-semibold text-white mb-2">GDPR Rights</h3>
-                    <ul className="space-y-1.5 text-gray-400 text-sm font-medium">
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">GDPR Rights</h3>
+                    <ul className="space-y-1.5 text-gray-500 dark:text-gray-400 text-sm font-medium">
                         <li>• Right to access your data</li>
                         <li>• Right to have your data erased</li>
                         <li>• Right to erasure ("right to be forgotten")</li>
@@ -128,12 +128,12 @@ function About() {
 
                 {/* FAQ */}
                 <div>
-                    <h3 className="text-base font-semibold text-white mb-3">Frequently Asked Questions</h3>
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">Frequently Asked Questions</h3>
                     <div className="space-y-4">
                         {faqs.map((faq, index) => (
-                            <div key={index} className="border-b border-gray-700 pb-3 last:border-b-0">
-                                <h4 className="text-white text-sm font-semibold mb-1.5">{faq.question}</h4>
-                                <p className="text-gray-400 text-xs font-medium leading-relaxed">
+                            <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-3 last:border-b-0">
+                                <h4 className="text-gray-900 dark:text-white text-sm font-semibold mb-1.5">{faq.question}</h4>
+                                <p className="text-gray-500 dark:text-gray-400 text-xs font-medium leading-relaxed">
                                     {faq.answer}
                                 </p>
                             </div>
@@ -146,9 +146,9 @@ function About() {
             <section className="rounded-lg border border-[#45d2fd]/30 bg-[#45d2fd]/10 backdrop-blur px-5 py-5 shadow-lg">
                 <div className="flex items-center gap-2 mb-3">
                     <EnvelopeIcon className="h-4 w-4 text-[#45d2fd]" />
-                    <h2 className="text-base font-semibold text-white">Contact Support</h2>
+                    <h2 className="text-base font-semibold text-gray-900 dark:text-white">Contact Support</h2>
                 </div>
-                <p className="text-gray-400 text-sm font-medium mb-3">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-3">
                     Have a question or need help? We're here for you.
                 </p>
                 <a

@@ -45,7 +45,7 @@ const customStorage: WebStorage = typeof window !== 'undefined' && window.localS
 export const persistConfig = {
     key: 'root',
     storage: customStorage,
-    whitelist: ['auth'], // Solo persiste auth
+    whitelist: ['auth', 'theme'], // Persiste auth y preferencia de tema
     // Debugging opcional
     debug: false,
 };

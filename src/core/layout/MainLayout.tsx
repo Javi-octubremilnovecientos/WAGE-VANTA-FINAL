@@ -4,8 +4,8 @@ import Footer from './Footer';
 
 function MainLayout() {
     return (
-        <div className="min-h-screen flex flex-col  bg-gray-900 overflow-hidden">
-                 <div className="relative isolate px-6    ">
+        <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 overflow-hidden">
+            <div className="relative isolate px-6    ">
                 <div
                     aria-hidden="true"
                     className="absolute inset-x-0  -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-40 lg:-top-80 pointer-events-none"
@@ -22,7 +22,7 @@ function MainLayout() {
             </div>
             <Header />
             <main className="flex-grow  ">
-                
+
                 <Outlet />
             </main>
             <Footer />

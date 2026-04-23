@@ -167,10 +167,10 @@ export default function Home() {
                 {!hasCountry ? (
                     /* Hero state: no country selected yet */
                     <div className="flex flex-col gap-3 text-center items-center">
-                        <h1 className="text-3xl lg:text-4xl font-bold text-white leading-tight">
+                        <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white leading-tight">
                             Wage Vantage
                         </h1>
-                        <h3 className="text-sm lg:text-base font-medium text-gray-400">
+                        <h3 className="text-sm lg:text-base font-medium text-gray-500 dark:text-gray-400">
                             Select a country to start comparing
                         </h3>
                     </div>
@@ -197,7 +197,7 @@ export default function Home() {
                             )}
                             <button
                                 onClick={handleChartViewToggle}
-                                className="px-2 py-1 text-xs font-medium text-gray-300 bg-gray-700/60 hover:bg-gray-600/60 rounded border border-gray-600 transition-all flex-shrink-0 flex items-center justify-center"
+                                className="px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300 bg-gray-100/60 dark:bg-gray-700/60 hover:bg-gray-200/60 dark:hover:bg-gray-600/60 rounded border border-gray-300 dark:border-gray-600 transition-all flex-shrink-0 flex items-center justify-center"
                                 aria-label="Toggle chart view"
                                 title={chartView === 'boxplot' ? 'Switch to bar chart' : 'Switch to box plot'}
                             >

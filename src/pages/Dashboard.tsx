@@ -82,20 +82,20 @@ function Dashboard() {
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-3 sm:px-4 lg:px-6 ">
       <section className="flex flex-col gap-3 mb-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between ">
-          <h1 className="text-base font-bold tracking-tight text-white sm:text-lg">
+          <h1 className="text-base font-bold tracking-tight text-gray-900 dark:text-white sm:text-lg">
             {user?.name || 'Usuario'}
           </h1>
         </div>
         <div className="flex flex-row justify-between items-center flex-wrap gap-2">
           <span className={`inline-flex w-fit items-center rounded-full border backdrop-blur px-2.5 py-0.5 text-xs font-medium shadow-sm transition-colors ${isPremium
             ? 'border-yellow-600/50 bg-yellow-500/10 text-yellow-300'
-            : 'border-gray-700 bg-gray-800/50 text-gray-300'
+            : 'border-gray-300 dark:border-gray-700 bg-gray-100/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-300'
             }`}>
             {isPremium ? '⭐ Premium Plan' : 'Free Plan'}
           </span>
           <Link
             to="/"
-            className="inline-flex items-center gap-1 self-start rounded-md px-1.5 py-1 text-xs font-medium text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors"
+            className="inline-flex items-center gap-1 self-start rounded-md px-1.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 transition-colors"
           >
             <HomeIcon className="h-3 w-3 md:h-4 md:w-4" />
             Home
@@ -110,7 +110,7 @@ function Dashboard() {
 
       <section className="space-y-3">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold tracking-tight text-white">
+          <h2 className="text-sm font-semibold tracking-tight text-gray-900 dark:text-white">
             Recent Comparisons
           </h2>
           <Link
@@ -122,12 +122,12 @@ function Dashboard() {
         </div>
 
         {!lastComparison ? (
-          <div className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-3 py-6 text-center shadow-lg sm:px-5">
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 backdrop-blur px-3 py-6 text-center shadow-lg sm:px-5">
             <div className="mx-auto flex max-w-md flex-col items-center gap-2">
               <div className="inline-flex rounded-full bg-[#45d2fd]/20 p-1.5 text-[#45d2fd]">
                 <ChartBarSquareIcon className="h-3.5 w-3.5" />
               </div>
-              <p className="text-sm font-medium text-gray-300">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
                 No comparisons saved yet
               </p>
               <Link
@@ -152,7 +152,7 @@ function Dashboard() {
         <section>
           <Link
             to="/plans"
-            className="group flex items-center gap-2 rounded-lg border border-gray-700 bg-gradient-to-br from-gray-900/60 via-[#22b8d9]/20 to-gray-900/60 backdrop-blur px-3 py-3 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:px-4"
+            className="group flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-gray-50/60 dark:from-gray-900/60 via-[#22b8d9]/20 to-gray-50/60 dark:to-gray-900/60 backdrop-blur px-3 py-3 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:px-4"
           >
             <span className="inline-flex rounded-lg bg-[#45d2fd]/20 p-1.5 text-[#45d2fd]">
               <SparklesIcon className="h-3.5 w-3.5" />
@@ -162,7 +162,7 @@ function Dashboard() {
               <h2 className="text-sm font-bold tracking-tight text-[#45d2fd]">
                 Upgrade to Premium
               </h2>
-              <p className="mt-0.5 text-xs leading-4 text-gray-400">
+              <p className="mt-0.5 text-xs leading-4 text-gray-500 dark:text-gray-400">
                 Unlock exports, multiple chart views, more templates and extra
                 comparisons.
               </p>

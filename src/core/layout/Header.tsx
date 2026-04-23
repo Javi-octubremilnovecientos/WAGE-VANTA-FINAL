@@ -5,20 +5,29 @@ import { Link, useNavigate } from "react-router-dom";
 import { Dialog, DialogPanel, PopoverGroup, Switch } from "@headlessui/react";
 import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
-import { useAppSelector } from "@/hooks/useRedux";
+import { useAppSelector, useAppDispatch } from "@/hooks/useRedux";
 import { selectUser } from "@/features/auth/authSlice";
+import { toggleTheme } from "@/features/theme/themeSlice";
 import AuthModal from "@/components/ui/modals/AuthModal";
 import UserAvatar from "@/components/ui/UserAvatar";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [enabled, setEnabled] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [authMode, setAuthMode] = useState<'login' | 'signup' | 'recovery'>('login');
 
+  const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const user = useAppSelector(selectUser);
+  const themeMode = useAppSelector((state) => state.theme.mode);
+  const systemPreference = useAppSelector((state) => state.theme.systemPreference);
+  const effectiveTheme = themeMode === 'system' ? systemPreference : themeMode;
+  const isDark = effectiveTheme === 'dark';
   const navigate = useNavigate();
+
+  const handleThemeToggle = () => {
+    dispatch(toggleTheme());
+  };
 
   const handleAuthClick = () => {
     if (isAuthenticated) {
@@ -40,7 +49,7 @@ export default function Header() {
           <button
             type="button"
             onClick={handleAuthClick}
-            className="flex items-center -m-0.5 p-0.5 gap-x-2 text-white hover:opacity-80 transition-opacity focus:outline-none text-sm"
+            className="flex items-center -m-0.5 p-0.5 gap-x-2 text-gray-900 dark:text-white hover:opacity-80 transition-opacity focus:outline-none text-sm"
           >
             {isAuthenticated ? (
               <>
@@ -48,7 +57,7 @@ export default function Header() {
                   avatarUrl={user?.avatarUrl}
                   userName={user?.name}
                   size="sm"
-                  className="ring-2 ring-gray-600 hover:ring-[#45d2fd] transition-all"
+                  className="ring-2 ring-gray-300 dark:ring-gray-600 hover:ring-[#45d2fd] transition-all"
                 />
                 <div className="flex items-center gap-2">
                   <span>{user?.name || 'Usuario'}</span>
@@ -67,35 +76,35 @@ export default function Header() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
-            className="-m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400"
+            className="-m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-500 dark:text-gray-400"
           >
             <span className="sr-only">Open main menu</span>
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
         <PopoverGroup className="hidden lg:flex lg:gap-x-8 w-1/3 justify-around">
-          <Link to="/about" className="text-xs lg:text-sm font-semibold text-white">
+          <Link to="/about" className="text-xs lg:text-sm font-semibold text-gray-700 dark:text-white hover:text-[#45d2fd] dark:hover:text-[#45d2fd] transition-colors">
             About
           </Link>
-          <Link to="/plans" className="text-xs lg:text-sm font-semibold text-white">
+          <Link to="/plans" className="text-xs lg:text-sm font-semibold text-gray-700 dark:text-white hover:text-[#45d2fd] dark:hover:text-[#45d2fd] transition-colors">
             Plans
           </Link>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center">
           <Switch
-            checked={enabled}
-            onChange={setEnabled}
-            className="group relative inline-flex items-center h-5 w-9 shrink-0 cursor-pointer rounded-full bg-gray-700 transition-colors duration-200 ease-in-out focus:outline-none data-[checked]:bg-[#45D2FD]"
+            checked={isDark}
+            onChange={handleThemeToggle}
+            className="group relative inline-flex items-center h-5 w-9 shrink-0 cursor-pointer rounded-full bg-gray-300 dark:bg-gray-700 transition-colors duration-200 ease-in-out focus:outline-none data-[checked]:bg-[#45D2FD]"
           >
             <span className="sr-only">Toggle theme</span>
             <span
               aria-hidden="true"
-              className="pointer-events-none  size-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-4 flex items-center justify-center"
+              className="pointer-events-none size-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-4 flex items-center justify-center"
             >
-              {enabled ? (
-                <SunIcon className="h-3 w-3 text-indigo-600" />
+              {isDark ? (
+                <SunIcon className="h-3 w-3 text-[#45D2FD]" />
               ) : (
-                <MoonIcon className="h-3 w-3 text-gray-700" />
+                <MoonIcon className="h-3 w-3 text-gray-500" />
               )}
             </span>
           </Switch>
@@ -107,30 +116,30 @@ export default function Header() {
         className="lg:hidden"
       >
         <div className="fixed inset-0 z-50" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-2/3 overflow-y-auto bg-gray-900 p-4 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
+        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-2/3 overflow-y-auto bg-white dark:bg-gray-900 p-4 sm:max-w-sm sm:ring-1 sm:ring-gray-200/80 dark:sm:ring-gray-100/10">
           <div className="flex items-center justify-end mb-4">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="-m-2 rounded-md p-2 text-gray-400"
+              className="-m-2 rounded-md p-2 text-gray-500 dark:text-gray-400"
             >
               <span className="sr-only">Close menu</span>
               <XMarkIcon aria-hidden="true" className="size-4" />
             </button>
           </div>
           <div className="mt-4 flow-root">
-            <div className="-my-6 divide-y divide-white/10 ">
+            <div className="-my-6 divide-y divide-gray-200 dark:divide-white/10">
               <div className="space-y-1.5 py-4">
                 <Link
                   to="/about"
-                  className="-mx-3 block rounded-lg px-3 py-1.5 text-xs lg:text-sm font-semibold text-white hover:bg-white/5"
+                  className="-mx-3 block rounded-lg px-3 py-1.5 text-xs lg:text-sm font-semibold text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/5"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   About
                 </Link>
                 <Link
                   to="/plans"
-                  className="-mx-3 block rounded-lg px-3 py-1.5 text-xs lg:text-sm font-semibold text-white hover:bg-white/5"
+                  className="-mx-3 block rounded-lg px-3 py-1.5 text-xs lg:text-sm font-semibold text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/5"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Plans
@@ -138,21 +147,21 @@ export default function Header() {
               </div>
               <div className="space-y-1.5 py-4 ">
                 <div className="flex items-center justify-between ">
-                  <span className="text-xs font-semibold text-white">Theme</span>
+                  <span className="text-xs font-semibold text-gray-700 dark:text-white">Theme</span>
                   <Switch
-                    checked={enabled}
-                    onChange={setEnabled}
-                    className="group relative items-center inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full bg-gray-700 transition-colors duration-200 ease-in-out focus:outline-none data-[checked]:bg-[#45D2FD]"
+                    checked={isDark}
+                    onChange={handleThemeToggle}
+                    className="group relative items-center inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full bg-gray-300 dark:bg-gray-700 transition-colors duration-200 ease-in-out focus:outline-none data-[checked]:bg-[#45D2FD]"
                   >
                     <span className="sr-only">Toggle theme</span>
                     <span
                       aria-hidden="true"
-                      className="pointer-events-none  size-4  transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-4 flex items-center justify-center"
+                      className="pointer-events-none size-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-4 flex items-center justify-center"
                     >
-                      {enabled ? (
+                      {isDark ? (
                         <SunIcon className="h-3 w-3 text-[#45D2FD]" />
                       ) : (
-                        <MoonIcon className="h-3 w-3 text-gray-700" />
+                        <MoonIcon className="h-3 w-3 text-gray-500" />
                       )}
                     </span>
                   </Switch>

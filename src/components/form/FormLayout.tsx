@@ -172,7 +172,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
           {/* Fill with template button */}
           <button
             type="button"
-            className="flex items-center  gap-1.5 text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none"
+            className="flex items-center  gap-1.5 text-gray-700 dark:text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none"
             aria-label="Fill with a template"
             onClick={() => {
               if (isAuthenticated) {
@@ -249,7 +249,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
           <div className="flex justify-end animate-fade-in">
             <button
               type="button"
-              className="flex items-center gap-1 text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none h-fit mt-1.5"
+              className="flex items-center gap-1 text-gray-700 dark:text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none h-fit mt-1.5"
               aria-label="Save as a template"
               onClick={() => {
                 if (isAuthenticated) {

@@ -32,12 +32,12 @@ function ComboBoxSkeleton({ label, id }: { label: string; id: string }) {
     return (
         <div className="animate-pulse">
             {label && (
-                <label htmlFor={id} className="block text-xs font-medium text-white mb-2">
+                <label htmlFor={id} className="block text-xs font-medium text-gray-900 dark:text-white mb-2">
                     {label}
                 </label>
             )}
             <div className="relative">
-                <div className="w-full h-[34px] rounded-md bg-gray-700/50 shimmer" />
+                <div className="w-full h-[34px] rounded-md bg-gray-200 dark:bg-gray-700/50 shimmer" />
             </div>
         </div>
     );
@@ -96,7 +96,7 @@ export default function StandardComboBox({
                 <div className="relative">
                     {/* Label */}
                     {label && (
-                        <label htmlFor={id} className="block text-xs font-medium text-white mb-2">
+                        <label htmlFor={id} className="block text-xs font-medium text-gray-900 dark:text-white mb-2">
                             {label}
                         </label>
                     )}
@@ -105,7 +105,7 @@ export default function StandardComboBox({
                     <div className="relative">
                         <ComboboxInput
                             id={id}
-                            className="w-full rounded-md bg-gray-800 py-1.5 pl-2.5 pr-7 text-white shadow-sm ring-1 ring-inset ring-gray-700 text-xs hover:bg-gray-700 transition-colors placeholder:text-gray-400 focus:ring-2 focus:ring-[#45d2fd] focus:outline-none"
+                            className="w-full rounded-md bg-gray-100 dark:bg-gray-800 py-1.5 pl-2.5 pr-7 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-xs hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-[#45d2fd] focus:outline-none"
                             displayValue={(option: SelectOption | null) => option?.label ?? ""}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder={placeholder}
@@ -121,10 +121,10 @@ export default function StandardComboBox({
                     {/* Options */}
                     <ComboboxOptions
                         transition
-                        className="combobox-options absolute z-10 mt-1 max-h-40 w-full overflow-auto rounded-md bg-gray-800 backdrop-blur-md py-1 text-xs shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none data-closed:opacity-0 data-leave:opacity-0 transition duration-100 ease-in"
+                        className="combobox-options absolute z-10 mt-1 max-h-40 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 backdrop-blur-md py-1 text-xs shadow-lg ring-1 ring-black ring-opacity-5 dark:ring-opacity-5 focus:outline-none data-closed:opacity-0 data-leave:opacity-0 transition duration-100 ease-in"
                     >
                         {filteredOptions.length === 0 && query !== "" ? (
-                            <div className="py-1.5 pl-2.5 pr-6 text-gray-400 text-xs">
+                            <div className="py-1.5 pl-2.5 pr-6 text-gray-500 dark:text-gray-400 text-xs">
                                 No results found
                             </div>
                         ) : (
@@ -132,7 +132,7 @@ export default function StandardComboBox({
                                 <ComboboxOption
                                     key={option.value}
                                     value={option}
-                                    className="group relative cursor-pointer select-none py-1.5 pl-2.5 pr-6 text-white hover:bg-[#45d2fd] data-focus:bg-[#45d2fd] transition-colors hover:text-gray-900 data-focus:text-gray-900"
+                                    className="group relative cursor-pointer select-none py-1.5 pl-2.5 pr-6 text-gray-900 dark:text-white hover:bg-[#45d2fd] data-focus:bg-[#45d2fd] transition-colors hover:text-gray-900 data-focus:text-gray-900"
                                 >
                                     <span className="block truncate font-normal group-data-selected:font-semibold">
                                         {option.label}
