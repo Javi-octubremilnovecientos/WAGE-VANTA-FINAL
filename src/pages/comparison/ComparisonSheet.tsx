@@ -10,6 +10,7 @@ import {
 } from '@/features/salaries/salarySelectors';
 import { selectSelectedCountries, selectFormValues } from '@/features/salaries/salarySlice';
 import { selectIsAuthenticated, selectUserComparisons, updateComparisons } from '@/features/auth/authSlice';
+import { useUpdateUserMutation } from '@/features/auth/authApi';
 import ExportModal from '@/components/ui/modals/ExportModal';
 import UpgradeModal from '@/components/ui/modals/UpgradeModal';
 import AuthModal from '@/components/ui/modals/AuthModal';
@@ -28,6 +29,8 @@ function ComparisonSheet() {
     const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
     const [savedFeedback, setSavedFeedback] = useState(false);
 
+    const [updateUser] = useUpdateUserMutation();
+
     const isAuthenticated = useAppSelector(selectIsAuthenticated);
     const computedStats = useAppSelector(selectComputedStats);
     const selectedCountries = useAppSelector(selectSelectedCountries);
@@ -40,7 +43,7 @@ function ComparisonSheet() {
     const economicActivity = formValues['Economic Activity'];
     const occupation = formValues['Occupation'];
 
-    const handleSaveComparison = useCallback(() => {
+    const handleSaveComparison = useCallback(async () => {
         // Requiere autenticación
         if (!isAuthenticated) {
             setAuthMode('login');
@@ -53,21 +56,35 @@ function ComparisonSheet() {
             return;
         }
 
-        const newComparison = {
-            id: Date.now(),
-            savedAt: new Date().toISOString(),
-            selectedCountries,
-            formValues,
-            computedStats,
-            userWage,
-        };
+        try {
+            const newComparison = {
+                id: Date.now(),
+                savedAt: new Date().toISOString(),
+                selectedCountries,
+                formValues,
+                computedStats,
+                userWage,
+            };
 
-        dispatch(updateComparisons([...existingComparisons, newComparison]));
+            const updatedComparisons = [...existingComparisons, newComparison];
 
-        // Feedback temporal de 2 segundos
-        setSavedFeedback(true);
-        setTimeout(() => setSavedFeedback(false), 2000);
-    }, [isAuthenticated, canSaveComparison, selectedCountries, formValues, computedStats, userWage, existingComparisons, dispatch]);
+            // Actualizar en Redux
+            dispatch(updateComparisons(updatedComparisons));
+
+            // Sincronizar con Supabase
+            await updateUser({
+                data: { comparisons: updatedComparisons },
+            }).unwrap();
+
+            // Feedback temporal de 2 segundos
+            setSavedFeedback(true);
+            setTimeout(() => setSavedFeedback(false), 2000);
+        } catch (err) {
+            console.error('Error saving comparison:', err);
+            // Revertir cambio en Redux si falla Supabase
+            dispatch(updateComparisons(existingComparisons));
+        }
+    }, [isAuthenticated, canSaveComparison, selectedCountries, formValues, computedStats, userWage, existingComparisons, dispatch, updateUser]);
 
     return (
         <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:py-12">
