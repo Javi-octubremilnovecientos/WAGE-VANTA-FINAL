@@ -27,6 +27,9 @@ const SalaryGrowthChartComponent: React.FC<SalaryGrowthChartProps> = ({
         [selectedCountries],
     );
 
+    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    const axisColor = isDark ? '#9ca3af' : '#1f2937';
+
     if (selectedCountries.length === 0) {
         return (
             <div className="flex items-center justify-center h-full text-gray-500 text-sm">
@@ -43,21 +46,19 @@ const SalaryGrowthChartComponent: React.FC<SalaryGrowthChartProps> = ({
                 barCategoryGap="20%"
                 barGap={2}
             >
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-400 dark:stroke-gray-700" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-700" />
                 <XAxis
                     dataKey="year"
-                    tick={{ fill: 'currentColor', fontSize: 10 }}
-                    className="text-gray-600 dark:text-gray-400"
-                    tickLine={{ stroke: 'currentColor' }}
-                    axisLine={{ stroke: 'currentColor' }}
+                    tick={{ fill: axisColor, fontSize: 10 }}
+                    tickLine={{ stroke: axisColor }}
+                    axisLine={{ stroke: axisColor }}
                 />
                 <YAxis
                     width={52}
                     tickFormatter={(v: number) => `${(v / 1000).toFixed(1)}k€`}
-                    tick={{ fill: 'currentColor', fontSize: 10 }}
-                    className="text-gray-600 dark:text-gray-400"
-                    tickLine={{ stroke: 'currentColor' }}
-                    axisLine={{ stroke: 'currentColor' }}
+                    tick={{ fill: axisColor, fontSize: 10 }}
+                    tickLine={{ stroke: axisColor }}
+                    axisLine={{ stroke: axisColor }}
                 />
                 <Tooltip content={<GrowthCustomTooltip />} cursor={{ fill: '#ffffff08' }} />
                 <Legend

@@ -18,6 +18,9 @@ const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
     economicActivity,
     height = 300,
 }) => {
+    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    const axisColor = isDark ? '#9ca3af' : '#1f2937';
+
     /** Líneas de referencia verticales en la posición del salario mediano computado */
     const referenceLines = useMemo(
         () =>
@@ -42,7 +45,7 @@ const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
                     </linearGradient>
                 </defs>
 
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-400 dark:stroke-gray-700" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-700" />
 
                 {/* Eje X numérico para permitir ReferenceLine en posición exacta */}
                 <XAxis
@@ -50,19 +53,17 @@ const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
                     type="number"
                     domain={[500, 5000]}
                     tickFormatter={(v: number) => `${v}€`}
-                    tick={{ fill: 'currentColor', fontSize: 10 }}
-                    className="text-gray-600 dark:text-gray-400"
-                    tickLine={{ stroke: 'currentColor' }}
-                    axisLine={{ stroke: 'currentColor' }}
+                    tick={{ fill: axisColor, fontSize: 10 }}
+                    tickLine={{ stroke: axisColor }}
+                    axisLine={{ stroke: axisColor }}
                     ticks={[500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 5000]}
                 />
                 <YAxis
                     width={38}
                     tickFormatter={(v: number) => `${v}%`}
-                    tick={{ fill: 'currentColor', fontSize: 10 }}
-                    className="text-gray-600 dark:text-gray-400"
-                    tickLine={{ stroke: 'currentColor' }}
-                    axisLine={{ stroke: 'currentColor' }}
+                    tick={{ fill: axisColor, fontSize: 10 }}
+                    tickLine={{ stroke: axisColor }}
+                    axisLine={{ stroke: axisColor }}
                 />
 
                 <Tooltip content={<DistributionTooltip />} cursor={{ stroke: '#ffffff20' }} />

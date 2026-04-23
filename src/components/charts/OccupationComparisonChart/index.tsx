@@ -19,6 +19,8 @@ const OccupationComparisonChartComponent: React.FC<OccupationComparisonChartProp
     height = 300,
 }) => {
     const bandData = useMemo(() => transformToBandData(MOCK_OCCUPATION_BANDS), []);
+    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    const axisColor = isDark ? '#9ca3af' : '#1f2937';
 
     return (
         <ResponsiveContainer width="100%" height={height}>
@@ -33,22 +35,20 @@ const OccupationComparisonChartComponent: React.FC<OccupationComparisonChartProp
                     </linearGradient>
                 </defs>
 
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-400 dark:stroke-gray-700" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-700" />
 
                 <XAxis
                     dataKey="level"
-                    tick={{ fill: 'currentColor', fontSize: 10 }}
-                    className="text-gray-600 dark:text-gray-400"
-                    tickLine={{ stroke: 'currentColor' }}
-                    axisLine={{ stroke: 'currentColor' }}
+                    tick={{ fill: axisColor, fontSize: 10 }}
+                    tickLine={{ stroke: axisColor }}
+                    axisLine={{ stroke: axisColor }}
                 />
                 <YAxis
                     width={52}
                     tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k€`}
-                    tick={{ fill: 'currentColor', fontSize: 10 }}
-                    className="text-gray-600 dark:text-gray-400"
-                    tickLine={{ stroke: 'currentColor' }}
-                    axisLine={{ stroke: 'currentColor' }}
+                    tick={{ fill: axisColor, fontSize: 10 }}
+                    tickLine={{ stroke: axisColor }}
+                    axisLine={{ stroke: axisColor }}
                 />
 
                 <Tooltip content={<OccupationTooltip />} cursor={{ fill: '#ffffff08' }} />

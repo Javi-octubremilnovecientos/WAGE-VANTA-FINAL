@@ -83,6 +83,8 @@ interface MainChartProps {
 
 export default function MainChart({ data = [], userWage, defaultIndex, isLoading = false }: MainChartProps) {
     const skeletonHeights = [75, 90, 65]; // Fixed heights for skeleton bars
+    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    const yAxisColor = isDark ? '#9ca3af' : '#1f2937';
 
     if (isLoading) {
         return (
@@ -119,10 +121,6 @@ export default function MainChart({ data = [], userWage, defaultIndex, isLoading
         );
     }
 
-    // Detectar dark mode para los ticks
-    const isDark = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
-    const tickColor = isDark ? '#e5e7eb' : '#4b5563'; // gray-200 for dark, gray-700 for light
-
     return (
         <ResponsiveContainer width="90%" aspect={1 / 1}>
             <BarChart data={data}>
@@ -130,12 +128,11 @@ export default function MainChart({ data = [], userWage, defaultIndex, isLoading
                     width={40}
                     domain={[0, 13000]}
                     ticks={[0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000]}
-                    tick={{ fontSize: 10, fill: tickColor }}
-                    className="text-gray-600 dark:text-gray-400"
-                    stroke="currentColor"
+                    tick={{ fontSize: 10, fill: yAxisColor }}
+                    stroke={yAxisColor}
                     tickFormatter={(value) => `${value}€`}
                 />
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-400 dark:stroke-gray-700" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-700" />
                 <Bar dataKey={boxDataKey} shape={BoxShape}>
                     <ErrorBar dataKey={whiskerDataKey} width={0} zIndex={DefaultZIndexes.bar - 1} />
                 </Bar>
