@@ -88,8 +88,8 @@ function Dashboard() {
         </div>
         <div className="flex flex-row justify-between items-center flex-wrap gap-2">
           <span className={`inline-flex w-fit items-center rounded-full border backdrop-blur px-2.5 py-0.5 text-xs font-medium shadow-sm transition-colors ${isPremium
-            ? 'border-yellow-600/50 bg-yellow-500/10 text-yellow-300'
-            : 'border-gray-300 dark:border-gray-700 bg-gray-100/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-300'
+            ? 'border-amber-400 dark:border-yellow-600/50 bg-amber-100 dark:bg-yellow-500/10 text-amber-700 dark:text-yellow-300'
+            : 'border-blue-300 dark:border-gray-700 bg-blue-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300'
             }`}>
             {isPremium ? '⭐ Premium Plan' : 'Free Plan'}
           </span>

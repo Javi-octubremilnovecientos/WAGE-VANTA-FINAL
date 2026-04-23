@@ -186,8 +186,12 @@ export default function Home() {
                                     {selectedCountries.map((country, i) => (
                                         <span
                                             key={country}
-                                            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium text-white"
-                                            style={{ backgroundColor: CHART_COLORS[i] + '40', borderColor: CHART_COLORS[i], borderWidth: 1 }}
+                                            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium text-gray-900 dark:text-white"
+                                            style={{ 
+                                                backgroundColor: CHART_COLORS[i] + '30',
+                                                borderColor: CHART_COLORS[i], 
+                                                borderWidth: 1.5
+                                            }}
                                         >
                                             <span className="h-2 w-2 rounded-full" style={{ backgroundColor: CHART_COLORS[i] }} />
                                             {country}

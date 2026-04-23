@@ -110,7 +110,7 @@ function ComparisonSheet() {
                             {selectedCountries.map((country) => (
                                 <span
                                     key={country}
-                                    className="inline-flex items-center rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100/60 dark:bg-gray-800/60 px-2 py-0.5 text-xs text-gray-700 dark:text-gray-300"
+                                    className="inline-flex items-center rounded-full border border-blue-300 dark:border-gray-600 bg-blue-50 dark:bg-gray-800/60 px-2 py-0.5 text-xs font-medium text-gray-800 dark:text-gray-300"
                                 >
                                     {country}
                                 </span>

@@ -27,7 +27,7 @@ function PlanCard({
                     <h3 className="text-sm font-bold text-gray-900 dark:text-white">{name}</h3>
                 </div>
                 {isCurrent && (
-                    <span className="inline-flex items-center rounded-md bg-green-500/20 px-2 py-0.5 text-xs font-semibold text-green-400 border border-green-500/30">
+                    <span className="inline-flex items-center rounded-md bg-green-100 dark:bg-green-500/20 px-2 py-0.5 text-xs font-semibold text-green-700 dark:text-green-400 border border-green-400 dark:border-green-500/30">
                         Active
                     </span>
                 )}
