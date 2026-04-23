@@ -25,36 +25,80 @@ const baseQuery = fetchBaseQuery({
             headers.set('authorization', `Bearer ${token}`);
         }
 
-        // Content-Type para JSON (pero NO para FormData - el navegador lo setea automáticamente)
-        // Esto se sobrescribe en cada request si es necesario
-        if (!headers.has('Content-Type')) {
-            headers.set('Content-Type', 'application/json');
-        }
+        // IMPORTANTE: NO setear Content-Type aquí
+        // - Para FormData: el navegador lo setea automáticamente con boundary
+        // - Para JSON: fetchBaseQuery lo detecta automáticamente
+        // - Setear manualmente aquí causa conflictos con uploads de archivo
 
         return headers;
     },
 });
 
 /**
- * Custom baseQuery que envuelve fetchBaseQuery para manejar FormData correctamente
- * Cuando el body es FormData, no seteamos Content-Type para que el navegador lo maneje
+ * Custom baseQuery que maneja token refresh automático
+ * Si un request falla con 403 Unauthorized + "exp" claim error:
+ * 1. Intenta refrescar el token usando el refreshToken
+ * 2. Actualiza el token en Redux
+ * 3. Repite el request original con el nuevo token
+ * 4. Si falla, deja que el error pase
  */
-const baseQueryWithFormData: BaseQueryFn<
+const baseQueryWithTokenRefresh: BaseQueryFn<
     string | FetchArgs,
     unknown,
     FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-    // Si args es un objeto FetchArgs y el body es FormData
-    if (typeof args === 'object' && args.body instanceof FormData) {
-        // No setear Content-Type manualmente - dejar que el navegador lo haga
-        // Crear nuevos headers sin Content-Type
-        const headers = new Headers(args.headers);
-        headers.delete('Content-Type');
-        args.headers = headers;
+    const result = await baseQuery(args, api, extraOptions);
+
+    // Si falla con 403 Unauthorized y tiene error de "exp" (token expirado)
+    if (result.error && result.error.status === 403) {
+        const errorData = result.error.data as Record<string, any>;
+        const isExpiredToken = errorData?.message?.includes('exp') || errorData?.error?.includes('Unauthorized');
+
+        if (isExpiredToken) {
+            const state = api.getState() as { auth: { refreshToken: string | null } };
+            const refreshToken = state.auth.refreshToken;
+
+            if (refreshToken) {
+                console.log('Token expirado, intentando refrescar...');
+
+                try {
+                    // Intentar refrescar el token
+                    const refreshResult = await baseQuery(
+                        {
+                            url: 'auth/v1/token?grant_type=refresh_token',
+                            method: 'POST',
+                            body: { refresh_token: refreshToken },
+                        },
+                        api,
+                        extraOptions
+                    );
+
+                    if (refreshResult.data) {
+                        const authResponse = refreshResult.data as any;
+                        // Actualizar el token en Redux
+                        api.dispatch({
+                            type: 'auth/setCredentials',
+                            payload: {
+                                user: authResponse.user,
+                                token: authResponse.access_token,
+                                refreshToken: authResponse.refresh_token,
+                            },
+                        });
+
+                        console.log('Token refrescado exitosamente, reintentando request...');
+
+                        // Repetir el request original con el nuevo token
+                        return baseQuery(args, api, extraOptions);
+                    }
+                } catch (refreshError) {
+                    console.error('Error refrescando token:', refreshError);
+                    // Dejar que el error original pase - el usuario deberá loguearse de nuevo
+                }
+            }
+        }
     }
 
-    // Llamar al baseQuery original
-    return baseQuery(args, api, extraOptions);
+    return result;
 };
 
 /**
@@ -63,10 +107,15 @@ const baseQueryWithFormData: BaseQueryFn<
  * - `reducerPath`: identificador único para el reducer en el store
  * - `tagTypes`: etiquetas para invalidación inteligente de caché
  * - `endpoints`: endpoints compartidos (opcional)
+ * 
+ * IMPORTANTE: 
+ * - FormData: El navegador setea Content-Type automáticamente con boundary
+ * - Los headers de Authorization (token) se preservan en prepareHeaders
+ * - Token refresh automático: si falla con 403 "exp", intenta refrescar
  */
 export const apiSlice = createApi({
     reducerPath: 'api',
-    baseQuery: baseQueryWithFormData,
+    baseQuery: baseQueryWithTokenRefresh,
     tagTypes: [
         'Salaries',
         'Users',

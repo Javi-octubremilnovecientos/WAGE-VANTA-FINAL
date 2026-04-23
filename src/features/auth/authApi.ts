@@ -272,10 +272,15 @@ export const authApi = apiSlice.injectEndpoints({
          * El bucket debe estar configurado como público y tener policies para INSERT (authenticated).
          * 
          * IMPORTANTE:
-         * - El body debe ser FormData con el file
-         * - FormData se maneja automáticamente en baseQueryWithFormData (api.ts)
+         * - El body debe ser FormData con el file binario
+         * - El navegador setea automáticamente Content-Type: multipart/form-data con boundary
+         * - El Authorization header (Bearer token) se setea en prepareHeaders
          * - El path incluye userId para organizar avatares por usuario
          * - Retorna el path relativo del archivo en el bucket
+         * 
+         * Si falla con error 403 "exp" claim timestamp check failed:
+         * - El token JWT está expirado → necesita refrescar sesión
+         * - Verificar que el token se está enviando correctamente en Authorization header
          * 
          * @param userId - ID del usuario propietario
          * @param filename - Nombre del archivo (ej: avatar_1234567890.jpg)
@@ -315,6 +320,27 @@ export const authApi = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Profile'],
         }),
+
+        /**
+         * Refrescar token de acceso usando refresh_token
+         * POST auth/v1/token?grant_type=refresh_token
+         * 
+         * Intercambia el refresh_token por un nuevo access_token válido.
+         * Se usa para obtener un nuevo token cuando el actual ha expirado.
+         * 
+         * IMPORTANTE:
+         * - El refresh_token debe ser válido y no ha expirado
+         * - Supabase mantiene el refresh_token válido por 30 días
+         * - NO requiere Authorization header (usa refresh_token en body)
+         */
+        refreshToken: builder.mutation<AuthResponse, { refreshToken: string }>({
+            query: ({ refreshToken }) => ({
+                url: 'auth/v1/token?grant_type=refresh_token',
+                method: 'POST',
+                body: { refresh_token: refreshToken },
+            }),
+            invalidatesTags: ['Auth'],
+        }),
     }),
 });
 
@@ -328,4 +354,5 @@ export const {
     useGetSessionFromTokensMutation,
     useUploadAvatarMutation,
     useDeleteAvatarMutation,
+    useRefreshTokenMutation,
 } = authApi;

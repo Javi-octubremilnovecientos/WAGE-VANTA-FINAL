@@ -200,28 +200,6 @@ function UserSettings() {
                     Manage your profile details and preferences
                 </p>
 
-                {/* Avatar Upload Section */}
-                <div className="mb-6 pb-6 border-b border-gray-700">
-                    <p className="text-xs font-medium text-gray-400 mb-4">Profile Picture</p>
-                    <AvatarUploader
-                        currentAvatarUrl={user?.avatarUrl}
-                        userId={user?.id ?? ''}
-                        userName={user?.name}
-                        onUploadSuccess={handleAvatarUploadSuccess}
-                        onUploadError={handleAvatarUploadError}
-                    />
-
-                    {/* Success Message */}
-                    {avatarSuccess && (
-                        <div className="mt-4 rounded-md bg-green-500/10 border border-green-600/50 px-3 py-2 text-xs text-green-300">
-                            <div className="flex items-center gap-2">
-                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                                <p className="font-semibold">Avatar updated successfully!</p>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
                 <div className="space-y-3 pt-3">
                     <div className="flex items-center justify-between pb-3 border-b border-gray-700">
                         <div className="flex-1 min-w-0 mr-3">
@@ -275,6 +253,30 @@ function UserSettings() {
                                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
                                 Pending confirmation: {user.newEmail}
                             </p>
+                        )}
+                    </div>
+
+                    {/* Avatar Upload Section - moved to bottom */}
+                    <div className="pt-3 mt-6 border-t border-gray-700">
+                        <p className="text-xs font-medium text-gray-400 mb-3">Profile Picture</p>
+                        <AvatarUploader
+                            currentAvatarUrl={user?.avatarUrl}
+                            userId={user?.id ?? ''}
+                            userName={user?.name}
+                            onUploadSuccess={handleAvatarUploadSuccess}
+                            onUploadError={handleAvatarUploadError}
+                            isCompact={true}
+                            avatarSize="lg"
+                        />
+
+                        {/* Success Message */}
+                        {avatarSuccess && (
+                            <div className="mt-4 rounded-md bg-green-500/10 border border-green-600/50 px-3 py-2 text-xs text-green-300">
+                                <div className="flex items-center gap-2">
+                                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                                    <p className="font-semibold">Avatar updated successfully!</p>
+                                </div>
+                            </div>
                         )}
                     </div>
                 </div>

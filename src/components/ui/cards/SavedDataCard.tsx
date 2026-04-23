@@ -1,39 +1,124 @@
+import { ChartBarSquareIcon, ChevronRightIcon, TrashIcon } from '@heroicons/react/24/outline';
+import type { Comparison } from '@/lib/User';
+
 interface SavedDataCardProps {
-    title: string;
-    date: string;
-    description?: string;
+    comparison: Comparison;
     onView: () => void;
-    onDelete: () => void;
+    onDelete?: () => void;
+    variant?: 'compact' | 'full';
 }
 
 function SavedDataCard({
-    title,
-    date,
-    description,
+    comparison,
     onView,
     onDelete,
+    variant = 'full',
 }: SavedDataCardProps) {
+    const savedDate = new Date(comparison.savedAt).toLocaleDateString(
+        variant === 'compact' ? 'en-US' : 'en-GB',
+        variant === 'compact'
+            ? { year: 'numeric', month: 'short', day: 'numeric' }
+            : { day: '2-digit', month: 'short', year: 'numeric' }
+    );
+
+    const medians = comparison.computedStats.map(
+        (s) => `${s.category}: ${s.median.toLocaleString()}€`
+    );
+    const activity = comparison.formValues['Economic Activity'];
+    const occupation = comparison.formValues['Occupation'];
+
+    if (variant === 'compact') {
+        return (
+            <button
+                onClick={onView}
+                className="w-full rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-4 py-4 shadow-lg hover:bg-gray-800/60 hover:border-gray-600 transition-all text-left"
+            >
+                <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                            {comparison.selectedCountries.map((country) => (
+                                <span
+                                    key={country}
+                                    className="inline-flex items-center rounded-full border border-[#45d2fd]/30 bg-[#45d2fd]/10 px-2 py-0.5 text-xs font-medium text-[#45d2fd]"
+                                >
+                                    {country}
+                                </span>
+                            ))}
+                        </div>
+                        <p className="text-xs text-gray-400">
+                            Saved on {savedDate}
+                        </p>
+                    </div>
+                    <ChevronRightIcon className="h-4 w-4 shrink-0 text-gray-500" />
+                </div>
+            </button>
+        );
+    }
+
     return (
-        <div className="p-6 bg-white rounded-lg shadow border border-gray-200 hover:shadow-lg transition">
-            <h3 className="text-lg font-semibold mb-2">{title}</h3>
-            <p className="text-sm text-gray-500 mb-3">{date}</p>
-            {description && (
-                <p className="text-sm text-gray-600 mb-4">{description}</p>
-            )}
-            <div className="flex gap-2">
-                <button
-                    onClick={onView}
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition text-sm"
-                >
-                    View
-                </button>
+        <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+            <div
+                onClick={onView}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && onView()}
+                aria-label={`Load comparison from ${savedDate}`}
+                className="flex-1 rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur p-3 sm:p-4 shadow-lg hover:border-[#45d2fd]/50 hover:shadow-[#45d2fd]/10 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-gray-900"
+            >
+                {/* Top row */}
+                <div className="flex items-start justify-between mb-3">
+                    <ChartBarSquareIcon className="h-5 w-5 text-[#45d2fd]" />
+                    <span className="text-xs text-gray-500">{savedDate}</span>
+                </div>
+
+                {/* Country badges */}
+                <div className="flex flex-wrap gap-1 mb-3">
+                    {comparison.selectedCountries.map((country) => (
+                        <span
+                            key={country}
+                            className="inline-flex items-center rounded-full border border-gray-600 bg-gray-700/60 px-2 py-0.5 text-xs text-gray-300"
+                        >
+                            {country}
+                        </span>
+                    ))}
+                </div>
+
+                {/* Medians */}
+                <div className="space-y-1 mb-3">
+                    {medians.map((m) => (
+                        <p key={m} className="text-xs text-gray-400">
+                            Median — {m}
+                        </p>
+                    ))}
+                </div>
+
+                {/* Context */}
+                {(activity || occupation) && (
+                    <div className="border-t border-gray-700 pt-2 space-y-0.5">
+                        {activity && (
+                            <p className="text-xs text-gray-500 break-words">
+                                <span className="text-gray-400">Sector:</span> {activity}
+                            </p>
+                        )}
+                        {occupation && (
+                            <p className="text-xs text-gray-500 break-words">
+                                <span className="text-gray-400">Occupation:</span> {occupation}
+                            </p>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {/* Delete button (only in full variant) */}
+            {onDelete && (
                 <button
                     onClick={onDelete}
-                    className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition text-sm"
+                    className="self-start sm:mt-2 p-2 text-gray-400 hover:text-red-400 transition-colors rounded-lg hover:bg-red-400/10 flex-shrink-0"
+                    aria-label="Delete comparison"
                 >
-                    Delete
+                    <TrashIcon className="h-5 w-5" />
                 </button>
-            </div>
+            )}
         </div>
     );
 }

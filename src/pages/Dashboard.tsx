@@ -10,9 +10,13 @@ import {
 } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router-dom";
 import FeatureCard from "../components/ui/cards/FeatureCard";
+import SavedDataCard from "../components/ui/cards/SavedDataCard";
 import type { FeatureCardProps } from "../components/ui/cards/FeatureCard";
 import { useAppSelector, useAppDispatch } from "@/hooks/useRedux";
-import { selectUser, selectUserPremium, logout } from "@/features/auth/authSlice";
+import { selectUser, selectUserPremium, selectUserComparisons, logout } from "@/features/auth/authSlice";
+import { setSelectedCountries, setFormValues, setComputedStats } from "@/features/salaries/salarySlice";
+import type { Comparison } from "@/lib/User";
+import type { ComparisonFormValues, BoxPlotData } from "@/features/salaries/types";
 
 const shortcuts: FeatureCardProps[] = [
   {
@@ -55,10 +59,23 @@ function Dashboard() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const isPremium = useAppSelector(selectUserPremium);
+  const comparisons = useAppSelector(selectUserComparisons);
+
+  // Obtener la última comparación (más reciente)
+  const lastComparison = comparisons.length > 0
+    ? [...comparisons].sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime())[0]
+    : null;
 
   const handleSignOut = () => {
     dispatch(logout());
     navigate('/');
+  };
+
+  const handleLoadComparison = (comparison: Comparison) => {
+    dispatch(setSelectedCountries(comparison.selectedCountries));
+    dispatch(setFormValues(comparison.formValues as ComparisonFormValues));
+    dispatch(setComputedStats(comparison.computedStats as BoxPlotData[]));
+    navigate('/comparison');
   };
 
   return (
@@ -104,23 +121,31 @@ function Dashboard() {
           </Link>
         </div>
 
-        <div className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-3 py-6 text-center shadow-lg sm:px-5">
-          <div className="mx-auto flex max-w-md flex-col items-center gap-2">
-            <div className="inline-flex rounded-full bg-[#45d2fd]/20 p-1.5 text-[#45d2fd]">
-              <ChartBarSquareIcon className="h-3.5 w-3.5" />
+        {!lastComparison ? (
+          <div className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-3 py-6 text-center shadow-lg sm:px-5">
+            <div className="mx-auto flex max-w-md flex-col items-center gap-2">
+              <div className="inline-flex rounded-full bg-[#45d2fd]/20 p-1.5 text-[#45d2fd]">
+                <ChartBarSquareIcon className="h-3.5 w-3.5" />
+              </div>
+              <p className="text-sm font-medium text-gray-300">
+                No comparisons saved yet
+              </p>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-[#45d2fd] transition-colors hover:text-[#22b8d9]"
+              >
+                Start comparing
+                <ArrowRightIcon className="h-2.5 w-2.5" />
+              </Link>
             </div>
-            <p className="text-sm font-medium text-gray-300">
-              No comparisons saved yet
-            </p>
-            <Link
-              to="/"
-              className="inline-flex items-center gap-1 text-xs font-semibold text-[#45d2fd] transition-colors hover:text-[#22b8d9]"
-            >
-              Start comparing
-              <ArrowRightIcon className="h-2.5 w-2.5" />
-            </Link>
           </div>
-        </div>
+        ) : (
+          <SavedDataCard
+            comparison={lastComparison}
+            onView={() => handleLoadComparison(lastComparison)}
+            variant="compact"
+          />
+        )}
       </section>
 
       {!isPremium && (
