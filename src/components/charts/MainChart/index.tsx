@@ -80,7 +80,7 @@ interface MainChartProps {
 
 export default function MainChart({ data = [], userWage, defaultIndex, isLoading = false }: MainChartProps) {
     const skeletonHeights = [75, 90, 65]; // Fixed heights for skeleton bars
-    
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center w-full aspect-square">
