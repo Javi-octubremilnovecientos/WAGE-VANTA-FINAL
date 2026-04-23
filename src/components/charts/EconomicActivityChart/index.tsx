@@ -42,7 +42,7 @@ const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
                     </linearGradient>
                 </defs>
 
-                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#374151" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-700" />
 
                 {/* Eje X numérico para permitir ReferenceLine en posición exacta */}
                 <XAxis
@@ -50,17 +50,19 @@ const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
                     type="number"
                     domain={[500, 5000]}
                     tickFormatter={(v: number) => `${v}€`}
-                    tick={{ fill: '#9ca3af', fontSize: 10 }}
-                    tickLine={{ stroke: '#4b5563' }}
-                    axisLine={{ stroke: '#4b5563' }}
+                    tick={{ fill: 'currentColor', fontSize: 10 }}
+                    className="text-gray-600 dark:text-gray-400"
+                    tickLine={{ stroke: 'currentColor' }}
+                    axisLine={{ stroke: 'currentColor' }}
                     ticks={[500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 5000]}
                 />
                 <YAxis
                     width={38}
                     tickFormatter={(v: number) => `${v}%`}
-                    tick={{ fill: '#9ca3af', fontSize: 10 }}
-                    tickLine={{ stroke: '#4b5563' }}
-                    axisLine={{ stroke: '#4b5563' }}
+                    tick={{ fill: 'currentColor', fontSize: 10 }}
+                    className="text-gray-600 dark:text-gray-400"
+                    tickLine={{ stroke: 'currentColor' }}
+                    axisLine={{ stroke: 'currentColor' }}
                 />
 
                 <Tooltip content={<DistributionTooltip />} cursor={{ stroke: '#ffffff20' }} />

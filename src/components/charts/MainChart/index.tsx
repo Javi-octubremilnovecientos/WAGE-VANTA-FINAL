@@ -42,7 +42,7 @@ const BoxShape = (props: BarShapeProps) => {
     return (
         <g>
             <Rectangle {...props} x={offsetX} width={reducedWidth} fill={entry.color || '#8884d8'} />
-            <line x1={offsetX} x2={offsetX + reducedWidth} y1={medianY} y2={medianY} stroke="#1f2937" strokeWidth={2} />
+            <line x1={offsetX} x2={offsetX + reducedWidth} y1={medianY} y2={medianY} stroke="#000" className="dark:stroke-gray-900" strokeWidth={2} />
         </g>
     );
 };
@@ -79,6 +79,8 @@ interface MainChartProps {
 }
 
 export default function MainChart({ data = [], userWage, defaultIndex, isLoading = false }: MainChartProps) {
+    const skeletonHeights = [75, 90, 65]; // Fixed heights for skeleton bars
+    
     if (isLoading) {
         return (
             <div className="flex items-center justify-center w-full aspect-square">
@@ -87,16 +89,16 @@ export default function MainChart({ data = [], userWage, defaultIndex, isLoading
                     <div className="flex gap-2 h-full">
                         <div className="w-10 flex flex-col justify-between">
                             {[...Array(6)].map((_, i) => (
-                                <div key={i} className="h-3 bg-gray-700 rounded w-8"></div>
+                                <div key={i} className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-8"></div>
                             ))}
                         </div>
                         {/* Bars skeleton */}
                         <div className="flex-1 flex items-end justify-around gap-4">
-                            {[...Array(3)].map((_, i) => (
+                            {skeletonHeights.map((height, i) => (
                                 <div
                                     key={i}
-                                    className="bg-gray-700 rounded w-16"
-                                    style={{ height: `${60 + Math.random() * 30}%` }}
+                                    className="bg-gray-300 dark:bg-gray-700 rounded w-16"
+                                    style={{ height: `${height}%` }}
                                 ></div>
                             ))}
                         </div>
@@ -108,7 +110,7 @@ export default function MainChart({ data = [], userWage, defaultIndex, isLoading
 
     if (data.length === 0) {
         return (
-            <div className="flex items-center justify-center w-full aspect-square text-gray-500 text-sm">
+            <div className="flex items-center justify-center w-full aspect-square text-gray-600 dark:text-gray-500 text-sm">
                 Select countries and fill the form to see salary data
             </div>
         );
@@ -121,11 +123,12 @@ export default function MainChart({ data = [], userWage, defaultIndex, isLoading
                     width={40}
                     domain={[0, 13000]}
                     ticks={[0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000]}
-                    tick={{ fontSize: 10, fill: '#d1d5db' }}
-                    stroke="#d1d5db"
+                    tick={{ fontSize: 10, fill: 'currentColor' }}
+                    className="text-gray-600 dark:text-gray-400"
+                    stroke="currentColor"
                     tickFormatter={(value) => `${value}€`}
                 />
-                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#374151" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-700" />
                 <Bar dataKey={boxDataKey} shape={BoxShape}>
                     <ErrorBar dataKey={whiskerDataKey} width={0} zIndex={DefaultZIndexes.bar - 1} />
                 </Bar>

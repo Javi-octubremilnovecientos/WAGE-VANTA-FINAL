@@ -197,7 +197,7 @@ export default function Home() {
                             )}
                             <button
                                 onClick={handleChartViewToggle}
-                                className="px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300 bg-gray-100/60 dark:bg-gray-700/60 hover:bg-gray-200/60 dark:hover:bg-gray-600/60 rounded border border-gray-300 dark:border-gray-600 transition-all flex-shrink-0 flex items-center justify-center"
+                                className="px-2 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 bg-slate-100 dark:bg-gray-700/60 hover:bg-blue-100 dark:hover:bg-gray-600/60 rounded border border-blue-300 dark:border-gray-600 transition-all flex-shrink-0 flex items-center justify-center shadow-sm hover:shadow-md"
                                 aria-label="Toggle chart view"
                                 title={chartView === 'boxplot' ? 'Switch to bar chart' : 'Switch to box plot'}
                             >

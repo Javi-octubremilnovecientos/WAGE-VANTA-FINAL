@@ -20,11 +20,11 @@ function PlanCard({
     onSelect,
 }: PlanCardProps) {
     return (
-        <div className="rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur px-4 py-4 shadow-lg">
+        <div className="rounded-lg border border-blue-200 dark:border-gray-700 bg-gradient-to-br from-slate-50 to-white dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur px-4 py-4 shadow-lg hover:shadow-xl transition-shadow">
             {/* Plan Name with Badge */}
             <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-1.5">
-                    <h3 className="text-sm font-bold text-white">{name}</h3>
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white">{name}</h3>
                 </div>
                 {isCurrent && (
                     <span className="inline-flex items-center rounded-md bg-green-500/20 px-2 py-0.5 text-xs font-semibold text-green-400 border border-green-500/30">
@@ -35,8 +35,8 @@ function PlanCard({
 
             {/* Price */}
             <div className="mb-1">
-                <span className="text-2xl font-bold text-white">{price}</span>
-                <span className="text-gray-400 text-xs font-medium">/month</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">{price}</span>
+                <span className="text-gray-600 dark:text-gray-400 text-xs font-medium">/month</span>
             </div>
 
             {/* Annual Price Info */}
@@ -59,14 +59,14 @@ function PlanCard({
             </button>
 
             {/* Description */}
-            <p className="text-white text-xs font-semibold mb-3">{description}</p>
+            <p className="text-gray-900 dark:text-white text-xs font-semibold mb-3">{description}</p>
 
             {/* Features List */}
             <ul className="space-y-2">
                 {features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-1.5">
                         <CheckIcon className="h-3 w-3 text-[#45d2fd] flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-300 text-xs font-medium">{feature}</span>
+                        <span className="text-gray-700 dark:text-gray-300 text-xs font-medium">{feature}</span>
                     </li>
                 ))}
             </ul>

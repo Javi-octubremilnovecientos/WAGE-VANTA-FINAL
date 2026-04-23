@@ -33,20 +33,22 @@ const OccupationComparisonChartComponent: React.FC<OccupationComparisonChartProp
                     </linearGradient>
                 </defs>
 
-                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#374151" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-700" />
 
                 <XAxis
                     dataKey="level"
-                    tick={{ fill: '#9ca3af', fontSize: 10 }}
-                    tickLine={{ stroke: '#4b5563' }}
-                    axisLine={{ stroke: '#4b5563' }}
+                    tick={{ fill: 'currentColor', fontSize: 10 }}
+                    className="text-gray-600 dark:text-gray-400"
+                    tickLine={{ stroke: 'currentColor' }}
+                    axisLine={{ stroke: 'currentColor' }}
                 />
                 <YAxis
                     width={52}
                     tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k€`}
-                    tick={{ fill: '#9ca3af', fontSize: 10 }}
-                    tickLine={{ stroke: '#4b5563' }}
-                    axisLine={{ stroke: '#4b5563' }}
+                    tick={{ fill: 'currentColor', fontSize: 10 }}
+                    className="text-gray-600 dark:text-gray-400"
+                    tickLine={{ stroke: 'currentColor' }}
+                    axisLine={{ stroke: 'currentColor' }}
                 />
 
                 <Tooltip content={<OccupationTooltip />} cursor={{ fill: '#ffffff08' }} />

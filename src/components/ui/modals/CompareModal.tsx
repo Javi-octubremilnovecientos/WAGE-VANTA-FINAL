@@ -95,7 +95,7 @@ export default function CompareModal({
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             {/* Modal Container */}
-            <div className="bg-gradient-to-b from-slate-100 dark:from-slate-800 to-white dark:to-slate-900 rounded-xl p-5 max-w-md w-full mx-4 shadow-2xl border border-slate-200 dark:border-slate-700">
+            <div className="bg-gradient-to-b from-white to-blue-50 dark:from-slate-800 dark:to-slate-900 rounded-xl p-5 max-w-md w-full mx-4 shadow-2xl border border-blue-200 dark:border-slate-700">
                 {/* Title */}
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white text-center mb-4">
                     Choose countries to compare
