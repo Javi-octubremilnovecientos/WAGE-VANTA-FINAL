@@ -51,20 +51,23 @@ const TooltipContent = (props: TooltipContentProps) => {
     const { active, payload } = props;
     if (active && payload && payload.length) {
         const entry: BoxPlotDatum = payload[0].payload;
+        const isDark = document.documentElement.classList.contains('dark');
+        
         return (
             <div
                 style={{
-                    backgroundColor: 'rgba(255,255,255,0.5)',
-                    border: '1px solid #ccc',
+                    backgroundColor: isDark ? 'rgba(30, 30, 40, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                    border: isDark ? '1px solid #4b5563' : '1px solid #d1d5db',
                     padding: '0 1em',
+                    borderRadius: '0.375rem',
                 }}
             >
-                <p style={{ margin: 0 }}>{`Category: ${entry.category}`}</p>
-                <p style={{ margin: 0 }}>{`Min: ${entry.min}`}</p>
-                <p style={{ margin: 0 }}>{`Q1: ${entry.q1}`}</p>
-                <p style={{ margin: 0 }}>{`Median: ${entry.median}`}</p>
-                <p style={{ margin: 0 }}>{`Q3: ${entry.q3}`}</p>
-                <p style={{ margin: 0 }}>{`Max: ${entry.max}`}</p>
+                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Category: ${entry.category}`}</p>
+                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Min: ${entry.min}`}</p>
+                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Q1: ${entry.q1}`}</p>
+                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Median: ${entry.median}`}</p>
+                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Q3: ${entry.q3}`}</p>
+                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Max: ${entry.max}`}</p>
             </div>
         );
     }
@@ -128,7 +131,7 @@ export default function MainChart({ data = [], userWage, defaultIndex, isLoading
                     stroke="currentColor"
                     tickFormatter={(value) => `${value}€`}
                 />
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-700" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-400 dark:stroke-gray-700" />
                 <Bar dataKey={boxDataKey} shape={BoxShape}>
                     <ErrorBar dataKey={whiskerDataKey} width={0} zIndex={DefaultZIndexes.bar - 1} />
                 </Bar>

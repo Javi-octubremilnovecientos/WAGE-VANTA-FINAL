@@ -33,7 +33,7 @@ const OccupationComparisonChartComponent: React.FC<OccupationComparisonChartProp
                     </linearGradient>
                 </defs>
 
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-700" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-400 dark:stroke-gray-700" />
 
                 <XAxis
                     dataKey="level"

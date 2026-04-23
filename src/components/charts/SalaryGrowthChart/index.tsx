@@ -43,7 +43,7 @@ const SalaryGrowthChartComponent: React.FC<SalaryGrowthChartProps> = ({
                 barCategoryGap="20%"
                 barGap={2}
             >
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-700" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-400 dark:stroke-gray-700" />
                 <XAxis
                     dataKey="year"
                     tick={{ fill: 'currentColor', fontSize: 10 }}
