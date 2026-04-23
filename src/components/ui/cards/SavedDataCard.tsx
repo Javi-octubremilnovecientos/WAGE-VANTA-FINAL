@@ -76,7 +76,7 @@ function SavedDataCard({
                     {comparison.selectedCountries.map((country) => (
                         <span
                             key={country}
-                            className="inline-flex items-center rounded-full border border-gray-600 bg-gray-700/60 px-2 py-0.5 text-xs text-gray-300"
+                            className="inline-flex items-center rounded-full border border-blue-300 dark:border-gray-600 bg-blue-50 dark:bg-gray-700/60 px-2 py-0.5 text-xs font-medium text-gray-800 dark:text-gray-300"
                         >
                             {country}
                         </span>
@@ -86,7 +86,7 @@ function SavedDataCard({
                 {/* Medians */}
                 <div className="space-y-1 mb-3">
                     {medians.map((m) => (
-                        <p key={m} className="text-xs text-gray-400">
+                        <p key={m} className="text-xs text-gray-600 dark:text-gray-400">
                             Median — {m}
                         </p>
                     ))}
@@ -94,15 +94,15 @@ function SavedDataCard({
 
                 {/* Context */}
                 {(activity || occupation) && (
-                    <div className="border-t border-gray-700 pt-2 space-y-0.5">
+                    <div className="border-t border-blue-200 dark:border-gray-700 pt-2 space-y-0.5">
                         {activity && (
-                            <p className="text-xs text-gray-500 break-words">
-                                <span className="text-gray-400">Sector:</span> {activity}
+                            <p className="text-xs text-gray-600 dark:text-gray-500 break-words">
+                                <span className="text-gray-700 dark:text-gray-400">Sector:</span> {activity}
                             </p>
                         )}
                         {occupation && (
-                            <p className="text-xs text-gray-500 break-words">
-                                <span className="text-gray-400">Occupation:</span> {occupation}
+                            <p className="text-xs text-gray-600 dark:text-gray-500 break-words">
+                                <span className="text-gray-700 dark:text-gray-400">Occupation:</span> {occupation}
                             </p>
                         )}
                     </div>
@@ -113,7 +113,7 @@ function SavedDataCard({
             {onDelete && (
                 <button
                     onClick={onDelete}
-                    className="self-start sm:mt-2 p-2 text-gray-400 hover:text-red-400 transition-colors rounded-lg hover:bg-red-400/10 flex-shrink-0"
+                    className="self-start sm:mt-2 p-2 text-gray-500 dark:text-gray-400 hover:text-[#45d2fd] transition-colors rounded-lg hover:bg-[#45d2fd]/10 flex-shrink-0"
                     aria-label="Delete comparison"
                 >
                     <TrashIcon className="h-5 w-5" />
