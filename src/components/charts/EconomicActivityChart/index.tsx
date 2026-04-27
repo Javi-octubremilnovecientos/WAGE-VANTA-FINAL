@@ -12,14 +12,16 @@ import {
 import type { EconomicActivityChartProps } from './EconomicActivityChart.types';
 import { MOCK_SECTOR_DISTRIBUTION } from './EconomicActivityChart.utils';
 import { DistributionTooltip } from './CustomTooltip';
+import { useAppSelector } from '@/hooks/useRedux';
+import { selectEffectiveTheme } from '@/features/theme/themeSlice';
 
 const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
     computedStats = [],
     economicActivity,
     height = 300,
 }) => {
-    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const axisColor = isDark ? '#ffffff' : '#000000';
+    const effectiveTheme = useAppSelector(selectEffectiveTheme);
+    const axisColor = effectiveTheme === 'dark' ? '#ffffff' : '#000000';
 
     /** Líneas de referencia verticales en la posición del salario mediano computado */
     const referenceLines = useMemo(

@@ -38,4 +38,12 @@ const themeSlice = createSlice({
 export const { setTheme, setSystemPreference, toggleTheme } =
     themeSlice.actions;
 
+// Selector para obtener el tema efectivo (considerando system preference)
+export const selectEffectiveTheme = (state: { theme: ThemeState }) => {
+    if (state.theme.mode === 'system') {
+        return state.theme.systemPreference;
+    }
+    return state.theme.mode;
+};
+
 export default themeSlice.reducer;

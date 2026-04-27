@@ -164,12 +164,12 @@ export default function ExportModal({
                     <div className="space-y-4">
                         <div className="rounded-lg border border-yellow-600/50 bg-yellow-500/10 p-4">
                             <div className="flex items-start gap-3">
-                                <SparklesIcon className="h-5 w-5 text-yellow-300 shrink-0 mt-0.5" />
+                                <SparklesIcon className="h-5 w-5 text-yellow-600 dark:text-yellow-300 shrink-0 mt-0.5" />
                                 <div className="flex-1">
-                                    <p className="text-sm font-medium text-yellow-300 mb-1">
+                                    <p className="text-sm font-medium text-yellow-700 dark:text-yellow-300 mb-1">
                                         Export is a Premium feature
                                     </p>
-                                    <p className="text-xs text-yellow-200/80">
+                                    <p className="text-xs text-yellow-800/90 dark:text-yellow-200/80">
                                         Upgrade to Premium to export comparisons as CSV, PDF, or PNG files.
                                     </p>
                                 </div>
@@ -197,7 +197,7 @@ export default function ExportModal({
                 ) : (
                     /* Si SÍ puede exportar: mostrar opciones de exportación */
                     <div className="space-y-4">
-                        <p className="text-sm text-gray-400">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                             Choose export format for your comparison data:
                         </p>
 
@@ -219,7 +219,7 @@ export default function ExportModal({
                         </div>
 
                         {/* Info sobre formatos no disponibles */}
-                        <p className="text-xs text-gray-500 text-center">
+                        <p className="text-xs text-gray-600 dark:text-gray-500 text-center">
                             PNG and PDF export coming soon
                         </p>
 

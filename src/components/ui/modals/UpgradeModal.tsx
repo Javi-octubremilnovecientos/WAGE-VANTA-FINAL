@@ -66,7 +66,7 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
                 </h2>
 
                 {/* Dynamic description */}
-                <p className="text-gray-300 text-sm mb-5 leading-relaxed">
+                <p className="text-gray-700 dark:text-gray-300 text-sm mb-5 leading-relaxed">
                     {getFeatureMessage()}
                 </p>
 

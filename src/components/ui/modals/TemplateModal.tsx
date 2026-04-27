@@ -172,12 +172,12 @@ function TemplateModal({
                             /* Mensaje de límite alcanzado */
                             <div className="rounded-lg border border-yellow-600/50 bg-yellow-500/10 p-4">
                                 <div className="flex items-start gap-3">
-                                    <SparklesIcon className="h-5 w-5 text-yellow-300 shrink-0 mt-0.5" />
+                                    <SparklesIcon className="h-5 w-5 text-yellow-600 dark:text-yellow-300 shrink-0 mt-0.5" />
                                     <div className="flex-1">
-                                        <p className="text-sm font-medium text-yellow-300 mb-1">
+                                        <p className="text-sm font-medium text-yellow-700 dark:text-yellow-300 mb-1">
                                             Template limit reached
                                         </p>
-                                        <p className="text-xs text-yellow-200/80">
+                                        <p className="text-xs text-yellow-800/90 dark:text-yellow-200/80">
                                             You've reached the maximum number of templates for your plan.
                                             Upgrade to Premium to save up to 4 templates.
                                         </p>
@@ -187,10 +187,10 @@ function TemplateModal({
                         ) : (
                             /* Confirmación de guardado */
                             <div className="rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 p-4">
-                                <p className="text-sm text-gray-300 mb-3">
+                                <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
                                     Save current form values as a template for quick reuse.
                                 </p>
-                                <div className="space-y-1 text-xs text-gray-400">
+                                <div className="space-y-1 text-xs text-gray-600 dark:text-gray-400">
                                     <p>• Country: {formValues.Country || 'Not set'}</p>
                                     <p>• Gender: {formValues.Gender || 'Not set'}</p>
                                     <p>• Monthly Wage: {formValues['Monthly Wage'] || 'Not set'}</p>
@@ -204,7 +204,7 @@ function TemplateModal({
                                 <button
                                     onClick={handleSaveTemplate}
                                     disabled={isLoading}
-                                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-gray-900"
+                                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
                                 >
                                     <CheckCircleIcon className="h-4 w-4" />
                                     {isLoading ? 'Saving...' : 'Save Template'}
@@ -215,7 +215,7 @@ function TemplateModal({
                                         onClose();
                                         onUpgradeRequired();
                                     }}
-                                    className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-gray-900"
+                                    className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
                                 >
                                     Upgrade to Premium
                                 </button>
@@ -223,7 +223,7 @@ function TemplateModal({
                             <button
                                 onClick={onClose}
                                 disabled={isLoading}
-                                className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-gray-300 bg-gray-800 hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                                className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
                             >
                                 Cancel
                             </button>
@@ -234,9 +234,9 @@ function TemplateModal({
                     <div className="space-y-4">
                         {templates.length === 0 ? (
                             /* Empty state */
-                            <div className="rounded-lg border border-gray-700 bg-gray-800/40 p-8 text-center">
-                                <DocumentTextIcon className="h-8 w-8 text-gray-500 mx-auto mb-2" />
-                                <p className="text-sm text-gray-400">No templates saved yet</p>
+                            <div className="rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 p-8 text-center">
+                                <DocumentTextIcon className="h-8 w-8 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+                                <p className="text-sm text-gray-600 dark:text-gray-400">No templates saved yet</p>
                             </div>
                         ) : (
                             /* Stack de templates con pestañas */
@@ -249,7 +249,7 @@ function TemplateModal({
                         {/* Botón de cerrar */}
                         <button
                             onClick={onClose}
-                            className="w-full rounded-md px-3 py-2 text-sm font-semibold text-gray-300 bg-gray-800 hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                            className="w-full rounded-md px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
                         >
                             Close
                         </button>

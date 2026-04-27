@@ -12,6 +12,8 @@ import {
 import type { SalaryGrowthChartProps } from './SalaryGrowthChart.types';
 import { MOCK_GROWTH_DATA, GROWTH_COLORS, getFilteredGrowthData } from './SalaryGrowthChart.utils';
 import { GrowthCustomTooltip } from './CustomTooltip';
+import { useAppSelector } from '@/hooks/useRedux';
+import { selectEffectiveTheme } from '@/features/theme/themeSlice';
 
 const SalaryGrowthChartComponent: React.FC<SalaryGrowthChartProps> = ({
     selectedCountries,
@@ -27,8 +29,8 @@ const SalaryGrowthChartComponent: React.FC<SalaryGrowthChartProps> = ({
         [selectedCountries],
     );
 
-    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const axisColor = isDark ? '#ffffff' : '#000000';
+    const effectiveTheme = useAppSelector(selectEffectiveTheme);
+    const axisColor = effectiveTheme === 'dark' ? '#ffffff' : '#000000';
 
     if (selectedCountries.length === 0) {
         return (

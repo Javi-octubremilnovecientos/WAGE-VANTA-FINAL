@@ -21,9 +21,10 @@ function StepSlider({ currentStep, totalSteps }: StepSliderProps) {
                     {/* Barra de progreso */}
                     <div className="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-white rounded-full transition-all duration-300 ease-out"
+                            className="h-full rounded-full transition-all duration-300 ease-out"
                             style={{
                                 width: `${getProgressPercentage(index)}%`,
+                                backgroundColor: '#45d2fd',
                             }}
                         />
                     </div>

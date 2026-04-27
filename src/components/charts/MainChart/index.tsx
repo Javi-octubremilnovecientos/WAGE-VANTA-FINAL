@@ -5,27 +5,36 @@ import {
     DefaultZIndexes,
     ErrorBar,
     Rectangle,
-    ReferenceLine,
     ResponsiveContainer,
-    Scatter,
     Tooltip,
+    XAxis,
     YAxis,
+    ReferenceLine,
 } from 'recharts';
-import type { BarShapeProps, TooltipContentProps, TooltipIndex } from 'recharts';
-import type { BoxPlotData } from '../../../features/salaries/types';
+import type { BarShapeProps, TooltipContentProps } from 'recharts';
+import { useMemo } from 'react';
+import { useAppSelector } from '@/hooks/useRedux';
+import { selectEffectiveTheme } from '@/features/theme/themeSlice';
+import type { MainChartProps, BoxPlotData } from './MainChart.types';
+import { computeYAxisConfig } from './MainChart.utils';
 
 type BoxPlotDatum = BoxPlotData;
 
-type OutlierDatum = {
-    category: string;
-    value: number;
-};
-
-const outliers: ReadonlyArray<OutlierDatum> = [];
-
 const boxDataKey: (entry: BoxPlotDatum) => [number, number] = entry => [entry.q1, entry.q3];
 
-const whiskerDataKey: (entry: BoxPlotDatum) => [number, number] = entry => [entry.q3 - entry.min, entry.max - entry.q3];
+/**
+ * Crea una función de whisker con el bigote superior capado al ceiling del YAxis.
+ * El bigote inferior (hacia el mínimo) no se capa.
+ * Los datos originales no se modifican — el tooltip sigue mostrando el max real.
+ */
+function makeWhiskerDataKey(
+    ceiling: number,
+): (entry: BoxPlotDatum) => [number, number] {
+    return (entry: BoxPlotDatum) => [
+        entry.q3 - entry.min,
+        Math.min(entry.max, ceiling) - entry.q3,
+    ];
+}
 
 const BoxShape = (props: BarShapeProps) => {
     // @ts-expect-error Recharts does spread datum on the props but the types don't reflect that
@@ -39,10 +48,13 @@ const BoxShape = (props: BarShapeProps) => {
     const reducedWidth = props.width * 0.5;
     const offsetX = props.x + (props.width - reducedWidth) / 2;
 
+    // Usar color personalizado del entry si está disponible
+    const fillColor = entry.color || '#8884d8';
+
     return (
         <g>
-            <Rectangle {...props} x={offsetX} width={reducedWidth} fill={entry.color || '#8884d8'} />
-            <line x1={offsetX} x2={offsetX + reducedWidth} y1={medianY} y2={medianY} stroke="#000" className="dark:stroke-gray-900" strokeWidth={2} />
+            <Rectangle {...props} x={offsetX} width={reducedWidth} fill={fillColor} />
+            <line x1={offsetX} x2={offsetX + reducedWidth} y1={medianY} y2={medianY} stroke="#1f2937" strokeWidth={2} />
         </g>
     );
 };
@@ -51,102 +63,91 @@ const TooltipContent = (props: TooltipContentProps) => {
     const { active, payload } = props;
     if (active && payload && payload.length) {
         const entry: BoxPlotDatum = payload[0].payload;
-        const isDark = document.documentElement.classList.contains('dark');
-
         return (
-            <div
-                style={{
-                    backgroundColor: isDark ? 'rgba(30, 30, 40, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-                    border: isDark ? '1px solid #4b5563' : '1px solid #d1d5db',
-                    padding: '0 1em',
-                    borderRadius: '0.375rem',
-                }}
-            >
-                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Category: ${entry.category}`}</p>
-                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Min: ${entry.min}`}</p>
-                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Q1: ${entry.q1}`}</p>
-                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Median: ${entry.median}`}</p>
-                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Q3: ${entry.q3}`}</p>
-                <p style={{ margin: 0, color: isDark ? '#e5e7eb' : '#1f2937' }}>{`Max: ${entry.max}`}</p>
+            <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-3 shadow-lg">
+                <p className="font-semibold text-gray-900 dark:text-white mb-2">{entry.category}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 m-0">Min: {entry.min.toLocaleString()}€</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 m-0">Q1: {entry.q1.toLocaleString()}€</p>
+                <p className="text-xs text-gray-900 dark:text-white font-medium m-0">Median: {entry.median.toLocaleString()}€</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 m-0">Q3: {entry.q3.toLocaleString()}€</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 m-0">Max: {entry.max.toLocaleString()}€</p>
             </div>
         );
     }
     return null;
 };
 
-interface MainChartProps {
-    data?: BoxPlotData[];
-    userWage?: number | null;
-    defaultIndex?: TooltipIndex;
-    isLoading?: boolean;
-}
-
-export default function MainChart({ data = [], userWage, defaultIndex, isLoading = false }: MainChartProps) {
-    const skeletonHeights = [75, 90, 65]; // Fixed heights for skeleton bars
-    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const yAxisColor = isDark ? '#ffffff' : '#000000';
+export default function MainChart({ data, userWage, isLoading = false }: MainChartProps) {
+    const effectiveTheme = useAppSelector(selectEffectiveTheme);
+    const axisColor = effectiveTheme === 'dark' ? '#d1d5db' : '#374151';
+    const yAxisConfig = useMemo(() => computeYAxisConfig(data), [data]);
+    const whiskerDataKey = useMemo(
+        () => makeWhiskerDataKey(yAxisConfig.domain[1]),
+        [yAxisConfig.domain],
+    );
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center w-full aspect-square">
-                <div className="w-full h-full p-8 space-y-4 animate-pulse">
-                    {/* Y-axis skeleton */}
-                    <div className="flex gap-2 h-full">
-                        <div className="w-10 flex flex-col justify-between">
-                            {[...Array(6)].map((_, i) => (
-                                <div key={i} className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-8"></div>
-                            ))}
-                        </div>
-                        {/* Bars skeleton */}
-                        <div className="flex-1 flex items-end justify-around gap-4">
-                            {skeletonHeights.map((height, i) => (
-                                <div
-                                    key={i}
-                                    className="bg-gray-300 dark:bg-gray-700 rounded w-16"
-                                    style={{ height: `${height}%` }}
-                                ></div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+            <div className="w-full aspect-square flex items-center justify-center">
+                <div className="text-sm text-gray-500 dark:text-gray-400">Loading chart...</div>
             </div>
         );
     }
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
         return (
-            <div className="flex items-center justify-center w-full aspect-square text-gray-600 dark:text-gray-500 text-sm">
-                Select countries and fill the form to see salary data
+            <div className="w-full aspect-square flex items-center justify-center">
+                <div className="text-sm text-gray-500 dark:text-gray-400">No data available</div>
             </div>
         );
     }
 
     return (
-        <ResponsiveContainer width="90%" aspect={1 / 1}>
+        <ResponsiveContainer width="100%" aspect={1 / 1}>
             <BarChart data={data}>
-                <YAxis
-                    width={40}
-                    domain={[0, 13000]}
-                    ticks={[0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000]}
-                    tick={{ fontSize: 10, fill: yAxisColor }}
-                    stroke={yAxisColor}
-                    tickFormatter={(value) => `${value}€`}
+                <XAxis
+                    dataKey="category"
+                    allowDuplicatedCategory={false}
+                    tick={{ fontSize: 10, fill: axisColor }}
+                    stroke={axisColor}
                 />
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-600" />
-                <Bar dataKey={boxDataKey} shape={BoxShape}>
-                    <ErrorBar dataKey={whiskerDataKey} width={0} zIndex={DefaultZIndexes.bar - 1} />
-                </Bar>
-                <Scatter data={outliers} dataKey="value" fill="#e11d48" />
-                {userWage != null && (
+                <YAxis
+                    width={50}
+                    domain={yAxisConfig.domain}
+                    ticks={yAxisConfig.ticks}
+                    tick={{ fontSize: 10, fill: axisColor }}
+                    stroke={axisColor}
+                    tickFormatter={(value: number) => `${value.toLocaleString()}€`}
+                />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#374151" />
+
+                {/* Línea de referencia para el salario del usuario */}
+                {userWage && userWage > 0 && (
                     <ReferenceLine
                         y={userWage}
-                        stroke="#45d2fd"
-                        strokeDasharray="6 3"
-                        strokeWidth={1.5}
-                        label={{ value: `Your wage: ${userWage}€`, position: 'right', fill: '#45d2fd', fontSize: 10 }}
+                        stroke="#ef4444"
+                        strokeDasharray="5 5"
+                        strokeWidth={2}
+                        label={{
+                            value: `Your wage: ${userWage.toLocaleString()}€`,
+                            position: 'insideTopLeft',
+                            fill: '#ef4444',
+                            fontSize: 10,
+                            fontWeight: 600
+                        }}
                     />
                 )}
-                <Tooltip content={TooltipContent} defaultIndex={defaultIndex} cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }} />
+
+                <Bar dataKey={boxDataKey} shape={BoxShape}>
+                    <ErrorBar
+                        dataKey={whiskerDataKey}
+                        width={0}
+                        zIndex={DefaultZIndexes.bar - 1}
+                        stroke="#374151"
+                        className="dark:stroke-gray-300"
+                    />
+                </Bar>
+                <Tooltip content={TooltipContent} />
             </BarChart>
         </ResponsiveContainer>
     );

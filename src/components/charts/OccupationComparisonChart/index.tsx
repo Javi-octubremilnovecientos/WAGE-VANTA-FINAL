@@ -13,14 +13,16 @@ import {
 import type { OccupationComparisonChartProps } from './OccupationComparisonChart.types';
 import { MOCK_OCCUPATION_BANDS, transformToBandData } from './OccupationComparisonChart.utils';
 import { OccupationTooltip } from './CustomTooltip';
+import { useAppSelector } from '@/hooks/useRedux';
+import { selectEffectiveTheme } from '@/features/theme/themeSlice';
 
 const OccupationComparisonChartComponent: React.FC<OccupationComparisonChartProps> = ({
     computedStats = [],
     height = 300,
 }) => {
     const bandData = useMemo(() => transformToBandData(MOCK_OCCUPATION_BANDS), []);
-    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-    const axisColor = isDark ? '#ffffff' : '#000000';
+    const effectiveTheme = useAppSelector(selectEffectiveTheme);
+    const axisColor = effectiveTheme === 'dark' ? '#ffffff' : '#000000';
 
     return (
         <ResponsiveContainer width="100%" height={height}>

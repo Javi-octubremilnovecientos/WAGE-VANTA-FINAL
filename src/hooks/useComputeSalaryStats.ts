@@ -2,6 +2,23 @@ import { useMemo } from 'react';
 import type { SalaryRecord, BoxPlotData } from '@/features/salaries/types';
 import { extractWages } from '@/features/salaries/salaryUtils';
 
+const COUNTRY_EUR_EXCHANGE_RATES: Record<string, number> = {
+    denmark: 0.134,
+    'united kingdom': 1.17,
+    uk: 1.17,
+};
+
+function convertWagesToEur(wages: number[], country: string): number[] {
+    const normalizedCountry = country.trim().toLowerCase();
+    const rate = COUNTRY_EUR_EXCHANGE_RATES[normalizedCountry];
+
+    if (!rate) {
+        return wages;
+    }
+
+    return wages.map((wage) => wage * rate);
+}
+
 /**
  * Calcula estadísticas de BoxPlot (min, Q1, median, Q3, max) a partir de un array de wages.
  * Usa interpolación lineal para percentiles.
@@ -45,12 +62,18 @@ export function useComputeSalaryStats(
     color: string,
 ): BoxPlotData | null {
     return useMemo(() => {
+        // Si no hay país definido, retornar null inmediatamente
+        if (!country) return null;
+
         if (!records || records.length === 0) return null;
         const wages = extractWages(records);
         if (wages.length === 0) return null;
 
+        // Normalizar a EUR para países con moneda distinta (ej. DKK, GBP).
+        const wagesInEur = convertWagesToEur(wages, country);
+
         // Filtrar outliers extremos: eliminar salarios < 200€ o > 13000€
-        const filteredWages = wages.filter((wage) => wage >= 200 && wage <= 13000);
+        const filteredWages = wagesInEur.filter((wage) => wage >= 200 && wage <= 13000);
 
         // Si después de filtrar no quedan datos, retornar null
         if (filteredWages.length === 0) return null;

@@ -3,7 +3,7 @@ import CompareComboBox from '../CompareComboBox';
 import type { CountryOption } from '../CompareComboBox';
 import { formSteps } from '../../../features/salaries/salaryConstants';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRedux';
-import { addCountry, selectSelectedCountries } from '../../../features/salaries/salarySlice';
+import { addCountry, removeCountry, selectSelectedCountries } from '../../../features/salaries/salarySlice';
 import { usePlanLimits } from '../../../hooks/usePlanLimits';
 
 interface CompareModalProps {
@@ -27,60 +27,92 @@ export default function CompareModal({
     cancelButtonColor = "#374151",
     confirmButtonColor = "#6366F1",
 }: CompareModalProps) {
-    const [selectedCountry, setSelectedCountry] = useState<CountryOption | null>(null);
     const dispatch = useAppDispatch();
     const selectedCountries = useAppSelector(selectSelectedCountries);
     const { canAddCountry, isAuthenticated, isPremium, maxCountries } = usePlanLimits();
 
+    // 2° país persistido en Redux
+    const persistedSecondCountry = selectedCountries[1] ?? null;
+
+    // Estado local para cambios pendientes (no commiteados aún)
+    const [pendingCountry, setPendingCountry] = useState<CountryOption | null>(null);
+
+    // Valor mostrado en el combobox: pendiente si existe, sino el persistido
+    const displayedCountry = pendingCountry ??
+        (persistedSecondCountry ? { label: persistedSecondCountry, value: persistedSecondCountry } : null);
+
     if (!isOpen) return null;
 
-    // Obtener opciones de países del step-1
     const countryOptions = formSteps[0].fields[0].options ?? [];
 
     const handleCancel = () => {
-        setSelectedCountry(null);
+        // Limpiar cambios pendientes sin tocar el store
+        setPendingCountry(null);
         onCancel();
     };
 
     const handleConfirm = () => {
-        if (!selectedCountry) return;
-
-        // Validar si puede añadir más países
-        if (!canAddCountry) {
-            if (!isAuthenticated) {
-                onUpgradeRequired(); // Mostrar modal de login/signup
-                return;
+        if (pendingCountry) {
+            // Si había un 2° país previo diferente, reemplazarlo (solo Premium llega aquí con reemplazo)
+            if (persistedSecondCountry && persistedSecondCountry !== pendingCountry.value) {
+                dispatch(removeCountry(persistedSecondCountry));
             }
-            if (!isPremium) {
-                onUpgradeRequired(); // Mostrar modal de upgrade a premium
-                return;
+            // Añadir el nuevo país si no está ya en selectedCountries
+            if (!selectedCountries.includes(pendingCountry.value)) {
+                dispatch(addCountry(pendingCountry.value));
             }
-            // Si llegamos aquí es un edge case (no debería pasar)
-            return;
         }
-
-        // Añadir país al array de selectedCountries en Redux
-        dispatch(addCountry(selectedCountry.label));
-        setSelectedCountry(null);
+        setPendingCountry(null);
         onConfirm();
     };
 
-    // Mensaje dinámico según el estado del plan
+    const handleComboBoxChange = (country: CountryOption | null) => {
+        if (!country) {
+            // X del badge → eliminar del store inmediatamente (chart se actualiza en tiempo real)
+            if (persistedSecondCountry) {
+                dispatch(removeCountry(persistedSecondCountry));
+            }
+            setPendingCountry(null);
+            return;
+        }
+
+        // Si ya hay un 2° país persistido (badge visible) y el usuario intenta cambiarlo
+        if (persistedSecondCountry) {
+            // Solo Premium puede reemplazar directamente sin eliminar el badge primero
+            if (!isPremium) {
+                onUpgradeRequired();
+                return;
+            }
+        } else {
+            // No hay 2° país aún → validar límites normales
+            if (!canAddCountry) {
+                if (!isAuthenticated || !isPremium) {
+                    onUpgradeRequired();
+                    return;
+                }
+            }
+        }
+
+        setPendingCountry(country);
+    };
+
     const getHelperText = () => {
         const remainingSlots = maxCountries - selectedCountries.length;
 
-        // Si no puede agregar más países (límite alcanzado)
+        if (displayedCountry && !isPremium) {
+            return `Remove the badge first to change (Premium can replace directly)`;
+        }
+
+        if (displayedCountry && isPremium) {
+            return `Selected: ${displayedCountry.label} (Premium: replace anytime)`;
+        }
+
         if (!canAddCountry) {
-            if (!isAuthenticated) {
-                return `You've reached the limit (${maxCountries} countries). Login for Premium (3 countries)`;
-            }
-            if (!isPremium) {
-                return 'Upgrade to Premium to compare 3 countries';
-            }
+            if (!isAuthenticated) return `Login to compare up to 2 countries`;
+            if (!isPremium) return 'Upgrade to Premium to compare 3 countries';
             return 'Maximum countries reached';
         }
 
-        // Si puede agregar más países
         if (!isAuthenticated) {
             return `You can add ${remainingSlots} more ${remainingSlots === 1 ? 'country' : 'countries'}`;
         }
@@ -89,7 +121,7 @@ export default function CompareModal({
             return 'Add 1 more country (Upgrade to Premium for 3 total)';
         }
 
-        return selectedCountry ? `Selected: ${selectedCountry.label}` : '';
+        return '';
     };
 
     return (
@@ -110,8 +142,8 @@ export default function CompareModal({
                         id="compareCountry"
                         label="Country"
                         countries={countryOptions}
-                        value={selectedCountry}
-                        onChange={setSelectedCountry}
+                        value={displayedCountry}
+                        onChange={handleComboBoxChange}
                         canAddMore={canAddCountry}
                         onUpgradeRequired={onUpgradeRequired}
                     />
@@ -121,9 +153,8 @@ export default function CompareModal({
                 <div className="flex gap-3">
                     <button
                         onClick={handleConfirm}
-                        disabled={!selectedCountry || !canAddCountry}
                         style={{ backgroundColor: confirmButtonColor }}
-                        className="flex-1 rounded-md px-3 py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 rounded-md px-3 py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                     >
                         {confirmText}
                     </button>

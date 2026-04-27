@@ -47,12 +47,6 @@ export default function CompareComboBox({
             return;
         }
 
-        // Si ya hay un país seleccionado, permitir cambiar (eliminar badge antiguo)
-        if (value) {
-            onChange?.(country);
-            return;
-        }
-
         // Si NO puede añadir más países, mostrar modal de upgrade
         if (!canAddMore) {
             if (onUpgradeRequired) {
@@ -149,7 +143,6 @@ export default function CompareComboBox({
                 </div>
             </Combobox>
 
-            {/* Upgrade Modal */}
             <UpgradeModal
                 isOpen={isUpgradeOpen}
                 onClose={() => setIsUpgradeOpen(false)}

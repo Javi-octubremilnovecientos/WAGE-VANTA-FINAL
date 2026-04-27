@@ -92,18 +92,27 @@ export default function Home() {
 
     const hasCountry = selectedCountries.length > 0;
 
-    // Queries progresivas por país
+    // Queries progresivas por país con refetch forzado cuando cambian los argumentos
     const country1Query = useGetSalaryDataQuery(
         { country: selectedCountries[0], formValues },
-        { skip: !selectedCountries[0] },
+        {
+            skip: !selectedCountries[0],
+            refetchOnMountOrArgChange: true, // Forzar refetch cuando cambian los argumentos
+        },
     );
     const country2Query = useGetSalaryDataQuery(
         { country: selectedCountries[1], formValues },
-        { skip: !selectedCountries[1] },
+        {
+            skip: !selectedCountries[1],
+            refetchOnMountOrArgChange: true,
+        },
     );
     const country3Query = useGetSalaryDataQuery(
         { country: selectedCountries[2], formValues },
-        { skip: !selectedCountries[2] },
+        {
+            skip: !selectedCountries[2],
+            refetchOnMountOrArgChange: true,
+        },
     );
 
     // Computar BoxPlot stats
