@@ -64,13 +64,13 @@ const TooltipContent = (props: TooltipContentProps) => {
     if (active && payload && payload.length) {
         const entry: BoxPlotDatum = payload[0].payload;
         return (
-            <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-3 shadow-lg">
-                <p className="font-semibold text-gray-900 dark:text-white mb-2">{entry.category}</p>
-                <p className="text-xs text-gray-600 dark:text-gray-400 m-0">Min: {entry.min.toLocaleString()}€</p>
-                <p className="text-xs text-gray-600 dark:text-gray-400 m-0">Q1: {entry.q1.toLocaleString()}€</p>
-                <p className="text-xs text-gray-900 dark:text-white font-medium m-0">Median: {entry.median.toLocaleString()}€</p>
-                <p className="text-xs text-gray-600 dark:text-gray-400 m-0">Q3: {entry.q3.toLocaleString()}€</p>
-                <p className="text-xs text-gray-600 dark:text-gray-400 m-0">Max: {entry.max.toLocaleString()}€</p>
+            <div className="bg-[#121213] border border-white/10 rounded-lg p-3 shadow-lg">
+                <p className="font-semibold text-white mb-2">{entry.category}</p>
+                <p className="text-xs text-[#96969F] m-0">Min: {entry.min.toLocaleString()}€</p>
+                <p className="text-xs text-[#96969F] m-0">Q1: {entry.q1.toLocaleString()}€</p>
+                <p className="text-xs text-white font-medium m-0">Median: {entry.median.toLocaleString()}€</p>
+                <p className="text-xs text-[#96969F] m-0">Q3: {entry.q3.toLocaleString()}€</p>
+                <p className="text-xs text-[#96969F] m-0">Max: {entry.max.toLocaleString()}€</p>
             </div>
         );
     }
@@ -89,7 +89,7 @@ export default function MainChart({ data, userWage, isLoading = false }: MainCha
     if (isLoading) {
         return (
             <div className="w-full aspect-square flex items-center justify-center">
-                <div className="text-sm text-gray-500 dark:text-gray-400">Loading chart...</div>
+                <div className="text-sm text-[#96969F]">Loading chart...</div>
             </div>
         );
     }
@@ -97,7 +97,7 @@ export default function MainChart({ data, userWage, isLoading = false }: MainCha
     if (!data || data.length === 0) {
         return (
             <div className="w-full aspect-square flex items-center justify-center">
-                <div className="text-sm text-gray-500 dark:text-gray-400">No data available</div>
+                <div className="text-sm text-[#96969F]">No data available</div>
             </div>
         );
     }
@@ -144,7 +144,7 @@ export default function MainChart({ data, userWage, isLoading = false }: MainCha
                         width={0}
                         zIndex={DefaultZIndexes.bar - 1}
                         stroke="#374151"
-                        className="dark:stroke-gray-300"
+                        className="stroke-white/50"
                     />
                 </Bar>
                 <Tooltip content={TooltipContent} />

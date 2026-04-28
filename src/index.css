@@ -3,8 +3,15 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --brand-gradient: linear-gradient(135deg, #d84124 0%, #ed8b34 100%);
+    --color-bg-primary: #0a0a0b;
+    --color-bg-secondary: #121213;
+    --color-muted: #96969f;
+  }
+
   body {
-    @apply bg-neutral-50 text-neutral-900;
+    @apply bg-[#0A0A0B] text-white font-sans;
   }
 
   html {
@@ -14,23 +21,44 @@
 
 @layer components {
   .btn-primary {
-    @apply px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    @apply px-4 py-2 text-white rounded-lg font-medium transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 focus:ring-offset-[#0A0A0B];
+    background: var(--brand-gradient);
+    box-shadow: 0 4px 18px rgba(216, 65, 36, 0.5);
   }
 
-  .btn-secondary {
-    @apply px-4 py-2 bg-secondary-600 text-white rounded-lg font-medium hover:bg-secondary-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2;
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  .btn-primary:disabled {
+    box-shadow: none;
   }
 
   .btn-outline {
-    @apply px-4 py-2 border-2 border-primary-600 text-primary-600 rounded-lg font-medium hover:bg-primary-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    @apply px-4 py-2 border border-brand-500 text-brand-500 rounded-lg font-medium hover:bg-brand-500/10 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 focus:ring-offset-[#0A0A0B];
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-md p-6;
+    @apply bg-[#121213] rounded-xl shadow-md p-6 border border-white/5;
   }
 
   .input-field {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-0 transition-all duration-200;
+    @apply w-full px-4 py-2 bg-[#121213] border border-[#96969F]/30 rounded-lg text-white placeholder-[#96969F] focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 transition-all duration-200;
+  }
+
+  /* Shadow naranja para cualquier elemento con el gradiente del brand */
+  .bg-brand-gradient {
+    box-shadow: 0 4px 18px rgba(216, 65, 36, 0.5);
+  }
+
+  .bg-brand-gradient:disabled {
+    box-shadow: none;
+  }
+
+  /* Shadow para iconos con fondo del brand */
+  .icon-shadow {
+    box-shadow: 0 2px 8px rgba(216, 65, 36, 0.3);
+    border: 1.5px solid rgba(216, 65, 36, 0.4);
   }
 }
 
@@ -42,8 +70,21 @@
 
   /* Hide scrollbar for IE, Edge and Firefox */
   .scrollbar-hide {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Brand gradient text */
+  .text-brand-gradient {
+    background: var(--brand-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Brand gradient background */
+  .bg-brand-gradient {
+    background: var(--brand-gradient);
   }
 
   /* Fade in animation */

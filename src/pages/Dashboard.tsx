@@ -24,7 +24,7 @@ const shortcuts: FeatureCardProps[] = [
     description: "Review your saved wage comprasion charts.",
     to: "/saved-comparisons",
     icon: ChartBarSquareIcon,
-    iconWrapperClassName: "bg-[#45d2fd]/20 text-[#45d2fd]",
+    iconWrapperClassName: "bg-[#D84124]/20 text-[#D84124]",
     iconClassName: "h-6 w-6",
   },
   {
@@ -32,7 +32,7 @@ const shortcuts: FeatureCardProps[] = [
     description: "Templates to fill out forms with a click",
     to: "/templates",
     icon: DocumentTextIcon,
-    iconWrapperClassName: "bg-[#45d2fd]/20 text-[#45d2fd]",
+    iconWrapperClassName: "bg-[#D84124]/20 text-[#D84124]",
     iconClassName: "h-6 w-6",
   },
   {
@@ -40,7 +40,7 @@ const shortcuts: FeatureCardProps[] = [
     description: "Update your user info",
     to: "/settings",
     icon: Cog6ToothIcon,
-    iconWrapperClassName: "bg-[#45d2fd]/20 text-[#45d2fd]",
+    iconWrapperClassName: "bg-[#D84124]/20 text-[#D84124]",
     iconClassName: "h-6 w-6",
   },
   {
@@ -49,7 +49,7 @@ const shortcuts: FeatureCardProps[] = [
       "Track your plan limits and upgrade when you need more features.",
     to: "/manage-plan",
     icon: CreditCardIcon,
-    iconWrapperClassName: "bg-[#45d2fd]/20 text-[#45d2fd]",
+    iconWrapperClassName: "bg-[#D84124]/20 text-[#D84124]",
     iconClassName: "h-6 w-6",
   },
 ];
@@ -82,20 +82,20 @@ function Dashboard() {
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-3 sm:px-4 lg:px-6 ">
       <section className="flex flex-col gap-3 mb-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between ">
-          <h1 className="text-base font-bold tracking-tight text-gray-900 dark:text-white sm:text-lg">
+          <h1 className="text-base font-bold tracking-tight text-white sm:text-lg">
             {user?.name || 'Usuario'}
           </h1>
         </div>
         <div className="flex flex-row justify-between items-center flex-wrap gap-2">
           <span className={`inline-flex w-fit items-center rounded-full border backdrop-blur px-2.5 py-0.5 text-xs font-medium shadow-sm transition-colors ${isPremium
-            ? 'border-amber-400 dark:border-yellow-600/50 bg-amber-100 dark:bg-yellow-500/10 text-amber-700 dark:text-yellow-300'
-            : 'border-blue-300 dark:border-gray-700 bg-blue-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300'
+              ? 'border-yellow-600/50 bg-yellow-500/10 text-yellow-300'
+              : 'border-[#D84124]/50 bg-[#D84124]/10 text-[#D84124]'
             }`}>
             {isPremium ? '⭐ Premium Plan' : 'Free Plan'}
           </span>
           <Link
             to="/"
-            className="inline-flex items-center gap-1 self-start rounded-md px-1.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 transition-colors"
+            className="inline-flex items-center gap-1 self-start rounded-md px-1.5 py-1 text-xs font-medium text-[#D84124] hover:text-[#ED8B34] focus:outline-none focus:ring-2 focus:ring-[#D84124] focus:ring-offset-2 focus:ring-offset-[#0A0A0B] transition-colors"
           >
             <HomeIcon className="h-3 w-3 md:h-4 md:w-4" />
             Home
@@ -110,29 +110,29 @@ function Dashboard() {
 
       <section className="space-y-3">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold tracking-tight text-gray-900 dark:text-white">
+          <h2 className="text-sm font-semibold tracking-tight text-white">
             Recent Comparisons
           </h2>
           <Link
             to="/saved-comparisons"
-            className="text-xs font-semibold text-[#45d2fd] transition-colors hover:text-[#22b8d9]"
+            className="text-xs font-semibold text-[#D84124] transition-colors hover:text-[#ED8B34]"
           >
             View all
           </Link>
         </div>
 
         {!lastComparison ? (
-          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 backdrop-blur px-3 py-6 text-center shadow-lg sm:px-5">
+          <div className="rounded-lg border border-white/10 bg-[#121213]/60 backdrop-blur px-3 py-6 text-center shadow-lg sm:px-5">
             <div className="mx-auto flex max-w-md flex-col items-center gap-2">
-              <div className="inline-flex rounded-full bg-[#45d2fd]/20 p-1.5 text-[#45d2fd]">
+              <div className="inline-flex rounded-full bg-[#D84124]/20 p-1.5 text-[#D84124]">
                 <ChartBarSquareIcon className="h-3.5 w-3.5" />
               </div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              <p className="text-sm font-medium text-[#96969F]">
                 No comparisons saved yet
               </p>
               <Link
                 to="/"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-[#45d2fd] transition-colors hover:text-[#22b8d9]"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-[#D84124] transition-colors hover:text-[#ED8B34]"
               >
                 Start comparing
                 <ArrowRightIcon className="h-2.5 w-2.5" />
@@ -152,23 +152,23 @@ function Dashboard() {
         <section>
           <Link
             to="/plans"
-            className="group flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-gray-50/60 dark:from-gray-900/60 via-[#22b8d9]/20 to-gray-50/60 dark:to-gray-900/60 backdrop-blur px-3 py-3 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:px-4"
+            className="group flex items-center gap-2 rounded-lg border border-white/10 bg-[#121213]/60 backdrop-blur px-3 py-3 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:px-4"
           >
-            <span className="inline-flex rounded-lg bg-[#45d2fd]/20 p-1.5 text-[#45d2fd]">
+            <span className="inline-flex rounded-lg bg-[#D84124]/20 p-1.5 text-[#D84124]">
               <SparklesIcon className="h-3.5 w-3.5" />
             </span>
 
             <div className="min-w-0 flex-1">
-              <h2 className="text-sm font-bold tracking-tight text-[#45d2fd]">
+              <h2 className="text-sm font-bold tracking-tight text-[#D84124]">
                 Upgrade to Premium
               </h2>
-              <p className="mt-0.5 text-xs leading-4 text-gray-500 dark:text-gray-400">
+              <p className="mt-0.5 text-xs leading-4 text-[#96969F]">
                 Unlock exports, multiple chart views, more templates and extra
                 comparisons.
               </p>
             </div>
 
-            <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-gray-500 transition-colors group-hover:text-[#45d2fd]" />
+            <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-[#96969F] transition-colors group-hover:text-[#D84124]" />
           </Link>
         </section>
       )}

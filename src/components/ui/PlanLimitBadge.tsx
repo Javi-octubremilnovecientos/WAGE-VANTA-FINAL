@@ -51,8 +51,8 @@ export default function PlanLimitBadge({
             {/* Badge de contador */}
             <span
                 className={`inline-flex items-center rounded-full border backdrop-blur px-2.5 py-0.5 text-xs font-medium shadow-sm transition-colors ${isLimitReached
-                    ? 'border-orange-400 dark:border-orange-600/50 bg-orange-100 dark:bg-orange-500/10 text-orange-700 dark:text-orange-300'
-                    : 'border-blue-300 dark:border-gray-700 bg-blue-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300'
+                    ? 'border-[#D84124]/50 bg-[#D84124]/10 text-[#ED8B34]'
+                    : 'border-white/10 bg-white/5 text-[#96969F]'
                     }`}
             >
                 {label}: {current} / {max}
@@ -62,7 +62,7 @@ export default function PlanLimitBadge({
             {showUpgradeButton && (
                 <button
                     onClick={onUpgradeClick}
-                    className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#45d2fd] to-[#22b8d9] px-2 py-0.5 text-xs font-semibold text-gray-900 shadow-sm hover:opacity-90 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+                    className="inline-flex items-center gap-1 rounded-md bg-brand-gradient px-2 py-0.5 text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#D84124] focus:ring-offset-2 focus:ring-offset-[#0A0A0B]"
                     aria-label={`Upgrade to increase ${label} limit`}
                 >
                     <SparklesIcon className="h-3 w-3" />

@@ -31,7 +31,7 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
                 return (
                     <>
                         Wanna chose more than one country? Upgrade to premium and chose up to{' '}
-                        <span className="font-semibold text-[#45d2fd]">3 countries</span> to compare
+                        <span className="font-semibold text-[#ED8B34]">3 countries</span> to compare
                     </>
                 );
             case 'export':
@@ -56,7 +56,7 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
             aria-modal="true"
             aria-labelledby="upgrade-modal-title"
         >
-            <div className="w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-xl">
+            <div className="w-full max-w-md bg-[#121213] border border-white/10 rounded-lg p-4 shadow-xl">
                 {/* Title */}
                 <h2
                     id="upgrade-modal-title"
@@ -66,7 +66,7 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
                 </h2>
 
                 {/* Dynamic description */}
-                <p className="text-gray-700 dark:text-gray-300 text-sm mb-5 leading-relaxed">
+                <p className="text-[#96969F] text-sm mb-5 leading-relaxed">
                     {getFeatureMessage()}
                 </p>
 
@@ -74,13 +74,13 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
                 <div className="flex gap-2">
                     <button
                         onClick={handleUpgrade}
-                        className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+                        className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#D84124] focus:ring-offset-2 focus:ring-offset-[#0A0A0B] bg-brand-gradient"
                     >
                         Upgrade to Premium
                     </button>
                     <button
                         onClick={onClose}
-                        className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+                        className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-[#96969F] bg-white/5 hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white/20 focus:ring-offset-2 focus:ring-offset-[#0A0A0B]"
                     >
                         Not now
                     </button>

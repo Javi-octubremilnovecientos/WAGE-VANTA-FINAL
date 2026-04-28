@@ -71,7 +71,7 @@ export default function CompareComboBox({
                 <div className="relative">
                     {/* Label */}
                     {label && (
-                        <label htmlFor={id} className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                        <label htmlFor={id} className="block text-sm font-medium text-white mb-2">
                             {label}
                         </label>
                     )}
@@ -79,13 +79,13 @@ export default function CompareComboBox({
                     {/* Badge container */}
                     {value && (
                         <div className="flex flex-wrap gap-2 mb-2">
-                            <span className="inline-flex items-center gap-1.5 rounded-md bg-gradient-to-r from-blue-100 to-blue-50 dark:from-gray-700 dark:to-gray-700 px-2.5 py-1 text-xs font-medium text-gray-900 dark:text-white ring-1 ring-inset ring-blue-300 dark:ring-gray-600">
+                            <span className="inline-flex items-center gap-1.5 rounded-md bg-[#D84124]/10 px-2.5 py-1 text-xs font-medium text-[#D84124] ring-1 ring-inset ring-[#D84124]/30">
                                 {value.label}
                                 <button
                                     type="button"
                                     onClick={handleRemoveBadge}
                                     aria-label={`Remove ${value.label}`}
-                                    className="rounded-sm hover:text-[#45d2fd] transition-colors focus:outline-none"
+                                    className="rounded-sm hover:text-[#ED8B34] transition-colors focus:outline-none"
                                 >
                                     <XMarkIcon className="h-3.5 w-3.5" />
                                 </button>
@@ -97,7 +97,7 @@ export default function CompareComboBox({
                     <div className="relative">
                         <ComboboxInput
                             id={id}
-                            className="w-full rounded-lg bg-white dark:bg-gray-800 py-3 pl-4 pr-10 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-blue-200 dark:ring-gray-700 sm:text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-[#45d2fd] focus:outline-none"
+                            className="w-full rounded-lg bg-[#0A0A0B] py-3 pl-4 pr-10 text-white shadow-sm ring-1 ring-inset ring-white/10 sm:text-sm hover:bg-white/5 transition-colors placeholder:text-[#96969F] focus:ring-2 focus:ring-[#D84124] focus:outline-none"
                             displayValue={(country: CountryOption | null) => country?.label || ""}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder={value ? "Add another country..." : placeholder}
@@ -105,7 +105,7 @@ export default function CompareComboBox({
                         <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
                             <ChevronUpDownIcon
                                 aria-hidden="true"
-                                className="h-5 w-5 text-gray-500 dark:text-gray-400"
+                                className="h-5 w-5 text-[#96969F]"
                             />
                         </ComboboxButton>
                     </div>
@@ -113,10 +113,10 @@ export default function CompareComboBox({
                     {/* Options */}
                     <ComboboxOptions
                         transition
-                        className="combobox-options absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white dark:bg-gray-800 backdrop-blur-md py-1 text-base shadow-lg ring-1 ring-blue-200 dark:ring-gray-700 focus:outline-none data-closed:opacity-0 data-leave:opacity-0 transition duration-100 ease-in sm:text-sm"
+                        className="combobox-options absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-[#121213] backdrop-blur-md py-1 text-base shadow-lg ring-1 ring-white/10 focus:outline-none data-closed:opacity-0 data-leave:opacity-0 transition duration-100 ease-in sm:text-sm"
                     >
                         {filteredCountries.length === 0 && query !== "" ? (
-                            <div className="py-3 pl-4 pr-9 text-gray-500 dark:text-gray-400 sm:text-sm">
+                            <div className="py-3 pl-4 pr-9 text-[#96969F] sm:text-sm">
                                 No countries found
                             </div>
                         ) : (
@@ -128,8 +128,8 @@ export default function CompareComboBox({
                                         value={country}
                                         disabled={isSelected}
                                         className={`group relative select-none py-3 pl-4 pr-9 transition-colors ${isSelected
-                                            ? "cursor-not-allowed text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-700"
-                                            : "cursor-pointer text-gray-900 dark:text-white hover:bg-[#45d2fd] data-focus:bg-[#45d2fd] hover:text-gray-900 data-focus:text-gray-900 dark:hover:text-gray-900"
+                                            ? "cursor-not-allowed text-[#96969F]/50 bg-white/5"
+                                            : "cursor-pointer text-white hover:bg-[#D84124]/20 data-focus:bg-[#D84124]/20"
                                             }`}
                                     >
                                         <span className="block truncate font-normal">

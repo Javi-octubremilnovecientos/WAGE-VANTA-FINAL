@@ -4,7 +4,20 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Poppins", "sans-serif"],
+        heading: ["Poppins", "sans-serif"],
+      },
       colors: {
+        brand: {
+          dark: "#0A0A0B",
+          surface: "#121213",
+          muted: "#96969F",
+        },
+        gradient: {
+          start: "#D84124",
+          end: "#ED8B34",
+        },
         primary: {
           50: "#eff6ff",
           100: "#dbeafe",
@@ -26,6 +39,9 @@ export default {
           500: "#f59e0b",
           600: "#d97706",
         },
+      },
+      backgroundImage: {
+        "brand-gradient": "linear-gradient(135deg, #D84124 0%, #ED8B34 100%)",
       },
       borderRadius: {
         lg: "0.5rem",

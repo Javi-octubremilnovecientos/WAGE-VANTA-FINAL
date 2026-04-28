@@ -29,7 +29,7 @@ const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
             computedStats.map((stat) => ({
                 medianSalary: Math.round(stat.median),
                 label: `${stat.category}`,
-                color: stat.color ?? '#45d2fd',
+                color: stat.color ?? '#D84124',
             })),
         [computedStats],
     );
@@ -42,12 +42,12 @@ const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
             >
                 <defs>
                     <linearGradient id="sectorGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#45d2fd" stopOpacity={0.35} />
-                        <stop offset="95%" stopColor="#45d2fd" stopOpacity={0.04} />
+                        <stop offset="5%" stopColor="#D84124" stopOpacity={0.35} />
+                        <stop offset="95%" stopColor="#D84124" stopOpacity={0.04} />
                     </linearGradient>
                 </defs>
 
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-600" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-white/20" />
 
                 {/* Eje X numérico para permitir ReferenceLine en posición exacta */}
                 <XAxis
@@ -74,11 +74,11 @@ const EconomicActivityChartComponent: React.FC<EconomicActivityChartProps> = ({
                     type="monotone"
                     dataKey="frequency"
                     fill="url(#sectorGradient)"
-                    stroke="#45d2fd"
+                    stroke="#D84124"
                     strokeWidth={2}
                     name={economicActivity ?? 'Sector distribution'}
                     dot={false}
-                    activeDot={{ r: 4, fill: '#45d2fd', strokeWidth: 0 }}
+                    activeDot={{ r: 4, fill: '#D84124', strokeWidth: 0 }}
                 />
 
                 {/* Línea vertical para el salario mediano de cada país computado */}

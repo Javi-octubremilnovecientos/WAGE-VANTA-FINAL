@@ -56,7 +56,7 @@ export default function ChartViewTabs({
     const allViews: ChartViewMode[] = ['boxplot', 'bar', 'line'];
 
     return (
-        <div className="flex items-center gap-1 rounded-lg border border-gray-700 bg-gray-800/40 backdrop-blur p-1">
+        <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-[#121213]/60 backdrop-blur p-1">
             {allViews.map((view) => {
                 const isAvailable = availableViews.includes(view);
                 const isActive = view === activeView;
@@ -79,13 +79,13 @@ export default function ChartViewTabs({
                         className={`
                             relative inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all
                             ${isActive && isAvailable
-                                ? 'bg-[#45d2fd] text-gray-900 shadow-sm'
+                                ? 'bg-brand-gradient text-white shadow-sm'
                                 : isAvailable
-                                    ? 'text-gray-300 hover:bg-gray-700/50 hover:text-white'
-                                    : 'text-gray-500 cursor-pointer hover:text-gray-400'
+                                    ? 'text-[#96969F] hover:bg-white/10 hover:text-white'
+                                    : 'text-[#96969F]/50 cursor-pointer hover:text-[#96969F]'
                             }
                             disabled:cursor-not-allowed disabled:opacity-50
-                            focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-gray-900
+                            focus:outline-none focus:ring-2 focus:ring-[#D84124] focus:ring-offset-2 focus:ring-offset-[#0A0A0B]
                         `}
                         aria-label={`Switch to ${config.label} view${!isAvailable ? ' (Premium feature)' : ''}`}
                         aria-current={isActive ? 'true' : undefined}

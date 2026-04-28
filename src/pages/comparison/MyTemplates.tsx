@@ -65,7 +65,7 @@ function MyTemplates() {
             <div>
                 <Link
                     to="/dashboard"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-[#45d2fd] transition-colors mb-4"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-[#96969F] hover:text-[#D84124] transition-colors mb-4"
                 >
                     <ArrowLeftIcon className="h-3 w-3" />
                     Back to Dashboard
@@ -73,7 +73,7 @@ function MyTemplates() {
 
                 <div className="flex flex-col gap-2 sm:gap-1.5">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+                        <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
                             My Templates
                         </h1>
                         <PlanLimitBadge
@@ -83,7 +83,7 @@ function MyTemplates() {
                             showWhenZero
                         />
                     </div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <p className="text-sm font-medium text-[#96969F]">
                         Your saved comparison templates for quick setup
                     </p>
                 </div>
@@ -92,17 +92,17 @@ function MyTemplates() {
             {/* Empty State */}
             {!hasTemplates && (
                 <section>
-                    <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-800/40 backdrop-blur px-4 py-14 text-center shadow-lg sm:px-6">
+                    <div className="rounded-lg border border-white/10 bg-[#121213]/40 backdrop-blur px-4 py-14 text-center shadow-lg sm:px-6">
                         <div className="mx-auto flex max-w-md flex-col items-center gap-3">
-                            <div className="inline-flex rounded-full bg-[#45d2fd]/20 p-2 text-[#45d2fd]">
+                            <div className="inline-flex rounded-full bg-[#D84124]/20 p-2 text-[#D84124]">
                                 <DocumentTextIcon className="h-5 w-5" />
                             </div>
-                            <p className="text-sm font-medium text-gray-300">
+                            <p className="text-sm font-medium text-[#96969F]">
                                 No templates saved yet
                             </p>
                             <Link
                                 to="/"
-                                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#45d2fd] transition-colors hover:text-[#22b8d9] mt-1"
+                                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#D84124] transition-colors hover:text-[#ED8B34] mt-1"
                             >
                                 <PlusIcon className="h-4 w-4" />
                                 Create template

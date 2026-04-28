@@ -323,14 +323,14 @@ function AvatarUploader({
           w-full border-2 border-dashed rounded-lg
           transition-all duration-200 cursor-pointer
           ${isCompact ? 'px-2 py-2' : 'px-3 py-2 sm:px-6 sm:py-4'}
-          ${isDragActive ? 'border-blue-500 bg-blue-500/10' : 'border-blue-300 dark:border-gray-600 bg-gradient-to-br from-blue-50 to-slate-50 dark:from-gray-800/40 dark:to-gray-800/20'}
-          ${isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:border-blue-500 hover:from-blue-100 hover:to-blue-50 dark:hover:bg-gray-800/60'}
+          ${isDragActive ? 'border-[#D84124] bg-[#D84124]/10' : 'border-white/10 bg-white/5'}
+          ${isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:border-[#D84124]/50 hover:bg-white/8'}
         `}
             >
                 <input {...getInputProps()} />
                 <div className="text-center">
                     <svg
-                        className={`mx-auto text-gray-500 dark:text-gray-400 ${isCompact ? 'h-5 w-5' : 'h-8 w-8 sm:h-12 sm:w-12'}`}
+                        className={`mx-auto text-[#96969F] ${isCompact ? 'h-5 w-5' : 'h-8 w-8 sm:h-12 sm:w-12'}`}
                         stroke="currentColor"
                         fill="none"
                         viewBox="0 0 48 48"
@@ -343,17 +343,17 @@ function AvatarUploader({
                             strokeLinejoin="round"
                         />
                     </svg>
-                    <div className={`text-gray-700 dark:text-gray-300 ${isCompact ? 'mt-1 text-xs' : 'mt-1 sm:mt-2 text-xs sm:text-sm'}`}>
+                    <div className={`text-[#96969F] ${isCompact ? 'mt-1 text-xs' : 'mt-1 sm:mt-2 text-xs sm:text-sm'}`}>
                         {isDragActive ? (
-                            <p className="font-semibold text-blue-500 dark:text-blue-400">Drop image here</p>
+                            <p className="font-semibold text-[#D84124]">Drop image here</p>
                         ) : (
                             <>
                                 <p className="font-semibold">
-                                    <span className="text-blue-500 dark:text-blue-400">Click to upload</span>
+                                    <span className="text-[#D84124]">Click to upload</span>
                                     {!isCompact && <span className="hidden sm:inline"> or drag and drop</span>}
                                 </p>
-                                {!isCompact && <p className="text-gray-600 dark:text-gray-500 text-xs mt-0.5 sm:mt-1">PNG, JPG, WEBP up to 5MB</p>}
-                                {isCompact && <p className="text-gray-600 dark:text-gray-500 text-xs mt-0.5">PNG, JPG, WEBP up to 5MB</p>}
+                                {!isCompact && <p className="text-[#96969F] text-xs mt-0.5 sm:mt-1">PNG, JPG, WEBP up to 5MB</p>}
+                                {isCompact && <p className="text-[#96969F] text-xs mt-0.5">PNG, JPG, WEBP up to 5MB</p>}
                             </>
                         )}
                     </div>

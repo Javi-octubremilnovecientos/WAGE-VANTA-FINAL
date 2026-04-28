@@ -18,8 +18,8 @@ export const BackToHomeButton: React.FC<BackToHomeButtonProps> = ({ className })
       className={[
         "inline-flex items-center gap-1.5",
         "px-3 py-1.5 rounded-md",
-        "bg-[--color-primary] text-white",
-        "hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
+        "bg-white/5 text-[#96969F] border border-white/10",
+        "hover:bg-[#D84124]/20 hover:text-white hover:border-[#D84124]/30 focus:ring-2 focus:ring-[#D84124] focus:ring-offset-2 focus:ring-offset-[#0A0A0B]",
         "transition-colors duration-200",
         "font-medium text-xs md:text-sm",
         className,

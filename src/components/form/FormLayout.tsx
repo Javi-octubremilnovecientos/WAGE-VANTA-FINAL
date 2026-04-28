@@ -172,7 +172,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
           {/* Fill with template button */}
           <button
             type="button"
-            className="flex items-center  gap-1.5 text-gray-700 dark:text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none"
+            className="flex items-center  gap-1.5 text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none"
             aria-label="Fill with a template"
             onClick={() => {
               if (isAuthenticated) {
@@ -249,7 +249,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
           <div className="flex justify-end animate-fade-in">
             <button
               type="button"
-              className="flex items-center gap-1 text-gray-700 dark:text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none h-fit mt-1.5"
+              className="flex items-center gap-1 text-white hover:opacity-80 transition-all duration-200 hover:scale-105 focus:outline-none h-fit mt-1.5"
               aria-label="Save as a template"
               onClick={() => {
                 if (isAuthenticated) {
@@ -272,9 +272,8 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
           <button
             onClick={handleBack}
             disabled={currentStep === 0}
-            style={{ backgroundColor: currentStep === 0 ? "#9ca3af" : "#45d2fd" }}
             type="button"
-            className="block w-1/3 rounded-md px-2 py-1.5 text-center text-xs font-semibold text-gray-900 shadow-xs hover:opacity-90 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all duration-200 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className={`block w-1/3 rounded-md px-2 py-1.5 text-center text-xs font-semibold text-white hover:opacity-90 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D84124] transition-all duration-200 disabled:cursor-not-allowed disabled:hover:scale-100 ${currentStep === 0 ? 'bg-white/10 text-[#96969F]' : 'bg-brand-gradient'}`}
           >
             Back
           </button>
@@ -282,8 +281,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
             onClick={isLastStep ? undefined : handleNext}
             type={isLastStep ? 'submit' : 'button'}
             disabled={isNextDisabled}
-            style={{ backgroundColor: isNextDisabled ? "#9ca3af" : "#45d2fd" }}
-            className="block w-full rounded-md px-2 py-1.5 text-center text-xs font-semibold text-gray-900 shadow-xs hover:opacity-90 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+            className={`block w-full rounded-md px-2 py-1.5 text-center text-xs font-semibold text-white hover:opacity-90 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D84124] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100 ${isNextDisabled ? 'bg-white/10' : 'bg-brand-gradient'}`}
           >
             {isLastStep ? 'Go to comprasions sheet' : 'Next'}
           </button>

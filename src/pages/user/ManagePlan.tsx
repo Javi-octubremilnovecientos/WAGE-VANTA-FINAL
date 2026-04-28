@@ -46,7 +46,7 @@ function ManagePlan() {
             <div>
                 <Link
                     to="/dashboard"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-[#45d2fd] transition-colors mb-4"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-[#96969F] hover:text-[#D84124] transition-colors mb-4"
                 >
                     <ArrowLeftIcon className="h-3 w-3" />
                     Back to Dashboard
@@ -73,16 +73,16 @@ function ManagePlan() {
             </div>
 
             {/* Payment History Section */}
-            <section className="rounded-lg border-2 border-[#45d2fd]/40 bg-gradient-to-br from-[#45d2fd]/15 to-[#45d2fd]/8 backdrop-blur px-5 py-8 shadow-lg text-center">
+            <section className="rounded-lg border-2 border-[#D84124]/40 bg-gradient-to-br from-[#D84124]/15 to-[#D84124]/8 backdrop-blur px-5 py-8 shadow-lg text-center">
                 <div className="flex items-center justify-center gap-2 mb-3">
-                    <ClockIcon className="h-4 w-4 text-[#0891b2]" />
-                    <h2 className="text-base font-semibold text-[#0891b2]">Payment History</h2>
+                    <ClockIcon className="h-4 w-4 text-[#D84124]" />
+                    <h2 className="text-base font-semibold text-[#D84124]">Payment History</h2>
                 </div>
                 <div className="mx-auto flex max-w-md flex-col items-center gap-2">
-                    <div className="inline-flex rounded-full bg-[#45d2fd]/30 p-2 text-[#0891b2]">
+                    <div className="inline-flex rounded-full bg-[#D84124]/30 p-2 text-[#D84124]">
                         <ClockIcon className="h-4 w-4" />
                     </div>
-                    <p className="text-sm font-medium text-[#0d7377]">
+                    <p className="text-sm font-medium text-[#96969F]">
                         No payment history yet
                     </p>
                 </div>

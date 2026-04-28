@@ -49,10 +49,10 @@ function Plans() {
             </div>
             {/* Header */}
             <div className="text-center">
-                <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl mb-3">
+                <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl mb-3">
                     Plans & Pricing
                 </h1>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <p className="text-sm font-medium text-[#96969F]">
                     Choose the plan that fits your needs
                 </p>
             </div>

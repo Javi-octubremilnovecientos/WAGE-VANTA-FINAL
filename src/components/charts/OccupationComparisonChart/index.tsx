@@ -37,7 +37,7 @@ const OccupationComparisonChartComponent: React.FC<OccupationComparisonChartProp
                     </linearGradient>
                 </defs>
 
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-600" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-white/20" />
 
                 <XAxis
                     dataKey="level"
@@ -82,10 +82,10 @@ const OccupationComparisonChartComponent: React.FC<OccupationComparisonChartProp
                 <Line
                     type="monotone"
                     dataKey="median"
-                    stroke="#45d2fd"
+                    stroke="#D84124"
                     strokeWidth={2}
-                    dot={{ fill: '#45d2fd', r: 4, strokeWidth: 0 }}
-                    activeDot={{ r: 6, fill: '#45d2fd', strokeWidth: 0 }}
+                    dot={{ fill: '#D84124', r: 4, strokeWidth: 0 }}
+                    activeDot={{ r: 6, fill: '#D84124', strokeWidth: 0 }}
                     name="median"
                     legendType="none"
                 />

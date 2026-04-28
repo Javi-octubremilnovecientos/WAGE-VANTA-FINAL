@@ -5,8 +5,8 @@ export const GrowthCustomTooltip: React.FC<GrowthTooltipProps> = ({ active, payl
     if (!active || !payload || payload.length === 0) return null;
 
     return (
-        <div className="bg-white dark:bg-gray-900/95 border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-xl backdrop-blur-sm">
-            <p className="text-xs font-semibold text-gray-300 mb-2">{label}</p>
+        <div className="bg-[#121213] border border-white/10 rounded-lg p-3 shadow-xl backdrop-blur-sm">
+            <p className="text-xs font-semibold text-[#96969F] mb-2">{label}</p>
             <div className="space-y-1">
                 {payload.map((entry) => (
                     <div key={entry.dataKey} className="flex items-center justify-between gap-4">
@@ -15,7 +15,7 @@ export const GrowthCustomTooltip: React.FC<GrowthTooltipProps> = ({ active, payl
                                 className="h-2 w-2 rounded-full flex-shrink-0"
                                 style={{ backgroundColor: entry.color }}
                             />
-                            <span className="text-xs text-gray-400">{entry.dataKey}</span>
+                            <span className="text-xs text-[#96969F]">{entry.dataKey}</span>
                         </div>
                         <span className="text-xs font-medium text-white">
                             {entry.value.toLocaleString('en-EU')}€

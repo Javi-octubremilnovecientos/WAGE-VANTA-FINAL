@@ -13,22 +13,22 @@ export const OccupationTooltip: React.FC<OccupationTooltipProps> = ({ active, pa
     const median = medianEntry?.value;
 
     return (
-        <div className="bg-white dark:bg-gray-900/95 border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-xl backdrop-blur-sm">
-            <p className="text-xs font-semibold text-gray-900 dark:text-gray-300 mb-2">{label}</p>
+        <div className="bg-[#121213] border border-white/10 rounded-lg p-3 shadow-xl backdrop-blur-sm">
+            <p className="text-xs font-semibold text-[#96969F] mb-2">{label}</p>
             <div className="space-y-1 text-xs">
                 <div className="flex justify-between gap-4">
-                    <span className="text-gray-500 dark:text-gray-400">P25</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{p25.toLocaleString()}€</span>
+                    <span className="text-[#96969F]">P25</span>
+                    <span className="font-medium text-white">{p25.toLocaleString()}€</span>
                 </div>
                 {median !== undefined && (
                     <div className="flex justify-between gap-4">
-                        <span className="text-[#45d2fd]">Median</span>
-                        <span className="font-medium text-gray-900 dark:text-white">{median.toLocaleString()}€</span>
+                        <span className="text-[#D84124]">Median</span>
+                        <span className="font-medium text-white">{median.toLocaleString()}€</span>
                     </div>
                 )}
                 <div className="flex justify-between gap-4">
-                    <span className="text-gray-500 dark:text-gray-400">P75</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{p75.toLocaleString()}€</span>
+                    <span className="text-[#96969F]">P75</span>
+                    <span className="font-medium text-white">{p75.toLocaleString()}€</span>
                 </div>
             </div>
         </div>

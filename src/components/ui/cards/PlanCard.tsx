@@ -20,14 +20,14 @@ function PlanCard({
     onSelect,
 }: PlanCardProps) {
     return (
-        <div className="rounded-lg border border-blue-200 dark:border-gray-700 bg-gradient-to-br from-slate-50 to-white dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur px-4 py-4 shadow-lg hover:shadow-xl transition-shadow">
+        <div className="rounded-lg border border-white/10 bg-[#121213] backdrop-blur px-4 py-4 shadow-lg hover:shadow-xl hover:border-[#D84124]/30 transition-all">
             {/* Plan Name with Badge */}
             <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-1.5">
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-white">{name}</h3>
+                    <h3 className="text-sm font-bold text-white">{name}</h3>
                 </div>
                 {isCurrent && (
-                    <span className="inline-flex items-center rounded-md bg-green-100 dark:bg-green-500/20 px-2 py-0.5 text-xs font-semibold text-green-700 dark:text-green-400 border border-green-400 dark:border-green-500/30">
+                    <span className="inline-flex items-center rounded-md bg-green-500/20 px-2 py-0.5 text-xs font-semibold text-green-400 border border-green-500/30">
                         Active
                     </span>
                 )}
@@ -35,13 +35,13 @@ function PlanCard({
 
             {/* Price */}
             <div className="mb-1">
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">{price}</span>
-                <span className="text-gray-600 dark:text-gray-400 text-xs font-medium">/month</span>
+                <span className="text-2xl font-bold text-white">{price}</span>
+                <span className="text-[#96969F] text-xs font-medium">/month</span>
             </div>
 
             {/* Annual Price Info */}
             {annualPrice && (
-                <p className="text-xs font-medium text-[#45d2fd] mb-5">
+                <p className="text-xs font-medium text-[#D84124] mb-5">
                     {annualPrice} per month if paid annually
                 </p>
             )}
@@ -51,22 +51,22 @@ function PlanCard({
                 onClick={onSelect}
                 disabled={isCurrent}
                 className={`w-full py-1.5 rounded-md font-semibold transition mb-4 text-xs ${isCurrent
-                    ? 'bg-gray-700 text-gray-400 cursor-default'
-                    : 'bg-[#45d2fd] text-gray-900 hover:bg-[#22b8d9]'
+                        ? 'bg-white/10 text-[#96969F] cursor-default'
+                        : 'text-white hover:opacity-90 bg-brand-gradient'
                     }`}
             >
                 {isCurrent ? 'Current Plan' : 'Buy plan'}
             </button>
 
             {/* Description */}
-            <p className="text-gray-900 dark:text-white text-xs font-semibold mb-3">{description}</p>
+            <p className="text-white text-xs font-semibold mb-3">{description}</p>
 
             {/* Features List */}
             <ul className="space-y-2">
                 {features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-1.5">
-                        <CheckIcon className="h-3 w-3 text-[#45d2fd] flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-700 dark:text-gray-300 text-xs font-medium">{feature}</span>
+                        <CheckIcon className="h-3 w-3 text-[#D84124] flex-shrink-0 mt-0.5" />
+                        <span className="text-[#96969F] text-xs font-medium">{feature}</span>
                     </li>
                 ))}
             </ul>

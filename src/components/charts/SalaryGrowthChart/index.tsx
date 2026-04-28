@@ -34,7 +34,7 @@ const SalaryGrowthChartComponent: React.FC<SalaryGrowthChartProps> = ({
 
     if (selectedCountries.length === 0) {
         return (
-            <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+            <div className="flex items-center justify-center h-full text-[#96969F] text-sm">
                 Select countries to see salary growth
             </div>
         );
@@ -48,7 +48,7 @@ const SalaryGrowthChartComponent: React.FC<SalaryGrowthChartProps> = ({
                 barCategoryGap="20%"
                 barGap={2}
             >
-                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-gray-500 dark:stroke-gray-600" />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-white/20" />
                 <XAxis
                     dataKey="year"
                     tick={{ fill: axisColor, fontSize: 10 }}

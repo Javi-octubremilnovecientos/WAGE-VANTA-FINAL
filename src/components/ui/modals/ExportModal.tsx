@@ -150,11 +150,11 @@ export default function ExportModal({
             aria-modal="true"
             aria-labelledby="export-modal-title"
         >
-            <div className="w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-5 shadow-xl">
+            <div className="w-full max-w-md bg-[#121213] border border-white/10 rounded-lg p-5 shadow-xl">
                 {/* Title */}
                 <h2
                     id="export-modal-title"
-                    className="text-lg font-bold mb-3 text-gray-900 dark:text-white"
+                    className="text-lg font-bold mb-3 text-white"
                 >
                     Export Comparison
                 </h2>
@@ -182,13 +182,13 @@ export default function ExportModal({
                                     onClose();
                                     onUpgradeRequired();
                                 }}
-                                className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-white bg-[#45D2FD] hover:bg-[#22b8d9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#45D2FD] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+                                className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#D84124] focus:ring-offset-2 focus:ring-offset-[#0A0A0B] bg-brand-gradient"
                             >
                                 Upgrade to Premium
                             </button>
                             <button
                                 onClick={onClose}
-                                className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+                                className="flex-1 rounded-md px-3 py-2 text-sm font-semibold text-[#96969F] bg-white/5 hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white/20 focus:ring-offset-2 focus:ring-offset-[#0A0A0B]"
                             >
                                 Close
                             </button>
@@ -197,7 +197,7 @@ export default function ExportModal({
                 ) : (
                     /* Si SÍ puede exportar: mostrar opciones de exportación */
                     <div className="space-y-4">
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                        <p className="text-sm text-[#96969F]">
                             Choose export format for your comparison data:
                         </p>
 
@@ -219,7 +219,7 @@ export default function ExportModal({
                         </div>
 
                         {/* Info sobre formatos no disponibles */}
-                        <p className="text-xs text-gray-600 dark:text-gray-500 text-center">
+                        <p className="text-xs text-[#96969F] text-center">
                             PNG and PDF export coming soon
                         </p>
 
@@ -227,7 +227,7 @@ export default function ExportModal({
                         <button
                             onClick={onClose}
                             disabled={isExporting}
-                            className="w-full rounded-md px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+                            className="w-full rounded-md px-3 py-2 text-sm font-semibold text-[#96969F] bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/20 focus:ring-offset-2 focus:ring-offset-[#0A0A0B]"
                         >
                             Cancel
                         </button>

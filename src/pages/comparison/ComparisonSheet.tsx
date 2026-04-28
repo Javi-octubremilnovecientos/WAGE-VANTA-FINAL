@@ -92,7 +92,7 @@ function ComparisonSheet() {
             {/* Back to Home */}
             <button
                 onClick={() => navigate('/')}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-[#45d2fd] transition-colors mb-6"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#96969F] hover:text-[#D84124] transition-colors mb-6"
                 aria-label="Back to home"
             >
                 <ArrowLeftIcon className="h-3 w-3" />
@@ -102,7 +102,7 @@ function ComparisonSheet() {
             {/* Header */}
             <div className="flex flex-col items-center justify-center gap-4 mb-8 sm:mb-12 text-center">
                 <div>
-                    <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-3">
+                    <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-3">
                         Comparison Sheet
                     </h1>
                     {selectedCountries.length > 0 && (
@@ -110,7 +110,7 @@ function ComparisonSheet() {
                             {selectedCountries.map((country) => (
                                 <span
                                     key={country}
-                                    className="inline-flex items-center rounded-full border border-blue-300 dark:border-gray-600 bg-blue-50 dark:bg-gray-800/60 px-2 py-0.5 text-xs font-medium text-gray-800 dark:text-gray-300"
+                                    className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-xs font-medium text-[#96969F]"
                                 >
                                     {country}
                                 </span>
@@ -124,9 +124,9 @@ function ComparisonSheet() {
                     <button
                         onClick={handleSaveComparison}
                         aria-label="Save comparison"
-                        className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 ${savedFeedback
+                        className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black ${savedFeedback
                             ? 'border-green-500/40 bg-green-500/10 text-green-400 focus:ring-green-500'
-                            : 'border-gray-300 dark:border-gray-600 bg-gray-100/60 dark:bg-gray-800/60 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-900 dark:hover:text-white focus:ring-gray-300 dark:focus:ring-gray-500'
+                            : 'border-white/10 bg-white/5 text-[#96969F] hover:border-white/20 hover:text-white focus:ring-white/10'
                             }`}
                     >
                         {savedFeedback ? (
@@ -146,7 +146,7 @@ function ComparisonSheet() {
                     <button
                         onClick={() => setExportModalOpen(true)}
                         aria-label="Export comparison"
-                        className="inline-flex items-center gap-2 rounded-lg border border-[#45d2fd]/30 bg-[#45d2fd]/10 px-3 py-2 text-xs font-medium text-[#45d2fd] transition-colors hover:bg-[#45d2fd]/20 focus:outline-none focus:ring-2 focus:ring-[#45d2fd] focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+                        className="inline-flex items-center gap-2 rounded-lg border border-[#D84124]/30 bg-[#D84124]/10 px-3 py-2 text-xs font-medium text-[#D84124] transition-colors hover:bg-[#D84124]/20 focus:outline-none focus:ring-2 focus:ring-[#D84124] focus:ring-offset-2 focus:ring-offset-black"
                     >
                         <ArrowDownTrayIcon className="h-4 w-4" />
                         <span className="hidden sm:inline">Export</span>
@@ -158,8 +158,8 @@ function ComparisonSheet() {
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
 
                 {/* 1 — BoxPlot: distribución salarial */}
-                <div className="rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 p-4 backdrop-blur">
-                    <h2 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <div className="rounded-xl border border-white/10 bg-[#121213]/50 p-4 backdrop-blur">
+                    <h2 className="mb-3 text-sm font-semibold text-[#96969F]">
                         Salary Distribution
                     </h2>
                     <MainChart
@@ -170,27 +170,27 @@ function ComparisonSheet() {
                 </div>
 
                 {/* 2 — Bar Chart: crecimiento salarial últimos 10 años */}
-                <div className="rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 p-4 backdrop-blur">
-                    <h2 className="mb-1 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <div className="rounded-xl border border-white/10 bg-[#121213]/50 p-4 backdrop-blur">
+                    <h2 className="mb-1 text-sm font-semibold text-[#96969F]">
                         Salary Growth — Last 10 Years
                     </h2>
-                    <p className="mb-3 text-xs text-gray-400 dark:text-gray-500">
+                    <p className="mb-3 text-xs text-[#96969F]">
                         Estimated monthly median wage (€) · provisional data
                     </p>
                     <SalaryGrowthChart selectedCountries={selectedCountries} height={280} />
                 </div>
 
                 {/* 3 — Area: distribución dentro de la misma actividad económica */}
-                <div className="rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 p-4 backdrop-blur">
-                    <h2 className="mb-1 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <div className="rounded-xl border border-white/10 bg-[#121213]/50 p-4 backdrop-blur">
+                    <h2 className="mb-1 text-sm font-semibold text-[#96969F]">
                         Sector Distribution
                         {economicActivity && (
-                            <span className="ml-1.5 font-normal text-[#45d2fd]">
+                            <span className="ml-1.5 font-normal text-[#D84124]">
                                 · {economicActivity}
                             </span>
                         )}
                     </h2>
-                    <p className="mb-3 text-xs text-gray-400 dark:text-gray-500">
+                    <p className="mb-3 text-xs text-[#96969F]">
                         Share of workers per salary bracket · dashed lines = your median
                     </p>
                     <EconomicActivityChart
@@ -201,16 +201,16 @@ function ComparisonSheet() {
                 </div>
 
                 {/* 4 — Area + Band: comparativa por nivel dentro de la ocupación */}
-                <div className="rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 p-4 backdrop-blur">
-                    <h2 className="mb-1 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <div className="rounded-xl border border-white/10 bg-[#121213]/50 p-4 backdrop-blur">
+                    <h2 className="mb-1 text-sm font-semibold text-[#96969F]">
                         Occupation Salary Bands
                         {occupation && (
-                            <span className="ml-1.5 font-normal text-[#45d2fd]">
+                            <span className="ml-1.5 font-normal text-[#D84124]">
                                 · {occupation}
                             </span>
                         )}
                     </h2>
-                    <p className="mb-3 text-xs text-gray-400 dark:text-gray-500">
+                    <p className="mb-3 text-xs text-[#96969F]">
                         P25–P75 range by level · cyan line = sector median · dashed = your median
                     </p>
                     <OccupationComparisonChart
