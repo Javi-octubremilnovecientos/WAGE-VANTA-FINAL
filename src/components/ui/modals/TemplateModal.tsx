@@ -141,9 +141,9 @@ function TemplateModal({
                 {/* Title */}
                 <h2
                     id="template-modal-title"
-                    className="text-lg font-bold mb-3 text-gray-900 dark:text-white flex items-center gap-2"
+                    className="text-lg font-bold mb-3 text-[#D84124] flex items-center gap-2"
                 >
-                    <DocumentTextIcon className="h-5 w-5 text-[#45d2fd]" />
+                    <DocumentTextIcon className="h-5 w-5 text-[#D84124]" />
                     {mode === 'save' ? 'Save Template' : 'Load Template'}
                 </h2>
 

@@ -1,6 +1,7 @@
 
 import PlanCard from '../components/ui/cards/PlanCard';
-import { BackToHomeButton } from '../components/ui/buttons/BackToHomeButton';
+import { Link } from 'react-router-dom';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useAppSelector } from '@/hooks/useRedux';
 import { selectUserPremium } from '@/features/auth/authSlice';
 
@@ -44,9 +45,13 @@ function Plans() {
     return (
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-5 sm:px-4 lg:px-6">
             {/* Back to Home Button */}
-            <div className="mb-1">
-                <BackToHomeButton className="" />
-            </div>
+            <Link
+                to="/"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#96969F] hover:text-[#ED8B34] transition-colors mb-4"
+            >
+                <ArrowLeftIcon className="h-3 w-3" />
+                Back to Home
+            </Link>
             {/* Header */}
             <div className="text-center">
                 <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl mb-3">

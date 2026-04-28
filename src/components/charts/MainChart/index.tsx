@@ -20,6 +20,15 @@ import { computeYAxisConfig } from './MainChart.utils';
 
 type BoxPlotDatum = BoxPlotData;
 
+// Paleta de colores cálidos para las cajas
+const WARM_COLORS = [
+    { fill: 'rgba(216, 65, 36, 0.7)', stroke: '#D84124' },      // Brand red-orange
+    { fill: 'rgba(237, 139, 52, 0.7)', stroke: '#ED8B34' },     // Brand orange
+    { fill: 'rgba(245, 158, 11, 0.75)', stroke: '#f59e0b' },    // Amber
+    { fill: 'rgba(234, 88, 12, 0.7)', stroke: '#ea580c' },      // Orange
+    { fill: 'rgba(220, 38, 38, 0.7)', stroke: '#dc2626' },      // Red
+];
+
 const boxDataKey: (entry: BoxPlotDatum) => [number, number] = entry => [entry.q1, entry.q3];
 
 /**
@@ -48,13 +57,30 @@ const BoxShape = (props: BarShapeProps) => {
     const reducedWidth = props.width * 0.5;
     const offsetX = props.x + (props.width - reducedWidth) / 2;
 
-    // Usar color personalizado del entry si está disponible
-    const fillColor = entry.color || '#8884d8';
+    // Asignar color de la paleta cálida según el índice
+    const colorIndex = props.index % WARM_COLORS.length;
+    const colorScheme = WARM_COLORS[colorIndex];
 
     return (
         <g>
-            <Rectangle {...props} x={offsetX} width={reducedWidth} fill={fillColor} />
-            <line x1={offsetX} x2={offsetX + reducedWidth} y1={medianY} y2={medianY} stroke="#1f2937" strokeWidth={2} />
+            <Rectangle
+                {...props}
+                x={offsetX}
+                width={reducedWidth}
+                fill={colorScheme.fill}
+                stroke={colorScheme.stroke}
+                strokeWidth={2.5}
+                radius={4}
+            />
+            <line
+                x1={offsetX}
+                x2={offsetX + reducedWidth}
+                y1={medianY}
+                y2={medianY}
+                stroke="#ffffff"
+                strokeWidth={2.5}
+                opacity={0.9}
+            />
         </g>
     );
 };

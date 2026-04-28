@@ -22,7 +22,9 @@ import { setCredentials } from "@/features/auth/authSlice";
 import { useComputeSalaryStats } from "../hooks/useComputeSalaryStats";
 import type { BoxPlotData } from "../features/salaries/types";
 
-const CHART_COLORS = ['#8884d8', '#82ca9d', '#fbbf24'];
+
+// Colores cálidos para badges y chart (alineados con MainChart WARM_COLORS)
+const CHART_COLORS = ['#D84124', '#ED8B34', '#f59e0b'];
 
 export default function Home() {
     const navigate = useNavigate();
@@ -172,10 +174,16 @@ export default function Home() {
     return (
         <div className="min-h-screen relative flex flex-col lg:flex-row-reverse items-start lg:items-center justify-around gap-5 lg:gap-3 py-8 px-4 lg:px-6">
             {/* Left Side: Hero title or Chart + Compare Button */}
-            <div className="w-full lg:w-1/2 flex flex-col gap-5 lg:gap-3 lg:justify-start items-center">
+            <section className="w-full lg:w-1/2 flex flex-col gap-5 lg:gap-3 lg:justify-start items-center">
                 {!hasCountry ? (
                     /* Hero state: no country selected yet */
-                    <div className="flex flex-col gap-3 text-center items-center">
+                    <div className="flex flex-col gap-3 md:gap-6 text-center items-center">
+
+                        <img
+                            src="src\assets\images\Logitpop.png"
+                            alt="Wage Vantage Logo"
+                            className="h-17 w-16 lg:h-30 lg:w-20 object-contain"
+                        />
                         <h1 className="text-3xl lg:text-4xl font-bold text-white leading-tight">
                             Wage Vantage
                         </h1>
@@ -232,12 +240,12 @@ export default function Home() {
                         </div>
                     </div>
                 )}
-            </div>
+            </section>
 
             {/* Right Side: Form Section */}
-            <div className="w-full lg:w-1/2 px-4 lg:px-6">
+            <section className="w-full lg:w-1/2 px-4 lg:px-6">
                 <FormLayout onNavigateToSheet={() => navigate('/comparison')} />
-            </div>
+            </section>
 
             {/* Compare Modal */}
             <CompareModal

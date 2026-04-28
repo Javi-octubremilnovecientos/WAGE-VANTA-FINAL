@@ -60,7 +60,7 @@ function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
                 {/* Title */}
                 <h2
                     id="upgrade-modal-title"
-                    className="text-lg font-bold mb-3 text-[#45d2fd]"
+                    className="text-lg font-bold mb-3 text-[#D84124]"
                 >
                     Upgrade now
                 </h2>
