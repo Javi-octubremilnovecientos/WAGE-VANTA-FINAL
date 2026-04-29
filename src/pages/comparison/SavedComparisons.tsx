@@ -2,9 +2,9 @@ import { ArrowLeftIcon, ChartBarSquareIcon, PlusIcon } from '@heroicons/react/24
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import SavedDataCard from '@/components/ui/cards/SavedDataCard';
-import { selectUserComparisons, updateComparisons } from '@/features/auth/authSlice';
+import { selectUserComparisons } from '@/features/auth/authSlice';
 import { usePlanLimits } from '@/hooks/usePlanLimits';
-import { useUpdateUserMutation } from '@/features/auth/authApi';
+import { useUpdateUserData } from '@/hooks/useUpdateUserData';
 import PlanLimitBadge from '@/components/ui/PlanLimitBadge';
 import { setSelectedCountries, setFormValues, setComputedStats } from '@/features/salaries/salarySlice';
 import type { Comparison } from '@/lib/User';
@@ -15,7 +15,7 @@ function SavedComparisons() {
     const navigate = useNavigate();
     const comparisons = useAppSelector(selectUserComparisons);
     const { maxComparisons } = usePlanLimits();
-    const [updateUser] = useUpdateUserMutation();
+    const updateUserData = useUpdateUserData();
     const hasComparisons = comparisons && comparisons.length > 0;
 
     const handleLoadComparison = (comparison: Comparison) => {
@@ -29,13 +29,8 @@ function SavedComparisons() {
         try {
             const updatedComparisons = comparisons.filter((c) => c.id !== comparisonId);
 
-            // Actualizar en Redux
-            dispatch(updateComparisons(updatedComparisons));
-
-            // Sincronizar con Supabase
-            await updateUser({
-                data: { comparisons: updatedComparisons },
-            }).unwrap();
+            // Actualizar en Supabase y Redux (preserva todos los campos de user_metadata)
+            await updateUserData({ comparisons: updatedComparisons });
         } catch (err) {
             console.error('Error deleting comparison:', err);
         }

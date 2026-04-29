@@ -131,9 +131,6 @@ export default function CompareModal({
                 {/* Title */}
                 <h2 className="text-lg font-semibold text-white text-center mb-4">
                     Choose countries to compare
-                    <span className="block text-xs text-[#96969F] mt-1">
-                        {getHelperText()}
-                    </span>
                 </h2>
 
                 {/* Country ComboBox */}

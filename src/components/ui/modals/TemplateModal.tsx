@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { DocumentTextIcon, SparklesIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
-import { selectUserTemplates, updateTemplates } from '@/features/auth/authSlice';
+import { selectUserTemplates } from '@/features/auth/authSlice';
 import { selectFormValues, setFormValues, setPrimaryCountry } from '@/features/salaries/salarySlice';
-import { useUpdateUserMutation } from '@/features/auth/authApi';
+import { useUpdateUserData } from '@/hooks/useUpdateUserData';
 import type { Template } from '@/lib/User';
 import PlanLimitBadge from '../PlanLimitBadge';
 import TemplateStack from '../TemplateStack';
@@ -56,7 +56,8 @@ function TemplateModal({
     const dispatch = useAppDispatch();
     const templates = useAppSelector(selectUserTemplates);
     const formValues = useAppSelector(selectFormValues);
-    const [updateUser, { isLoading }] = useUpdateUserMutation();
+    const updateUserData = useUpdateUserData();
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     if (!isOpen) return null;
@@ -69,6 +70,7 @@ function TemplateModal({
         }
 
         try {
+            setIsLoading(true);
             setError(null);
 
             // Crear nuevo template desde formValues
@@ -90,18 +92,15 @@ function TemplateModal({
             // Agregar al array de templates
             const updatedTemplates = [...templates, newTemplate];
 
-            // Actualizar en Redux
-            dispatch(updateTemplates(updatedTemplates));
-
-            // Sincronizar con Supabase
-            await updateUser({
-                data: { templates: updatedTemplates },
-            }).unwrap();
+            // Actualizar en Supabase y Redux (preserva todos los campos de user_metadata)
+            await updateUserData({ templates: updatedTemplates });
 
             onClose();
         } catch (err) {
             console.error('Error saving template:', err);
             setError('Failed to save template. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
     };
 

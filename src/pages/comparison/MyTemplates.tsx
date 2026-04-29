@@ -1,10 +1,10 @@
 import { ArrowLeftIcon, DocumentTextIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
-import { selectUserTemplates, updateTemplates } from '@/features/auth/authSlice';
+import { selectUserTemplates } from '@/features/auth/authSlice';
 import { setFormValues, setPrimaryCountry } from '@/features/salaries/salarySlice';
 import { usePlanLimits } from '@/hooks/usePlanLimits';
-import { useUpdateUserMutation } from '@/features/auth/authApi';
+import { useUpdateUserData } from '@/hooks/useUpdateUserData';
 import PlanLimitBadge from '@/components/ui/PlanLimitBadge';
 import TemplateStack from '@/components/ui/TemplateStack';
 import type { Template } from '@/lib/User';
@@ -14,20 +14,15 @@ function MyTemplates() {
     const navigate = useNavigate();
     const templates = useAppSelector(selectUserTemplates);
     const { maxTemplates } = usePlanLimits();
-    const [updateUser] = useUpdateUserMutation();
+    const updateUserData = useUpdateUserData();
     const hasTemplates = templates && templates.length > 0;
 
     const handleDeleteTemplate = async (templateId: number) => {
         try {
             const updatedTemplates = templates.filter((t) => t.id !== templateId);
 
-            // Actualizar en Redux
-            dispatch(updateTemplates(updatedTemplates));
-
-            // Sincronizar con Supabase
-            await updateUser({
-                data: { templates: updatedTemplates },
-            }).unwrap();
+            // Actualizar en Supabase y Redux (preserva todos los campos de user_metadata)
+            await updateUserData({ templates: updatedTemplates });
         } catch (err) {
             console.error('Error deleting template:', err);
         }

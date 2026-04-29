@@ -1,4 +1,5 @@
 import { CheckIcon } from '@heroicons/react/24/solid';
+import { useNavigate } from 'react-router-dom';
 
 interface PlanCardProps {
     name: string;
@@ -19,6 +20,16 @@ function PlanCard({
     isCurrent = false,
     onSelect,
 }: PlanCardProps) {
+    const navigate = useNavigate();
+
+    const handleBuyPlan = () => {
+        if (name === 'PREMIUM' && !isCurrent) {
+            navigate('/billing');
+        } else {
+            onSelect();
+        }
+    };
+
     return (
         <div className="rounded-lg border border-white/10 bg-[#121213] backdrop-blur px-4 py-4 shadow-lg hover:shadow-xl hover:border-[#D84124]/30 transition-all">
             {/* Plan Name with Badge */}
@@ -48,11 +59,11 @@ function PlanCard({
 
             {/* Buy Button */}
             <button
-                onClick={onSelect}
+                onClick={handleBuyPlan}
                 disabled={isCurrent}
                 className={`w-full py-1.5 rounded-md font-semibold transition mb-4 text-xs ${isCurrent
-                        ? 'bg-white/10 text-[#96969F] cursor-default'
-                        : 'text-white hover:opacity-90 bg-brand-gradient'
+                    ? 'bg-white/10 text-[#96969F] cursor-default'
+                    : 'text-white hover:opacity-90 bg-brand-gradient'
                     }`}
             >
                 {isCurrent ? 'Current Plan' : 'Buy plan'}

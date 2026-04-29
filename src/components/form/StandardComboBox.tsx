@@ -96,7 +96,7 @@ export default function StandardComboBox({
                 <div className="relative">
                     {/* Label */}
                     {label && (
-                        <label htmlFor={id} className="block text-xs font-medium text-white mb-2">
+                        <label htmlFor={id} className="block text-xs lg:text-sm font-medium text-white mb-2 lg:mb-3">
                             {label}
                         </label>
                     )}
@@ -105,7 +105,7 @@ export default function StandardComboBox({
                     <div className="relative">
                         <ComboboxInput
                             id={id}
-                            className="w-full rounded-md bg-[#0A0A0B] py-1.5 pl-2.5 pr-7 text-white shadow-sm ring-1 ring-inset ring-white/10 text-xs hover:bg-white/5 transition-colors placeholder:text-[#96969F] focus:ring-1 focus:ring-white/20 focus:outline-none"
+                            className="w-full rounded-md bg-[#0A0A0B] py-1.5 lg:py-2 pl-2.5 pr-7 text-white shadow-sm ring-1 ring-inset ring-white/10 text-xs lg:text-sm hover:bg-white/5 transition-colors placeholder:text-[#96969F] focus:ring-1 focus:ring-white/20 focus:outline-none"
                             displayValue={(option: SelectOption | null) => option?.label ?? ""}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder={placeholder}
@@ -121,10 +121,10 @@ export default function StandardComboBox({
                     {/* Options */}
                     <ComboboxOptions
                         transition
-                        className="combobox-options absolute z-10 mt-1 max-h-40 w-full overflow-auto rounded-md bg-[#121213] backdrop-blur-md py-1 text-xs shadow-lg ring-1 ring-white/10 focus:outline-none data-closed:opacity-0 data-leave:opacity-0 transition duration-100 ease-in"
+                        className="combobox-options absolute z-10 mt-1 max-h-40 w-full overflow-auto rounded-md bg-[#121213] backdrop-blur-md py-1 text-xs lg:text-sm shadow-lg ring-1 ring-white/10 focus:outline-none data-closed:opacity-0 data-leave:opacity-0 transition duration-100 ease-in"
                     >
                         {filteredOptions.length === 0 && query !== "" ? (
-                            <div className="py-1.5 pl-2.5 pr-6 text-[#96969F] text-xs">
+                            <div className="py-1.5 pl-2.5 pr-6 text-[#96969F] text-xs lg:text-sm">
                                 No results found
                             </div>
                         ) : (
@@ -132,9 +132,9 @@ export default function StandardComboBox({
                                 <ComboboxOption
                                     key={option.value}
                                     value={option}
-                                    className="group relative cursor-pointer select-none py-1.5 pl-2.5 pr-6 text-white hover:bg-[#D84124]/20 data-focus:bg-[#D84124]/20 transition-colors hover:text-white data-focus:text-white"
+                                    className="group relative cursor-pointer select-none py-1.5 lg:py-2 pl-2.5 pr-6 text-white hover:bg-[#D84124]/20 data-focus:bg-[#D84124]/20 transition-colors hover:text-white data-focus:text-white"
                                 >
-                                    <span className="block truncate font-normal group-data-selected:font-semibold">
+                                    <span className="block truncate font-normal group-data-selected:font-semibold text-xs lg:text-sm">
                                         {option.label}
                                     </span>
 

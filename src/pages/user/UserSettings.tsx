@@ -31,6 +31,7 @@ function UserSettings() {
 
     // Estados para avatar upload
     const [avatarSuccess, setAvatarSuccess] = useState(false);
+    const [avatarError, setAvatarError] = useState<string | null>(null);
 
     const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
 
@@ -427,9 +428,12 @@ function UserSettings() {
                             <p className="text-xs font-medium text-[#96969F]">Saved Card</p>
                             <p className="text-[#96969F] mt-0.5">No card on file</p>
                         </div>
-                        <button className="text-[#D84124] hover:text-[#ED8B34] transition-colors text-xs font-semibold">
+                        <Link
+                            to="/billing"
+                            className="text-[#D84124] hover:text-[#ED8B34] transition-colors text-xs font-semibold"
+                        >
                             Add card →
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </section>

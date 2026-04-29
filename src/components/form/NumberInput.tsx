@@ -59,7 +59,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
     return (
         <div className={className}>
-            <label htmlFor={id} className="block text-xs font-medium text-white mb-2">
+            <label htmlFor={id} className="block text-xs lg:text-sm font-medium text-white mb-2 lg:mb-3">
                 {label}
                 {required && <span className="text-[#D84124] ml-1">*</span>}
             </label>
@@ -78,8 +78,8 @@ const NumberInput: React.FC<NumberInputProps> = ({
                 step={step}
                 className="
           w-full rounded-md
-          bg-[#0A0A0B] py-1.5 px-2.5
-          text-white shadow-sm text-xs
+          bg-[#0A0A0B] py-1.5 lg:py-2 px-2.5
+          text-white shadow-sm text-xs lg:text-sm
           ring-1 ring-inset ring-white/10
           placeholder:text-[#96969F]
           focus:ring-2 focus:ring-[#D84124]

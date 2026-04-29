@@ -173,7 +173,10 @@ export default function MainChart({ data, userWage, isLoading = false }: MainCha
                         className="stroke-white/50"
                     />
                 </Bar>
-                <Tooltip content={TooltipContent} />
+                <Tooltip
+                    content={TooltipContent}
+                    cursor={{ fill: 'rgba(55, 65, 81, 0.35)' }}
+                />
             </BarChart>
         </ResponsiveContainer>
     );

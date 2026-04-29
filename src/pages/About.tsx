@@ -58,7 +58,7 @@ function About() {
                 </Link>
 
                 <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl mb-3">
-                    About Wage Comparator
+                    About Wage Vantage
                 </h1>
                 <p className="text-sm font-medium text-[#96969F] max-w-3xl">
                     Understanding how your salary compares to wage distributions across Europe couldn't be easier or more precise. We make it visual, intuitive, and accessible—whether you're negotiating a raise, planning a move abroad, or just curious.

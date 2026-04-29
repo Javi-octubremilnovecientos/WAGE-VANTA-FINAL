@@ -154,7 +154,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
   })();
 
   return (
-    <div className="w-full max-w-xs md:max-w-lg mx-auto">
+    <div className="w-full max-w-xs md:max-w-lg lg:max-w-2xl mx-auto">
       {/* Top Buttons */}
 
 
@@ -192,7 +192,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
         {/* Dynamic Fields Container */}
         <div
           key={currentStep}
-          className="flex flex-col gap-6 animate-slide-in"
+          className="flex flex-col gap-6 lg:gap-8 animate-slide-in"
         >
           {currentStepData.fields.map((field) => {
             if (field.type === 'select' && field.options) {
@@ -268,12 +268,12 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
         )}
 
         {/* Navigation Buttons */}
-        <div className="mt-5 flex gap-2 animate-fade-in-up">
+        <div className="mt-5 lg:mt-8 flex gap-2 animate-fade-in-up">
           <button
             onClick={handleBack}
             disabled={currentStep === 0}
             type="button"
-            className={`block w-1/3 rounded-md px-2 py-1.5 text-center text-xs font-semibold text-white hover:opacity-90 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D84124] transition-all duration-200 disabled:cursor-not-allowed disabled:hover:scale-100 ${currentStep === 0 ? 'bg-white/10 text-[#96969F]' : 'bg-brand-gradient'}`}
+            className={`block w-1/3 rounded-md px-2 py-1.5 lg:py-2 text-center text-xs lg:text-sm font-semibold text-white hover:opacity-90 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D84124] transition-all duration-200 disabled:cursor-not-allowed disabled:hover:scale-100 ${currentStep === 0 ? 'bg-white/10 text-[#96969F]' : 'bg-brand-gradient'}`}
           >
             Back
           </button>
@@ -281,7 +281,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
             onClick={isLastStep ? undefined : handleNext}
             type={isLastStep ? 'submit' : 'button'}
             disabled={isNextDisabled}
-            className={`block w-full rounded-md px-2 py-1.5 text-center text-xs font-semibold text-white hover:opacity-90 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D84124] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100 ${isNextDisabled ? 'bg-white/10' : 'bg-brand-gradient'}`}
+            className={`block w-full rounded-md px-2 py-1.5 lg:py-2 text-center text-xs lg:text-sm font-semibold text-white hover:opacity-90 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D84124] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100 ${isNextDisabled ? 'bg-white/10' : 'bg-brand-gradient'}`}
           >
             {isLastStep ? 'Go to comprasions sheet' : 'Next'}
           </button>
