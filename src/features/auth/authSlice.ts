@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { REHYDRATE } from 'redux-persist';
 import type { UserData, Template, Comparison, PayData } from '@/lib/User';
 
 export interface User extends UserData {
@@ -14,7 +15,8 @@ interface AuthState {
     isAuthenticated: boolean;
     isLoading: boolean;
     error: string | null;
-    rememberMe: boolean; // Flag para persistencia
+    rememberMe: boolean;
+    savedEmail: string | null; // Email guardado cuando rememberMe está activo
 }
 
 const initialState: AuthState = {
@@ -25,6 +27,7 @@ const initialState: AuthState = {
     isLoading: false,
     error: null,
     rememberMe: false,
+    savedEmail: null,
 };
 
 const authSlice = createSlice({
@@ -56,6 +59,7 @@ const authSlice = createSlice({
             state.refreshToken = null;
             state.isAuthenticated = false;
             state.error = null;
+            // Mantener rememberMe y savedEmail para pre-cargar email en el modal
         },
         clearError: (state) => {
             state.error = null;
@@ -85,9 +89,68 @@ const authSlice = createSlice({
                 state.user = { ...state.user, ...action.payload };
             }
         },
-        setRememberMe: (state, action: PayloadAction<boolean>) => {
-            state.rememberMe = action.payload;
+        setRememberMe: (state, action: PayloadAction<{ rememberMe: boolean; email?: string | null }>) => {
+            state.rememberMe = action.payload.rememberMe;
+            state.savedEmail = action.payload.rememberMe ? (action.payload.email ?? null) : null;
         },
+    },
+    extraReducers: (builder) => {
+        /**
+         * Validar expiración de tokens al rehidratar desde localStorage
+         * Si el token JWT está expirado, hacer logout automático transparente
+         */
+        builder.addCase(REHYDRATE, (state, action) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const persistedAuth = (action as any).payload?.auth;
+
+            // Si no hay estado persistido o no hay token, no hacer nada
+            if (!persistedAuth?.token) {
+                return;
+            }
+
+            try {
+                // Decodificar JWT: token = header.payload.signature
+                const parts = persistedAuth.token.split('.');
+                if (parts.length !== 3) {
+                    // Token inválido, hacer logout
+                    return initialState;
+                }
+
+                // Decodificar payload (agregar padding si es necesario)
+                const payload = parts[1];
+                const paddedPayload = payload + '='.repeat((4 - (payload.length % 4)) % 4);
+                const decoded = JSON.parse(atob(paddedPayload)) as { exp?: number };
+
+                // Verificar si está expirado (exp está en segundos, Date.now() en milisegundos)
+                if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+                    console.warn('[Auth] Token JWT expirado durante rehidratación, logout automático');
+                    // Resetear a estado inicial pero mantener rememberMe y savedEmail
+                    Object.assign(state, {
+                        user: null,
+                        token: null,
+                        refreshToken: null,
+                        isAuthenticated: false,
+                        isLoading: false,
+                        error: null,
+                        rememberMe: persistedAuth.rememberMe ?? false,
+                        savedEmail: persistedAuth.savedEmail ?? null,
+                    });
+                }
+            } catch (error) {
+                console.warn('[Auth] Error al decodificar JWT durante rehidratación:', error);
+                // Si hay error decodificando, hacer logout por seguridad
+                Object.assign(state, {
+                    user: null,
+                    token: null,
+                    refreshToken: null,
+                    isAuthenticated: false,
+                    isLoading: false,
+                    error: null,
+                    rememberMe: persistedAuth?.rememberMe ?? false,
+                    savedEmail: persistedAuth?.savedEmail ?? null,
+                });
+            }
+        });
     },
 });
 
@@ -116,5 +179,7 @@ export const selectUserComparisons = (state: { auth: AuthState }) =>
     state.auth.user?.comparisons ?? [];
 export const selectUserPayData = (state: { auth: AuthState }) =>
     state.auth.user?.payData;
+export const selectRememberMe = (state: { auth: AuthState }) => state.auth.rememberMe;
+export const selectSavedEmail = (state: { auth: AuthState }) => state.auth.savedEmail;
 
 export default authSlice.reducer;

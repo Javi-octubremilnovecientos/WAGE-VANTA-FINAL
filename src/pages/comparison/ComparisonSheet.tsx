@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ArrowDownTrayIcon, BookmarkIcon, CheckIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import {
     selectComputedStats,
@@ -20,9 +20,18 @@ import { EconomicActivityChart } from '@/components/charts/EconomicActivityChart
 import { OccupationComparisonChart } from '@/components/charts/OccupationComparisonChart';
 
 
+interface ComparisonSheetNavState {
+    fromSavedComparison?: boolean;
+    selectedCountries?: string[];
+    economicActivity?: string;
+    occupation?: string;
+    userWage?: number;
+}
+
 function ComparisonSheet() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const [exportModalOpen, setExportModalOpen] = useState(false);
     const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
     const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -31,17 +40,24 @@ function ComparisonSheet() {
 
     const [updateUser] = useUpdateUserMutation();
 
+    // Leer navigation state (viene de SavedComparisons) o Redux (viene de FormLayout)
+    const navState = location.state as ComparisonSheetNavState | null;
+
     const isAuthenticated = useAppSelector(selectIsAuthenticated);
     const computedStats = useAppSelector(selectComputedStats);
-    const selectedCountries = useAppSelector(selectSelectedCountries);
-    const formValues = useAppSelector(selectFormValues);
-    const userWage = useAppSelector(selectUserMonthlyWage);
+    const reduxSelectedCountries = useAppSelector(selectSelectedCountries);
+    const reduxFormValues = useAppSelector(selectFormValues);
+    const reduxUserWage = useAppSelector(selectUserMonthlyWage);
     const canExport = useAppSelector(selectCanExport);
     const canSaveComparison = useAppSelector(selectCanSaveComparison);
     const existingComparisons = useAppSelector(selectUserComparisons);
 
-    const economicActivity = formValues['Economic Activity'];
-    const occupation = formValues['Occupation'];
+    // Usar navigation state si viene de SavedComparisons, sino Redux (FormLayout)
+    const selectedCountries = navState?.selectedCountries ?? reduxSelectedCountries;
+    const economicActivity = navState?.economicActivity ?? reduxFormValues['Economic Activity'];
+    const occupation = navState?.occupation ?? reduxFormValues['Occupation'];
+    const userWage = navState?.userWage ?? reduxUserWage;
+    const formValues = reduxFormValues; // Mantener referencia para formValues completo en Redux
 
     const handleSaveComparison = useCallback(async () => {
         // Requiere autenticación

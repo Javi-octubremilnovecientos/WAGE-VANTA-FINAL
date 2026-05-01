@@ -6,9 +6,9 @@ import { selectUserComparisons } from '@/features/auth/authSlice';
 import { usePlanLimits } from '@/hooks/usePlanLimits';
 import { useUpdateUserData } from '@/hooks/useUpdateUserData';
 import PlanLimitBadge from '@/components/ui/PlanLimitBadge';
-import { setSelectedCountries, setFormValues, setComputedStats } from '@/features/salaries/salarySlice';
+import { setComputedStats } from '@/features/salaries/salarySlice';
 import type { Comparison } from '@/lib/User';
-import type { ComparisonFormValues, BoxPlotData } from '@/features/salaries/types';
+import type { BoxPlotData } from '@/features/salaries/types';
 
 function SavedComparisons() {
     const dispatch = useAppDispatch();
@@ -19,10 +19,19 @@ function SavedComparisons() {
     const hasComparisons = comparisons && comparisons.length > 0;
 
     const handleLoadComparison = (comparison: Comparison) => {
-        dispatch(setSelectedCountries(comparison.selectedCountries));
-        dispatch(setFormValues(comparison.formValues as ComparisonFormValues));
+        // Solo persistir computedStats en Redux (necesario para el selector del chart)
         dispatch(setComputedStats(comparison.computedStats as BoxPlotData[]));
-        navigate('/comparison');
+
+        // Pasar datos de contexto vía navigation state (no sobrescribe FormLayout en Redux)
+        navigate('/comparison', {
+            state: {
+                fromSavedComparison: true,
+                selectedCountries: comparison.selectedCountries,
+                economicActivity: comparison.formValues['Economic Activity'],
+                occupation: comparison.formValues['Occupation'],
+                userWage: comparison.userWage,
+            },
+        });
     };
 
     const handleDeleteComparison = async (comparisonId: number) => {

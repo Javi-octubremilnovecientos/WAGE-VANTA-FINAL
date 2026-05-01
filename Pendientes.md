@@ -16,10 +16,9 @@ MODALS
 * API & SUPABASE
 
 API
- - Persitencia loging
+
  - Implementar AI Gemini??
- - Diseñar como combinar con Supabase
- - Cuando se guarda una template por primera vez. Desaparece el nombre de usuario a Usuario
+
 
 DB
  - Eliminar Tablas??

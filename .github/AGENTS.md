@@ -284,6 +284,72 @@ Los agentes son asistentes de IA personalizados con expertise específica, herra
 
 ---
 
+### 6. Supabase Backend Expert 🗄️
+
+**Archivo**: `.github/agents/supabase-backend-expert.agent.md`  
+**Comando**: `@supabase-expert`
+
+#### Especialización
+
+- Supabase REST API (Database, Auth, Storage, Edge Functions)
+- RTK Query integration con Supabase
+- Row Level Security (RLS) y políticas de acceso
+- JWT token management y refresh flows
+- PostgREST queries y filtros avanzados
+- File upload/download con Storage API
+
+#### Herramientas
+
+- ✅ Lectura de archivos
+- ✅ Edición de archivos
+- ✅ Búsqueda en código
+- ❌ Sin acceso a terminal
+
+#### Cuándo usarlo
+
+```
+✅ Integrar Supabase Database via REST API
+✅ Implementar autenticación con Supabase Auth
+✅ Configurar RTK Query endpoints para Supabase
+✅ Gestionar file uploads con Storage API
+✅ Invocar Edge Functions desde el frontend
+✅ Configurar políticas RLS en SQL
+✅ Implementar refresh de tokens JWT
+```
+
+#### Ejemplos de uso
+
+```
+@supabase-expert Implementa login con email/password usando REST API
+
+@supabase-expert Crea RTK Query endpoint para obtener salarios filtrados por país
+
+@supabase-expert Configura upload de avatares usando Storage API
+
+@supabase-expert Implementa refresh automático de tokens antes de expiración
+
+@supabase-expert Crea las políticas RLS para la tabla de comparaciones
+```
+
+#### Output esperado
+
+- RTK Query endpoints configurados con supabaseBaseQuery
+- Interfaces TypeScript para respuestas de Supabase
+- Headers correctos (apikey, Authorization)
+- Manejo de tokens en Redux store
+- Políticas RLS en SQL
+- Variables de entorno documentadas (.env.example)
+- Hooks tipados (useLoginMutation, useGetSalariesQuery, etc.)
+- Manejo de errores 401/403
+
+#### Restricciones importantes
+
+- ⚠️ **NO usar el SDK de Supabase** (`@supabase/supabase-js`)
+- ⚠️ Solo peticiones **fetch REST API** directas
+- ⚠️ Toda la comunicación debe ser via **RTK Query**
+
+---
+
 ## 🎭 Cómo Usar los Agentes
 
 ### Sintaxis básica
@@ -298,10 +364,11 @@ Los agentes son asistentes de IA personalizados con expertise específica, herra
 
 ```
 1. @navigation-architect Define las rutas para la nueva feature
-2. @redux-architect Crea un slice para gestionar templates de comparación
-3. @ui-ux-master Crea el formulario de configuración de templates
-4. @recharts-expert Implementa un chart selector para cambiar entre vistas
-5. @git-github-expert Prepara el commit: feat(templates)
+2. @supabase-expert Configura los endpoints REST de Supabase con RTK Query
+3. @redux-architect Crea un slice para gestionar templates de comparación
+4. @ui-ux-master Crea el formulario de configuración de templates
+5. @recharts-expert Implementa un chart selector para cambiar entre vistas
+6. @git-github-expert Prepara el commit: feat(templates)
 ```
 
 #### Scenario 2: Optimizar feature existente
@@ -318,6 +385,16 @@ Los agentes son asistentes de IA personalizados con expertise específica, herra
 1. @redux-architect ¿Por qué el selector selectSalaryData se ejecuta múltiples veces?
 2. @recharts-expert El tooltip del BoxPlot no muestra correctamente en mobile
 3. @ui-ux-master El modal de exportación no es responsive en iPhone
+```
+
+#### Scenario 4: Implementar backend con Supabase
+
+```
+1. @supabase-expert Configura la autenticación con Supabase Auth API
+2. @supabase-expert Implementa CRUD de comparaciones guardadas con RTK Query
+3. @supabase-expert Configura upload de avatares con Storage API
+4. @redux-architect Integra los hooks de Supabase en el authSlice
+5. @git-github-expert Prepara el commit: feat(backend)
 ```
 
 ---
@@ -363,6 +440,11 @@ graph LR
 | Chart transformation  | `@recharts-expert`   | `@recharts-expert Transform API data for chart` |
 | Adaptar Tailwind UI   | `@ui-ux-master`      | `@ui-ux-master Adapta ComboBox de Tailwind UI`  |
 | Actualizar README     | `@git-github-expert` | `@git-github-expert Update README`              |
+| Login con Supabase    | `@supabase-expert`   | `@supabase-expert Implementa login REST API`    |
+| Fetch de database     | `@supabase-expert`   | `@supabase-expert GET salaries con filtros`     |
+| Upload de archivos    | `@supabase-expert`   | `@supabase-expert Storage upload avatar`        |
+| Configurar RLS        | `@supabase-expert`   | `@supabase-expert Políticas RLS para users`     |
+| Refresh token flow    | `@supabase-expert`   | `@supabase-expert Auto-refresh JWT tokens`      |
 
 ---
 

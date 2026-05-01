@@ -1,6 +1,5 @@
 import { apiSlice } from '@/services/api';
 import type { SalaryRecord, SalaryQueryParams, ComparisonFormValues } from './types';
-import { buildQueryString, buildOptionsQueryString } from './salaryUtils';
 
 /** Parámetros para obtener opciones filtradas de un campo específico */
 export interface FilteredOptionsParams {
@@ -11,19 +10,23 @@ export interface FilteredOptionsParams {
 }
 
 /**
- * RTK Query API para datos salariales de Supabase TABLE_0.
+ * RTK Query API para datos salariales via Supabase Edge Functions.
+ *
+ * Las peticiones van a las Edge Functions `get-salary-data` y `get-filtered-options`
+ * que actúan como proxy server-side. El nombre real de la tabla y la service_role
+ * key nunca se exponen al cliente.
  *
  * Endpoint `getSalaryData`:
  * - Recibe { country, formValues }
- * - Construye query PostgREST progresiva (solo params con valor)
- * - La respuesta de TABLE_0 ya tiene la forma de SalaryRecord (sin transformación)
+ * - Llama a functions/v1/get-salary-data con los parámetros serializados
+ * - La Edge Function construye la query PostgREST y retorna SalaryRecord[]
  * - Cache key automática por combinación de params (RTK Query default)
  */
 export const salaryApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getSalaryData: builder.query<SalaryRecord[], SalaryQueryParams>({
             query: ({ country, formValues }) => ({
-                url: `rest/v1/TABLE_0?${buildQueryString(formValues, country)}`,
+                url: `functions/v1/get-salary-data?country=${encodeURIComponent(country)}&formValues=${encodeURIComponent(JSON.stringify(formValues))}`,
                 method: 'GET',
             }),
             providesTags: (_result, _error, { country }) => [
@@ -34,13 +37,13 @@ export const salaryApi = apiSlice.injectEndpoints({
         /**
          * Obtiene registros filtrados para extraer opciones dinámicas.
          * Se usa para poblar los ComboBox con valores disponibles según filtros previos.
-         * 
+         *
          * El cache key incluye country, formValues y targetFields para evitar
          * colisiones y permitir refetch cuando cambian los filtros.
          */
         getFilteredOptions: builder.query<SalaryRecord[], FilteredOptionsParams>({
             query: ({ country, formValues, targetFields }) => ({
-                url: `rest/v1/TABLE_0?${buildOptionsQueryString(formValues, country, targetFields)}`,
+                url: `functions/v1/get-filtered-options?country=${encodeURIComponent(country)}&formValues=${encodeURIComponent(JSON.stringify(formValues))}&targetFields=${encodeURIComponent(JSON.stringify(targetFields))}`,
                 method: 'GET',
             }),
             // No invalidamos cache por país ya que las opciones dependen de múltiples filtros

@@ -10,7 +10,7 @@ import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolk
 
 // Configuración del baseQuery con fetchBaseQuery
 const baseQuery = fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_SUPABASE_URL || 'https://idrgqvtgllamddukkkvx.supabase.co/',
+    baseUrl: import.meta.env.VITE_SUPABASE_URL,
     prepareHeaders: (headers, { getState, endpoint }) => {
         // Supabase API Key requerida en todas las peticiones
         const apiKey = import.meta.env.VITE_SUPABASE_API_KEY;
@@ -154,8 +154,8 @@ export const apiSlice = createApi({
         'Profile',
     ],
     endpoints: () => ({}), // Los endpoints se inyectan desde cada feature
-    keepUnusedDataFor: 60, // Mantener datos en cache por 60 segundos
-    refetchOnMountOrArgChange: true, // Siempre refetch si cambiaron los argumentos
+    keepUnusedDataFor: 120, // Mantener datos en caché por X segundos después de desmontar
+    refetchOnMountOrArgChange: 120, // Solo refetch si los datos tienen más de X segundos
     refetchOnFocus: false, // Deshabilitado para evitar refetch excesivo
     refetchOnReconnect: true, // Refetch cuando se reconecta a la red
 });

@@ -1,6 +1,6 @@
 import { persistReducer } from 'redux-persist';
-import type { WebStorage } from 'redux-persist/es/types';
 import { rootReducer } from './rootReducer';
+import { customStorage } from './authPersistConfig';
 
 /**
  * Configuración de persistencia para Redux
@@ -13,50 +13,13 @@ import { rootReducer } from './rootReducer';
  */
 
 /**
- * Storage adapter personalizado para localStorage
- * Soluciona problemas de compatibilidad con Vite y redux-persist
- */
-const createNoopStorage = (): WebStorage => {
-    return {
-        getItem: () => Promise.resolve(null),
-        setItem: () => Promise.resolve(),
-        removeItem: () => Promise.resolve(),
-    };
-};
-
-const customStorage: WebStorage = typeof window !== 'undefined' && window.localStorage
-    ? {
-        getItem: (key: string) => {
-            return Promise.resolve(window.localStorage.getItem(key));
-        },
-        setItem: (key: string, value: string) => {
-            return Promise.resolve(window.localStorage.setItem(key, value));
-        },
-        removeItem: (key: string) => {
-            return Promise.resolve(window.localStorage.removeItem(key));
-        },
-    }
-    : createNoopStorage();
-
-/**
- * Configuración de persistencia para el root reducer
- * Solo persiste auth con campos específicos
+ * Configuración de persistencia para el root reducer.
+ * La clave 'auth' aquí activa el persistReducer anidado definido en rootReducer.
  */
 export const persistConfig = {
     key: 'root',
     storage: customStorage,
-    whitelist: ['auth', 'theme'], // Persiste auth y preferencia de tema
-    // Debugging opcional
-    debug: false,
-};
-
-/**
- * Configuración específica para auth (campos a persistir)
- * Se aplica mediante blacklist en authSlice
- */
-export const authPersistFields = {
-    whitelist: ['user', 'token', 'refreshToken', 'isAuthenticated', 'rememberMe'],
-    blacklist: ['isLoading', 'error'], // No persiste estados temporales
+    whitelist: ['auth', 'theme'],
 };
 
 /**

@@ -1,10 +1,15 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { XMarkIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/20/solid';
 import { Google, Github } from '../../../assets/icons/Solidicons';
 import { useSignInMutation, useSignUpMutation, useSendResetEmailMutation, mapSupabaseResponseToUser, buildOAuthUrl } from '@/features/auth/authApi';
-import { useAppDispatch } from '@/hooks/useRedux';
-import { setCredentials, setRememberMe as setRememberMeAction } from '@/features/auth/authSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import {
+    setCredentials,
+    setRememberMe as setRememberMeAction,
+    selectRememberMe,
+    selectSavedEmail,
+} from '@/features/auth/authSlice';
 import { createDefaultUserData } from '@/lib/User';
 
 interface BaseModalProps {
@@ -41,31 +46,17 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode, initialError }: AuthMo
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
-    // Inicialización lazy para cargar credenciales guardadas sin useEffect
-    const [email, setEmail] = useState(() => {
-        if (mode === 'login') {
-            const savedEmail = localStorage.getItem('savedEmail');
-            const savedRememberMe = localStorage.getItem('rememberMe') === 'true';
-            return savedRememberMe && savedEmail ? savedEmail : '';
-        }
-        return '';
-    });
+    // Leer preferencias guardadas desde Redux (persistido por redux-persist)
+    const storedRememberMe = useAppSelector(selectRememberMe);
+    const storedEmail = useAppSelector(selectSavedEmail);
 
-    const [password, setPassword] = useState(() => {
-        if (mode === 'login') {
-            const savedPassword = localStorage.getItem('savedPassword');
-            const savedRememberMe = localStorage.getItem('rememberMe') === 'true';
-            return savedRememberMe && savedPassword ? savedPassword : '';
-        }
-        return '';
-    });
-
-    const [rememberMe, setRememberMe] = useState(() => {
-        if (mode === 'login') {
-            return localStorage.getItem('rememberMe') === 'true';
-        }
-        return false;
-    });
+    const [email, setEmail] = useState(
+        mode === 'login' && storedRememberMe && storedEmail ? storedEmail : ''
+    );
+    const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(
+        mode === 'login' ? storedRememberMe : false
+    );
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -83,6 +74,20 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode, initialError }: AuthMo
 
     // Error a mostrar: priorizar initialError (OAuth) sobre formError (validación)
     const displayError = initialError || formError;
+
+    // Sincronizar state local con Redux cuando se abre el modal o cambia el modo
+    useEffect(() => {
+        if (isOpen && mode === 'login') {
+            // Cargar credenciales guardadas si Remember Me está activo
+            if (storedRememberMe && storedEmail) {
+                setEmail(storedEmail);
+                setRememberMe(true);
+            } else {
+                setEmail('');
+                setRememberMe(false);
+            }
+        }
+    }, [isOpen, mode, storedRememberMe, storedEmail]);
 
     const resetForm = () => {
         setEmail('');
@@ -157,17 +162,8 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode, initialError }: AuthMo
                     }),
                 );
 
-                // Guardar credenciales si Remember Me está activo
-                dispatch(setRememberMeAction(rememberMe));
-                if (rememberMe) {
-                    localStorage.setItem('savedEmail', email);
-                    localStorage.setItem('savedPassword', password);
-                    localStorage.setItem('rememberMe', 'true');
-                } else {
-                    localStorage.removeItem('savedEmail');
-                    localStorage.removeItem('savedPassword');
-                    localStorage.removeItem('rememberMe');
-                }
+                // Persistir preferencia de Remember Me en Redux (redux-persist lo guarda en localStorage)
+                dispatch(setRememberMeAction({ rememberMe, email: rememberMe ? email : null }));
 
                 resetForm();
                 onClose();

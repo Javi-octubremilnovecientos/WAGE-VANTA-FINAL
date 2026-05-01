@@ -2,7 +2,6 @@ import { apiSlice } from '@/services/api';
 import type { UserData, PayData } from '@/lib/User';
 import type { User } from '@/features/auth/authSlice';
 import type { Template, Comparison } from '@/lib/User';
-import { AVATAR_BUCKET_NAME } from '@/lib/imageUtils';
 
 /**
  * Interfaces para autenticación con Supabase
@@ -56,7 +55,7 @@ export interface AuthResponse {
  * Helper: Obtiene la URL base de Supabase desde variables de entorno
  */
 export const getSupabaseUrl = (): string => {
-    return import.meta.env.VITE_SUPABASE_URL || 'https://idrgqvtgllamddukkkvx.supabase.co';
+    return import.meta.env.VITE_SUPABASE_URL;
 };
 
 /**
@@ -287,16 +286,13 @@ export const authApi = apiSlice.injectEndpoints({
          * @param file - Archivo de imagen (File object)
          */
         uploadAvatar: builder.mutation<{ path: string }, { userId: string; filename: string; file: File }>({
-            query: ({ userId, filename, file }) => {
-                const formData = new FormData();
-                formData.append('', file); // Supabase Storage espera el file sin key o con key vacía
-
-                return {
-                    url: `storage/v1/object/${AVATAR_BUCKET_NAME}/${userId}/${filename}`,
-                    method: 'POST',
-                    body: formData,
-                };
-            },
+            query: ({ userId, filename, file }) => ({
+                url: `functions/v1/avatar-handler/${userId}/${filename}`,
+                method: 'POST',
+                body: file,
+                // Content-Type se toma del File object automáticamente por fetchBaseQuery
+                headers: { 'Content-Type': file.type || 'application/octet-stream' },
+            }),
             invalidatesTags: ['Profile'],
         }),
 
@@ -315,7 +311,7 @@ export const authApi = apiSlice.injectEndpoints({
          */
         deleteAvatar: builder.mutation<void, { path: string }>({
             query: ({ path }) => ({
-                url: `storage/v1/object/${AVATAR_BUCKET_NAME}/${path}`,
+                url: `functions/v1/avatar-handler/${path}`,
                 method: 'DELETE',
             }),
             invalidatesTags: ['Profile'],

@@ -5,6 +5,7 @@
 Actúa siempre como un Senior Frontend Architect especializado en React, TypeScript y Tailwind CSS v4. Tu objetivo es garantizar que todo el código generado para este proyecto siga los principios de arquitectura, patrones de flujo de datos y reglas de negocio descritas aquí.
 
 Rules:
+
 - Always use TypeScript
 - Prefer functional components
 - Use hooks for logic
@@ -17,6 +18,7 @@ Rules:
 ---
 
 Project structure:
+
 - Feature-based architecture
 - Separate UI and logic
 - Use services for API calls
@@ -98,6 +100,7 @@ Este proyecto cuenta con agentes personalizados para tareas específicas. Consul
 - **@redux-architect** - Redux Toolkit, RTK Query, selectores optimizados
 - **@recharts-expert** - Recharts, gráficas, tooltips personalizados
 - **@ui-ux-master** - Tailwind CSS v4, componentes UI, Atomic Design
+- **@supabase-expert** - Supabase REST API, Database, Auth, Storage, Edge Functions
 - **@git-github-expert** - Git workflow, commits convencionales, CI/CD
 
 ### Cuándo usar cada agente:
@@ -106,6 +109,7 @@ Este proyecto cuenta con agentes personalizados para tareas específicas. Consul
 - Para crear/modificar slices o selectores → `@redux-architect`
 - Para implementar gráficas o visualizaciones → `@recharts-expert`
 - Para crear componentes UI o formularios → `@ui-ux-master`
+- Para integrar Supabase (DB, Auth, Storage, Functions) → `@supabase-expert`
 - Para preparar commits o actualizar docs → `@git-github-expert`
 
 ---
@@ -117,6 +121,9 @@ Este proyecto cuenta con agentes personalizados para tareas específicas. Consul
 - "@redux-architect Implementa un slice para gestionar comparaciones salariales"
 - "@recharts-expert Genera un BoxPlot con tooltips personalizados para mostrar percentiles"
 - "@ui-ux-master Crea un modal de exportación con animaciones y estilos profesionales"
+- "@supabase-expert Implementa autenticación con Supabase Auth usando RTK Query"
+- "@supabase-expert Crea endpoints REST para CRUD de comparaciones guardadas"
+- "@supabase-expert Configura upload de avatares con Storage API"
 - "Valida en el formulario que no se puedan seleccionar más de 2 países en el plan FREE."
 - "@git-github-expert Prepara el commit para los cambios implementados"
 
