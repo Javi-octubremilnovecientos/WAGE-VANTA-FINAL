@@ -27,14 +27,12 @@ Deno.serve(async (req: Request) => {
     const corsResponse = handleCors(req);
     if (corsResponse) return corsResponse;
 
-    const origin = req.headers.get('origin');
-
     // Verify JWT and extract userId
     const auth = await verifyJwt(req);
     if ('error' in auth) {
         return new Response(
             JSON.stringify({ error: auth.error }),
-            { status: auth.status, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+            { status: auth.status, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
         );
     }
 
@@ -50,7 +48,7 @@ Deno.serve(async (req: Request) => {
     if (!pathUserId || !filename) {
         return new Response(
             JSON.stringify({ error: 'Missing userId or filename in path' }),
-            { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+            { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
         );
     }
 
@@ -58,7 +56,7 @@ Deno.serve(async (req: Request) => {
     if (pathUserId !== tokenUserId) {
         return new Response(
             JSON.stringify({ error: 'Forbidden: userId mismatch' }),
-            { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+            { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
         );
     }
 
@@ -68,7 +66,7 @@ Deno.serve(async (req: Request) => {
     if (!supabaseUrl || !serviceKey) {
         return new Response(
             JSON.stringify({ error: 'Server misconfiguration' }),
-            { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+            { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
         );
     }
 
@@ -96,14 +94,14 @@ Deno.serve(async (req: Request) => {
             console.error('[avatar-handler] Upload error:', uploadResponse.status, errorBody);
             return new Response(
                 JSON.stringify({ error: 'Failed to upload avatar' }),
-                { status: uploadResponse.status, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+                { status: uploadResponse.status, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
             );
         }
 
         const result = await uploadResponse.json() as { Key: string };
         return new Response(
             JSON.stringify({ path: result.Key ?? `${pathUserId}/${filename}` }),
-            { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+            { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
         );
     }
 
@@ -122,18 +120,18 @@ Deno.serve(async (req: Request) => {
             console.error('[avatar-handler] Delete error:', deleteResponse.status, errorBody);
             return new Response(
                 JSON.stringify({ error: 'Failed to delete avatar' }),
-                { status: deleteResponse.status, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+                { status: deleteResponse.status, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
             );
         }
 
         return new Response(null, {
             status: 204,
-            headers: corsHeaders(origin),
+            headers: corsHeaders,
         });
     }
 
     return new Response(
         JSON.stringify({ error: 'Method not allowed' }),
-        { status: 405, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+        { status: 405, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
     );
 });

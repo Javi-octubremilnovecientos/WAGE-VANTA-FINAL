@@ -19,8 +19,8 @@ const baseQuery = fetchBaseQuery({
         }
 
         // Token de autorización si el usuario está autenticado
-        // NOTA: Para peticiones a TABLE_0 (rest/v1/TABLE_0), solo se necesita apikey
-        // El token Bearer solo es necesario para operaciones de usuario (auth, profile)
+        // Las peticiones a las Edge Functions de salarios son públicas (no requieren Bearer)
+        // El token Bearer solo es necesario para operaciones de usuario (auth, profile, avatar)
         const state = getState() as { auth: { token: string | null } };
         const token = state.auth.token;
 

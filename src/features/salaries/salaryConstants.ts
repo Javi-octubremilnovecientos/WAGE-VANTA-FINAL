@@ -163,24 +163,13 @@ export const formSteps = [
     },
 ];
 
-/** Columnas de TABLE_0 que solicitamos en el select de la query PostgREST */
-export const SUPABASE_SELECT_COLUMNS = [
-    'Country',
-    'Gender',
-    'Occupation',
-    'Occupation Level',
-    'Economic Activity',
-    'Education Level',
-    'Monthly Wage',
-    'Year',
-] as const;
-
+/** Países válidos derivados de las opciones del formulario */
 const countryField = formSteps
     .flatMap((step) => step.fields)
     .find((field) => field.id === 'Country');
 
 export const VALID_COUNTRIES = new Set(
-    (countryField?.options ?? []).map((option) => option.value),
+    (countryField?.options ?? []).map((option: { value: string }) => option.value),
 );
 
 

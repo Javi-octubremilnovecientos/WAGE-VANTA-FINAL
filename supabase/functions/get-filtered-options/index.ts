@@ -54,8 +54,6 @@ Deno.serve(async (req: Request) => {
     const corsResponse = handleCors(req);
     if (corsResponse) return corsResponse;
 
-    const origin = req.headers.get('origin');
-
     try {
         const url = new URL(req.url);
         const country = url.searchParams.get('country') ?? '';
@@ -65,7 +63,7 @@ Deno.serve(async (req: Request) => {
         if (!country || !VALID_COUNTRIES.has(country)) {
             return new Response(
                 JSON.stringify({ error: `Invalid or missing country: "${country}"` }),
-                { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+                { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
             );
         }
 
@@ -78,7 +76,7 @@ Deno.serve(async (req: Request) => {
         } catch {
             return new Response(
                 JSON.stringify({ error: 'Invalid JSON in formValues or targetFields' }),
-                { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+                { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
             );
         }
 
@@ -87,7 +85,7 @@ Deno.serve(async (req: Request) => {
         if (safeTargetFields.length === 0) {
             return new Response(
                 JSON.stringify({ error: 'No valid targetFields provided' }),
-                { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+                { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
             );
         }
 
@@ -97,7 +95,7 @@ Deno.serve(async (req: Request) => {
         if (!supabaseUrl || !serviceKey) {
             return new Response(
                 JSON.stringify({ error: 'Server misconfiguration' }),
-                { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+                { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
             );
         }
 
@@ -133,20 +131,20 @@ Deno.serve(async (req: Request) => {
             console.error('[get-filtered-options] Upstream error:', response.status, errorBody);
             return new Response(
                 JSON.stringify({ error: 'Failed to fetch filtered options' }),
-                { status: response.status, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+                { status: response.status, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
             );
         }
 
         const data = await response.json();
         return new Response(JSON.stringify(data), {
             status: 200,
-            headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
     } catch (err) {
         console.error('[get-filtered-options] Unexpected error:', err);
         return new Response(
             JSON.stringify({ error: 'Internal server error' }),
-            { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) } },
+            { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
         );
     }
 });
