@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "description": "Claude Code settings for Wage Vantage project",
+  "permissions": {
+    "read": ["**"],
+    "execute": ["npm", "git"],
+    "write": ["src/**", "docs/**", ".github/**", "CLAUDE.md"]
+  },
+  "hooks": {
+    "before_write": [],
+    "after_write": [],
+    "before_execute": [],
+    "after_execute": []
+  },
+  "environment": {
+    "NODE_ENV": "development",
+    "VITE_SUPABASE_URL": "${VITE_SUPABASE_URL}",
+    "VITE_SUPABASE_ANON_KEY": "${VITE_SUPABASE_ANON_KEY}"
+  }
+}

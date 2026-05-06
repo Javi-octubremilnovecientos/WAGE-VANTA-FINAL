@@ -6,7 +6,7 @@
  * Supabase Edge Functions (get-salary-data, get-filtered-options).
  */
 
-import type { SalaryRecord } from './types';
+import type { SalaryRecord, BoxPlotData } from './types';
 
 /**
  * Extrae los salarios mensuales de un array de SalaryRecord.
@@ -39,4 +39,35 @@ export function extractUniqueOptions(
     }
 
     return Array.from(uniqueSet).sort((a, b) => a.localeCompare(b));
+}
+
+/**
+ * Fusiona dos BoxPlotData en uno. Se usa cuando combinamos los stats
+ * calculados desde Supabase con los stats enriquecidos por Gemini en
+ * casos de muestra escasa (< 8 registros).
+ *
+ * Estrategia:
+ *  - min/max: extremos absolutos (rango total observado entre ambas fuentes).
+ *  - q1/median/q3: promedio simple (zona central combinada).
+ *  - category/color: heredan del primario para mantener identidad visual.
+ *
+ * Si una de las fuentes es null, se devuelve la otra tal cual.
+ */
+export function mergeBoxPlots(
+    primary: BoxPlotData | null,
+    secondary: BoxPlotData | null,
+): BoxPlotData | null {
+    if (!primary && !secondary) return null;
+    if (!primary) return secondary;
+    if (!secondary) return primary;
+
+    return {
+        category: primary.category,
+        min: Math.min(primary.min, secondary.min),
+        q1: (primary.q1 + secondary.q1) / 2,
+        median: (primary.median + secondary.median) / 2,
+        q3: (primary.q3 + secondary.q3) / 2,
+        max: Math.max(primary.max, secondary.max),
+        color: primary.color,
+    };
 }

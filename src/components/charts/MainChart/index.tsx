@@ -103,7 +103,7 @@ const TooltipContent = (props: TooltipContentProps) => {
     return null;
 };
 
-export default function MainChart({ data, userWage, isLoading = false }: MainChartProps) {
+export default function MainChart({ data, userWage, isLoading = false, isEnriching = false }: MainChartProps) {
     const effectiveTheme = useAppSelector(selectEffectiveTheme);
     const axisColor = effectiveTheme === 'dark' ? '#d1d5db' : '#374151';
     const yAxisConfig = useMemo(() => computeYAxisConfig(data), [data]);
@@ -116,6 +116,14 @@ export default function MainChart({ data, userWage, isLoading = false }: MainCha
         return (
             <div className="w-full aspect-square flex items-center justify-center">
                 <div className="text-sm text-[#96969F]">Loading chart...</div>
+            </div>
+        );
+    }
+
+    if (isEnriching) {
+        return (
+            <div className="w-full aspect-square flex items-center justify-center">
+                <div className="text-sm text-[#96969F]">Enhancing data accuracy with AI...</div>
             </div>
         );
     }

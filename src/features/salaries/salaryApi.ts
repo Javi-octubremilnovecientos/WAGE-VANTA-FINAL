@@ -1,5 +1,7 @@
 import { apiSlice } from '@/services/api';
-import type { SalaryRecord, SalaryQueryParams, ComparisonFormValues } from './types';
+import type { SalaryRecord, SalaryQueryParams, ComparisonFormValues, BoxPlotData } from './types';
+
+
 
 /** Parámetros para obtener opciones filtradas de un campo específico */
 export interface FilteredOptionsParams {
@@ -33,7 +35,7 @@ export const salaryApi = apiSlice.injectEndpoints({
                 { type: 'Salaries', id: country },
             ],
         }),
-
+            
         /**
          * Obtiene registros filtrados para extraer opciones dinámicas.
          * Se usa para poblar los ComboBox con valores disponibles según filtros previos.
@@ -51,8 +53,31 @@ export const salaryApi = apiSlice.injectEndpoints({
                 { type: 'Salaries', id: `options-${country}-${JSON.stringify(formValues)}` },
             ],
         }),
+
+        /**
+         * Fallback de enriquecimiento por IA. Se dispara cuando los registros
+         * de Supabase son escasos (< 8). Llama a la Edge Function
+         * `enrich-salary-data`, que delega en Gemini para investigar datos
+         * salariales realistas según los formValues y devuelve un BoxPlotData
+         * ya calculado (q1/median/q3/min/max) listo para fusionarse con el
+         * BoxPlot de Supabase mediante `mergeBoxPlots`.
+         *
+         * Mutation (no query): la generación es una acción puntual y no la
+         * queremos cachear por params estables.
+         */
+        enrichSalaryData: builder.mutation<BoxPlotData, SalaryQueryParams>({
+            query: ({ country, formValues }) => ({
+                url: 'functions/v1/enrich-salary-data',
+                method: 'POST',
+                body: { country, formValues },
+            }),
+        }),
     }),
 });
 
-export const { useGetSalaryDataQuery, useGetFilteredOptionsQuery } = salaryApi;
+export const {
+    useGetSalaryDataQuery,
+    useGetFilteredOptionsQuery,
+    useEnrichSalaryDataMutation,
+} = salaryApi;
 

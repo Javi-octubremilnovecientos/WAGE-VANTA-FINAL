@@ -1,33 +1,15 @@
-* ESTILOS
-
-
 * FEATURES UX/UI
  UI
 - Al final pasar una IA para supervisar traducciones textos
 
-PAYMENT
-
- - STRIPE / LEMONSQUEEZE
-
-MODALS
-
-
-
-* API & SUPABASE
-
-API
-
- - Implementar AI Gemini??
-
-
 DB
- - Eliminar Tablas??
- - Añadir Edge functions (quitar Api fetch del lado del usuario??)
- - Hacer prueba acceso OAuth con otra cuenta de goole
+- Hacer prueba acceso OAuth con otra cuenta de goole
 
 AUTH
 - Cambiar redirect URL y configuracion url en password recovery cuando la app este deployed
+
 SRTORAGE
+- NO SE PUEDE CAMBIAR EL AVATAR DESDE que migramos las functions a edge fn en SB
 - Cambiar redirect URL y configuracion con url cuando la app este deployed
 
 * REACT

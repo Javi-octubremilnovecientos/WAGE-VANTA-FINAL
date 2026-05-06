@@ -19,7 +19,7 @@ import { selectUserMonthlyWage } from "../features/salaries/salarySelectors";
 import { useGetSalaryDataQuery } from "../features/salaries/salaryApi";
 import { useGetSessionFromTokensMutation, mapSupabaseResponseToUser, isNewUser } from "@/features/auth/authApi";
 import { setCredentials } from "@/features/auth/authSlice";
-import { useComputeSalaryStats } from "../hooks/useComputeSalaryStats";
+import { useEnrichedSalaryStats } from "../hooks/useEnrichedSalaryStats";
 import type { BoxPlotData } from "../features/salaries/types";
 
 
@@ -114,17 +114,27 @@ export default function Home() {
         },
     );
 
-    // Computar BoxPlot stats
-    const stats1 = useComputeSalaryStats(country1Query.data, selectedCountries[0] ?? '', CHART_COLORS[0]);
-    const stats2 = useComputeSalaryStats(country2Query.data, selectedCountries[1] ?? '', CHART_COLORS[1]);
-    const stats3 = useComputeSalaryStats(country3Query.data, selectedCountries[2] ?? '', CHART_COLORS[2]);
+    // Computar BoxPlot stats con fallback automático a Gemini cuando la muestra es escasa.
+    const { stats: stats1, isEnriching: isEnriching1 } = useEnrichedSalaryStats(
+        country1Query.data, selectedCountries[0] ?? '', formValues, CHART_COLORS[0],
+    );
+    const { stats: stats2, isEnriching: isEnriching2 } = useEnrichedSalaryStats(
+        country2Query.data, selectedCountries[1] ?? '', formValues, CHART_COLORS[1],
+    );
+    const { stats: stats3, isEnriching: isEnriching3 } = useEnrichedSalaryStats(
+        country3Query.data, selectedCountries[2] ?? '', formValues, CHART_COLORS[2],
+    );
 
     const chartData: BoxPlotData[] = useMemo(
         () => [stats1, stats2, stats3].filter((s): s is BoxPlotData => s !== null),
         [stats1, stats2, stats3],
     );
 
-    const isLoading = country1Query.isLoading || country2Query.isLoading || country3Query.isLoading;
+    const isLoading =
+        country1Query.isLoading || country2Query.isLoading || country3Query.isLoading;
+
+    const isEnriching =
+        isEnriching1 || isEnriching2 || isEnriching3;
 
     // Persistir los stats computados en Redux para usarlos en ComparisonSheet
     useEffect(() => {
@@ -191,7 +201,7 @@ export default function Home() {
                 ) : (
                     /* Active state: chart + compare button */
                     <div className="w-full max-w-[480px] flex flex-col gap-4 lg:gap-2 animate-[fadeIn_0.4s_ease-in]">
-                        <MainChart data={chartData} userWage={userWage} isLoading={isLoading} />
+                        <MainChart data={chartData} userWage={userWage} isLoading={isLoading} isEnriching={isEnriching} />
 
                         {/* Chart View Toggle Button and Countries Badges */}
                         <div className="flex items-center justify-center gap-4 mb-4 lg:mb-1">

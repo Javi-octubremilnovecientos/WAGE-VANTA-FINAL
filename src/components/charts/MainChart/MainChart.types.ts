@@ -11,4 +11,5 @@ export interface MainChartProps {
     data: BoxPlotData[];
     userWage?: number | null;
     isLoading?: boolean;
+    isEnriching?: boolean;
 }

@@ -19,7 +19,7 @@ export const selectComparisonReady = createSelector(
     },
 );
 
-/** Valida si se puede añadir otro país según el plan (GUEST: max 1, FREE: max 2, PREMIUM: max 3) */
+/** Valida si se puede añadir otro país según el plan (GUEST: max 2, FREE: max 2, PREMIUM: max 3) */
 export const selectCanAddCountry = createSelector(
     [selectSalary, selectAuth],
     (salary, auth) => {

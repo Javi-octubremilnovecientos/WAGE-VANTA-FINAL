@@ -1,26 +1,28 @@
-
-import { useState, useCallback } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import { useState, useCallback } from "react";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
   selectCurrentStep,
   selectFormValues,
   updateFormValue,
   setCurrentStep,
   setPrimaryCountry,
-} from '../../features/salaries/salarySlice';
-import { selectIsAuthenticated } from '../../features/auth/authSlice';
-import AuthModal from '../ui/modals/AuthModal';
-import TemplateModal from '../ui/modals/TemplateModal';
-import UpgradeModal from '../ui/modals/UpgradeModal';
-import { ClipboardDocumentIcon, BookmarkIcon } from '@heroicons/react/24/outline';
-import StandardComboBox from './StandardComboBox';
-import NumberInput from './NumberInput';
-import StepSlider from './Stepslider';
-import { formSteps } from '../../features/salaries/salaryConstants';
-import { useDynamicOptions } from '../../hooks/useDynamicOptions';
-import { usePlanLimits } from '../../hooks/usePlanLimits';
-import type { FormFieldId } from '../../features/salaries/types';
-import './FormLayout.css';
+} from "../../features/salaries/salarySlice";
+import { selectIsAuthenticated } from "../../features/auth/authSlice";
+import AuthModal from "../ui/modals/AuthModal";
+import TemplateModal from "../ui/modals/TemplateModal";
+import UpgradeModal from "../ui/modals/UpgradeModal";
+import {
+  ClipboardDocumentIcon,
+  BookmarkIcon,
+} from "@heroicons/react/24/outline";
+import StandardComboBox from "./StandardComboBox";
+import NumberInput from "./NumberInput";
+import StepSlider from "./Stepslider";
+import { formSteps } from "../../features/salaries/salaryConstants";
+import { useDynamicOptions } from "../../hooks/useDynamicOptions";
+import { usePlanLimits } from "../../hooks/usePlanLimits";
+import type { FormFieldId } from "../../features/salaries/types";
+import "./FormLayout.css";
 
 interface FormLayoutProps {
   onNavigateToSheet?: () => void;
@@ -38,7 +40,12 @@ interface DynamicComboFieldProps {
   onChange: (value: string) => void;
 }
 
-function DynamicComboField({ fieldId, placeholder, value, onChange }: DynamicComboFieldProps) {
+function DynamicComboField({
+  fieldId,
+  placeholder,
+  value,
+  onChange,
+}: DynamicComboFieldProps) {
   const { options, isLoading, isEnabled } = useDynamicOptions(fieldId);
 
   const selectOptions = options.map((opt) => ({ label: opt, value: opt }));
@@ -66,11 +73,13 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
   const { canSaveTemplate, maxTemplates } = usePlanLimits();
 
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const [templateModalOpen, setTemplateModalOpen] = useState(false);
-  const [templateMode, setTemplateMode] = useState<'save' | 'load'>('load');
+  const [templateMode, setTemplateMode] = useState<"save" | "load">("load");
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
-  const [editingValues, setEditingValues] = useState<Record<string, string>>({});
+  const [editingValues, setEditingValues] = useState<Record<string, string>>(
+    {},
+  );
 
   const totalSteps = formSteps.length;
   const currentStepData = formSteps[currentStep];
@@ -82,7 +91,9 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
 
   const handleNext = () => {
     // Blur SOLO el NumberInput (si existe) para triggear commit
-    const numberInput = document.querySelector('input[type="number"]') as HTMLInputElement;
+    const numberInput = document.querySelector(
+      'input[type="number"]',
+    ) as HTMLInputElement;
     if (numberInput) {
       numberInput.blur();
     }
@@ -95,7 +106,9 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
 
   const handleBack = () => {
     // Blur SOLO el NumberInput (si existe) para triggear commit
-    const numberInput = document.querySelector('input[type="number"]') as HTMLInputElement;
+    const numberInput = document.querySelector(
+      'input[type="number"]',
+    ) as HTMLInputElement;
     if (numberInput) {
       numberInput.blur();
     }
@@ -106,23 +119,26 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
     }
   };
 
-  const handleFieldChange = useCallback((fieldId: string, value: string) => {
-    dispatch(updateFormValue({ fieldId, value }));
+  const handleFieldChange = useCallback(
+    (fieldId: string, value: string) => {
+      dispatch(updateFormValue({ fieldId, value }));
 
-    // Cuando el usuario selecciona un país en Step 1, lo añadimos/actualizamos
-    if (fieldId === 'Country') {
-      dispatch(setPrimaryCountry(value));
-    }
-  }, [dispatch]);
+      // Cuando el usuario selecciona un país en Step 1, lo añadimos/actualizamos
+      if (fieldId === "Country") {
+        dispatch(setPrimaryCountry(value));
+      }
+    },
+    [dispatch],
+  );
 
   /**
    * Handler para cambios en tiempo real mientras se escribe (NumberInput).
    * Actualiza estado local para habilitar/deshabilitar botones en tiempo real.
    */
   const handleInputChange = useCallback((fieldId: string, value: string) => {
-    setEditingValues(prev => ({
+    setEditingValues((prev) => ({
       ...prev,
-      [fieldId]: value
+      [fieldId]: value,
     }));
   }, []);
 
@@ -140,11 +156,11 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
         let value = (formValues as Record<string, string>)[field.id];
 
         // Segundo chequeo: valor siendo editado (para NumberInput en tiempo real)
-        if (!value || value.trim() === '') {
+        if (!value || value.trim() === "") {
           value = editingValues[field.id];
         }
 
-        if (!value || value.trim() === '') {
+        if (!value || value.trim() === "") {
           return true;
         }
       }
@@ -157,9 +173,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
     <div className="w-full max-w-xs md:max-w-lg lg:max-w-2xl mx-auto">
       {/* Top Buttons */}
 
-
       {/* Step Title */}
-
 
       {/* Form */}
       <form action="#" method="POST" className="w-full" onSubmit={handleSubmit}>
@@ -176,10 +190,10 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
             aria-label="Fill with a template"
             onClick={() => {
               if (isAuthenticated) {
-                setTemplateMode('load');
+                setTemplateMode("load");
                 setTemplateModalOpen(true);
               } else {
-                setAuthMode('login');
+                setAuthMode("login");
                 setAuthModalOpen(true);
               }
             }}
@@ -195,7 +209,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
           className="flex flex-col gap-6 lg:gap-8 animate-slide-in"
         >
           {currentStepData.fields.map((field) => {
-            if (field.type === 'select' && field.options) {
+            if (field.type === "select" && field.options) {
               // Campos con opciones dinámicas (vacías en formSteps): usar DynamicComboField
               if (field.options.length === 0) {
                 return (
@@ -203,7 +217,9 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
                     key={field.id}
                     fieldId={field.id as FormFieldId}
                     placeholder={field.placeholder}
-                    value={(formValues as Record<string, string>)[field.id] || ''}
+                    value={
+                      (formValues as Record<string, string>)[field.id] || ""
+                    }
                     onChange={(value) => handleFieldChange(field.id, value)}
                   />
                 );
@@ -218,13 +234,13 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
                   options={field.options}
                   placeholder={field.placeholder}
                   required={field.required}
-                  value={(formValues as Record<string, string>)[field.id] || ''}
+                  value={(formValues as Record<string, string>)[field.id] || ""}
                   onChange={(value) => handleFieldChange(field.id, value)}
                 />
               );
             }
 
-            if (field.type === 'number') {
+            if (field.type === "number") {
               return (
                 <NumberInput
                   key={field.id}
@@ -232,7 +248,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
                   label={field.id}
                   placeholder={field.placeholder}
                   required={field.required}
-                  value={(formValues as Record<string, string>)[field.id] || ''}
+                  value={(formValues as Record<string, string>)[field.id] || ""}
                   onChange={(value) => handleFieldChange(field.id, value)}
                   onInputChange={(value) => handleInputChange(field.id, value)}
                 />
@@ -243,7 +259,6 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
           })}
         </div>
 
-
         {/* Save as template button - only on last step */}
         {isLastStep && (
           <div className="flex justify-end animate-fade-in">
@@ -253,10 +268,10 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
               aria-label="Save as a template"
               onClick={() => {
                 if (isAuthenticated) {
-                  setTemplateMode('save');
+                  setTemplateMode("save");
                   setTemplateModalOpen(true);
                 } else {
-                  setAuthMode('login');
+                  setAuthMode("login");
                   setAuthModalOpen(true);
                 }
               }}
@@ -273,17 +288,17 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
             onClick={handleBack}
             disabled={currentStep === 0}
             type="button"
-            className={`block w-1/3 rounded-md px-2 py-1.5 lg:py-2 text-center text-xs lg:text-sm font-semibold text-white hover:opacity-90 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D84124] transition-all duration-200 disabled:cursor-not-allowed disabled:hover:scale-100 ${currentStep === 0 ? 'bg-white/10 text-[#96969F]' : 'bg-brand-gradient'}`}
+            className={`block w-1/3 rounded-md px-2 py-1.5 lg:py-2 text-center text-xs lg:text-sm font-semibold text-white hover:opacity-90 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D84124] transition-all duration-200 disabled:cursor-not-allowed disabled:hover:scale-100 ${currentStep === 0 ? "bg-white/10 text-[#96969F]" : "bg-brand-gradient"}`}
           >
             Back
           </button>
           <button
             onClick={isLastStep ? undefined : handleNext}
-            type={isLastStep ? 'submit' : 'button'}
+            type={isLastStep ? "submit" : "button"}
             disabled={isNextDisabled}
-            className={`block w-full rounded-md px-2 py-1.5 lg:py-2 text-center text-xs lg:text-sm font-semibold text-white hover:opacity-90 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D84124] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100 ${isNextDisabled ? 'bg-white/10' : 'bg-brand-gradient'}`}
+            className={`block w-full rounded-md px-2 py-1.5 lg:py-2 text-center text-xs lg:text-sm font-semibold text-white hover:opacity-90 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D84124] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100 ${isNextDisabled ? "bg-white/10" : "bg-brand-gradient"}`}
           >
-            {isLastStep ? 'Go to comprasions sheet' : 'Next'}
+            {isLastStep ? "Go to comprasions sheet" : "Next"}
           </button>
         </div>
       </form>

@@ -59,7 +59,7 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode, initialError }: AuthMo
     );
 
     const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
     const [confirmPassword, setConfirmPassword] = useState('');
     const [name, setName] = useState('');
     const [formError, setFormError] = useState<string | null>(initialError || null);
@@ -98,7 +98,7 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode, initialError }: AuthMo
         setSuccessMessage(null);
         setEmailSent(false);
         setShowPassword(false);
-        setShowConfirmPassword(false);
+    
         // NO resetear rememberMe aquí para mantener el estado del checkbox
     };
 
@@ -184,7 +184,7 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode, initialError }: AuthMo
                 setConfirmPassword('');
                 setName('');
                 setShowPassword(false);
-                setShowConfirmPassword(false);
+             
             }
         } catch (err: unknown) {
             const error = err as { status?: number; data?: { msg?: string; error_description?: string; message?: string } };
@@ -318,7 +318,7 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode, initialError }: AuthMo
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="w-full px-3 py-2 bg-[#0A0A0B] border border-white/10 rounded-lg text-white placeholder-[#96969F] focus:border-[#D84124] focus:ring-1 focus:ring-[#D84124] focus:outline-none transition-colors text-sm pr-10"
-                                    placeholder="••••••••"
+                                    placeholder=""
                                     required
                                     minLength={6}
                                     disabled={isLoading}
@@ -346,23 +346,23 @@ function AuthModal({ isOpen, onClose, mode, onSwitchMode, initialError }: AuthMo
                                 </label>
                                 <div className="relative">
                                     <input
-                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        type={showPassword ? 'text' : 'password'}
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         className="w-full px-3 py-2 bg-[#0A0A0B] border border-white/10 rounded-lg text-white placeholder-[#96969F] focus:border-[#D84124] focus:ring-1 focus:ring-[#D84124] focus:outline-none transition-colors text-sm pr-10"
-                                        placeholder="••••••••"
+                                        placeholder=""
                                         required
                                         minLength={6}
                                         disabled={isLoading}
                                     />
                                     <button
                                         type="button"
-                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        onClick={() => setShowPassword(!showPassword)}
                                         className="absolute right-3 top-1/2 -translate-y-1/2 text-[#96969F] hover:text-white transition-colors focus:outline-none"
-                                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                                        aria-label={showPassword ? 'Hide password' : 'Show password'}
                                         tabIndex={-1}
                                     >
-                                        {showConfirmPassword ? (
+                                        {showPassword ? (
                                             <EyeSlashIcon className="w-4 h-4" />
                                         ) : (
                                             <EyeIcon className="w-4 h-4" />
