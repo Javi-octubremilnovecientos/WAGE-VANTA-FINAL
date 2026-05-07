@@ -5,6 +5,7 @@ import TemplateCard from '@/components/ui/cards/TemplateCard'
 import type { Template } from '@/lib/User'
 
 const sampleTemplate: Template = {
+  id: 1,
   country: 'Spain',
   gender: 'Male',
   monthlyWage: 3500,
@@ -102,6 +103,7 @@ describe('TemplateCard', () => {
 
   it('renderiza sin campos opcionales', () => {
     const minimalTemplate: Template = {
+      id: 2,
       country: 'Denmark',
       gender: 'Female',
       monthlyWage: 5000,

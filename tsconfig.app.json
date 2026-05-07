@@ -25,7 +25,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "ignoreDeprecations": "6.0"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/__tests__", "src/setupTests.ts"]
 }

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
 // Polyfill para ResizeObserver — jsdom no lo implementa pero Headless UI lo requiere
-global.ResizeObserver = class ResizeObserver {
+globalThis.ResizeObserver = class ResizeObserver {
     observe() { }
     unobserve() { }
     disconnect() { }

@@ -89,6 +89,10 @@ const authSlice = createSlice({
                 state.user = { ...state.user, ...action.payload };
             }
         },
+        setTokens: (state, action: PayloadAction<{ token: string; refreshToken: string }>) => {
+            state.token = action.payload.token;
+            state.refreshToken = action.payload.refreshToken;
+        },
         setRememberMe: (state, action: PayloadAction<{ rememberMe: boolean; email?: string | null }>) => {
             state.rememberMe = action.payload.rememberMe;
             state.savedEmail = action.payload.rememberMe ? (action.payload.email ?? null) : null;
@@ -164,6 +168,7 @@ export const {
     updateComparisons,
     updatePayData,
     patchUser,
+    setTokens,
     setRememberMe,
 } = authSlice.actions;
 

@@ -84,7 +84,7 @@ describe('FeatureCard', () => {
   })
 
   it('no aplica cursor-pointer cuando no hay to ni onClick', () => {
-    const { container } = renderWithRouter(<FeatureCard {...defaultProps} />)
+    renderWithRouter(<FeatureCard {...defaultProps} />)
     const card = screen.getByText('Compare Salaries').closest('div')
     expect(card?.className).not.toContain('cursor-pointer')
   })

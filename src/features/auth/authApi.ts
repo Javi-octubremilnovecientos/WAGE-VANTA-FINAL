@@ -2,6 +2,7 @@ import { apiSlice } from '@/services/api';
 import type { UserData, PayData } from '@/lib/User';
 import type { User } from '@/features/auth/authSlice';
 import type { Template, Comparison } from '@/lib/User';
+import { AVATAR_BUCKET_NAME } from '@/lib/imageUtils';
 
 /**
  * Interfaces para autenticación con Supabase

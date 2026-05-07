@@ -57,24 +57,28 @@ const baseQueryWithTokenRefresh: BaseQueryFn<
 > = async (args, api, extraOptions) => {
     const result = await baseQuery(args, api, extraOptions);
 
-    // Si falla con 401 o 403 Unauthorized y tiene error de token expirado
+    // Si falla con 401 o 403 por token inválido/expirado, intentar refresh
     if (result.error && (result.error.status === 401 || result.error.status === 403)) {
         const errorData = result.error.data as Record<string, any>;
         const errorMessage = errorData?.message || errorData?.msg || errorData?.error || '';
-        const isExpiredToken =
+        // Cubre: "JWT expired", "exp claim", "token is expired", "missing sub claim", "bad_jwt", "Invalid JWT"
+        const isInvalidToken =
             errorMessage.includes('JWT expired') ||
             errorMessage.includes('exp') ||
-            (errorMessage.includes('token') && errorMessage.includes('expired'));
+            errorMessage.includes('expired') ||
+            errorMessage.includes('missing sub') ||
+            errorMessage.includes('bad_jwt') ||
+            errorMessage.includes('Invalid JWT') ||
+            result.error.status === 401;
 
-        if (isExpiredToken) {
+        if (isInvalidToken) {
             const state = api.getState() as { auth: { refreshToken: string | null } };
             const refreshToken = state.auth.refreshToken;
 
             if (refreshToken) {
-                console.log('[RTK Query] Token expirado, intentando refrescar...');
+                console.log('[RTK Query] Token inválido/expirado, intentando refrescar...');
 
                 try {
-                    // Intentar refrescar el token
                     const refreshResult = await baseQuery(
                         {
                             url: 'auth/v1/token?grant_type=refresh_token',
@@ -88,40 +92,22 @@ const baseQueryWithTokenRefresh: BaseQueryFn<
                     if (refreshResult.data) {
                         const authResponse = refreshResult.data as any;
 
-                        // Verificar que la respuesta contiene los datos necesarios
                         if (authResponse.access_token && authResponse.refresh_token) {
-                            // Actualizar el token en Redux
-                            api.dispatch({
-                                type: 'auth/setCredentials',
-                                payload: {
-                                    user: authResponse.user,
-                                    token: authResponse.access_token,
-                                    refreshToken: authResponse.refresh_token,
-                                },
-                            });
+                            // Solo actualizar tokens — no sobreescribir user para no perder avatarUrl u otros campos
+                            api.dispatch({ type: 'auth/setTokens', payload: { token: authResponse.access_token, refreshToken: authResponse.refresh_token } });
 
-                            console.log('[RTK Query] Token refrescado exitosamente, reintentando request...');
-
-                            // Repetir el request original con el nuevo token
+                            console.log('[RTK Query] Token refrescado, reintentando request...');
                             return baseQuery(args, api, extraOptions);
                         } else {
-                            console.error('[RTK Query] Refresh token response inválida:', authResponse);
-                            // Hacer logout si el refresh no devuelve tokens válidos
                             api.dispatch({ type: 'auth/logout' });
                         }
                     } else if (refreshResult.error) {
-                        console.error('[RTK Query] Error al refrescar token:', refreshResult.error);
-                        // Hacer logout si el refresh token también expiró
                         api.dispatch({ type: 'auth/logout' });
                     }
-                } catch (refreshError) {
-                    console.error('[RTK Query] Excepción al refrescar token:', refreshError);
-                    // Hacer logout en caso de error inesperado
+                } catch {
                     api.dispatch({ type: 'auth/logout' });
                 }
             } else {
-                console.warn('[RTK Query] Token expirado pero no hay refreshToken disponible');
-                // Si no hay refresh token pero hay un error de JWT, hacer logout
                 api.dispatch({ type: 'auth/logout' });
             }
         }

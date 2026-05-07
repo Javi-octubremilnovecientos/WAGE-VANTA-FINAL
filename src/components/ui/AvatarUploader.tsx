@@ -3,9 +3,9 @@ import { useDropzone } from 'react-dropzone';
 import {
     useUploadAvatarMutation,
     useDeleteAvatarMutation,
-    useUpdateUserMutation,
     getAvatarPublicUrl,
 } from '@/features/auth/authApi';
+import { useUpdateUserData } from '@/hooks/useUpdateUserData';
 import {
     validateImageFile,
     compressImage,
@@ -13,7 +13,6 @@ import {
     extractPathFromUrl,
     createPreviewUrl,
     SUPPORTED_IMAGE_EXTENSIONS,
-    AVATAR_BUCKET_NAME,
 } from '@/lib/imageUtils';
 import UserAvatar from './UserAvatar';
 
@@ -92,7 +91,7 @@ function AvatarUploader({
 }: AvatarUploaderProps) {
     const [uploadAvatar] = useUploadAvatarMutation();
     const [deleteAvatar] = useDeleteAvatarMutation();
-    const [updateUser] = useUpdateUserMutation();
+    const updateUserData = useUpdateUserData();
 
     const [uploadStage, setUploadStage] = useState<UploadStage>('idle');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -140,30 +139,18 @@ function AvatarUploader({
 
                 // 5. Generar filename único
                 const filename = generateAvatarFilename(userId, compressedFile.name);
-                console.log('Upload details:', {
-                    bucket: AVATAR_BUCKET_NAME,
-                    userId,
-                    filename,
-                    fileSize: compressedFile.size,
-                    fileType: compressedFile.type
-                });
                 setUploadStage('uploading');
-                const uploadResult = await uploadAvatar({
+                await uploadAvatar({
                     userId,
                     filename,
                     file: compressedFile,
                 }).unwrap();
 
-                console.log('Upload success:', uploadResult);
-
                 // 7. Construir URL pública
                 const publicUrl = getAvatarPublicUrl(userId, filename);
-                console.log('Public URL:', publicUrl);
 
-                // 8. Actualizar user_metadata en Supabase
-                await updateUser({
-                    data: { avatarUrl: publicUrl },
-                }).unwrap();
+                // 8. Actualizar user_metadata en Supabase (fusiona con campos existentes)
+                await updateUserData({ avatarUrl: publicUrl });
 
                 // 9. Notificar éxito
                 setUploadStage('success');
@@ -198,7 +185,7 @@ function AvatarUploader({
             currentAvatarUrl,
             uploadAvatar,
             deleteAvatar,
-            updateUser,
+            updateUserData,
             onUploadSuccess,
             onUploadError,
         ]
@@ -229,10 +216,8 @@ function AvatarUploader({
                 await deleteAvatar({ path }).unwrap();
             }
 
-            // 2. Actualizar user_metadata
-            await updateUser({
-                data: { avatarUrl: null },
-            }).unwrap();
+            // 2. Actualizar user_metadata (fusiona con campos existentes)
+            await updateUserData({ avatarUrl: null });
 
             // 3. Notificar éxito
             setUploadStage('success');
@@ -261,6 +246,7 @@ function AvatarUploader({
                 {isCompact ? (
                     // Modo compacto: mostrar avatar con tamaño específico
                     <UserAvatar
+                        key={showPreview ? previewUrl : currentAvatarUrl}
                         avatarUrl={showPreview ? previewUrl : currentAvatarUrl}
                         userName={userName}
                         size={avatarSize}
@@ -270,12 +256,14 @@ function AvatarUploader({
                     // Modo normal: responsive
                     <>
                         <UserAvatar
+                            key={showPreview ? previewUrl : currentAvatarUrl}
                             avatarUrl={showPreview ? previewUrl : currentAvatarUrl}
                             userName={userName}
                             size="md"
                             className="transition-opacity duration-300 sm:hidden"
                         />
                         <UserAvatar
+                            key={showPreview ? previewUrl : currentAvatarUrl}
                             avatarUrl={showPreview ? previewUrl : currentAvatarUrl}
                             userName={userName}
                             size="lg"

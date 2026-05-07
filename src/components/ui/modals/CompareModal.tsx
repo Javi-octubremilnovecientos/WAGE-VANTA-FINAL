@@ -25,11 +25,10 @@ export default function CompareModal({
     cancelText = "Cancel",
     confirmText = "Compare",
     cancelButtonColor = "#374151",
-    confirmButtonColor = "#6366F1",
 }: CompareModalProps) {
     const dispatch = useAppDispatch();
     const selectedCountries = useAppSelector(selectSelectedCountries);
-    const { canAddCountry, isAuthenticated, isPremium, maxCountries } = usePlanLimits();
+    const { canAddCountry, isAuthenticated, isPremium } = usePlanLimits();
 
     // 2° país persistido en Redux
     const persistedSecondCountry = selectedCountries[1] ?? null;
@@ -94,34 +93,6 @@ export default function CompareModal({
         }
 
         setPendingCountry(country);
-    };
-
-    const getHelperText = () => {
-        const remainingSlots = maxCountries - selectedCountries.length;
-
-        if (displayedCountry && !isPremium) {
-            return `Remove the badge first to change (Premium can replace directly)`;
-        }
-
-        if (displayedCountry && isPremium) {
-            return `Selected: ${displayedCountry.label} (Premium: replace anytime)`;
-        }
-
-        if (!canAddCountry) {
-            if (!isAuthenticated) return `Login to compare up to 2 countries`;
-            if (!isPremium) return 'Upgrade to Premium to compare 3 countries';
-            return 'Maximum countries reached';
-        }
-
-        if (!isAuthenticated) {
-            return `You can add ${remainingSlots} more ${remainingSlots === 1 ? 'country' : 'countries'}`;
-        }
-
-        if (!isPremium && remainingSlots === 1) {
-            return 'Add 1 more country (Upgrade to Premium for 3 total)';
-        }
-
-        return '';
     };
 
     return (

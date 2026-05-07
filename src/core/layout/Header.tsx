@@ -42,6 +42,7 @@ export default function Header() {
             {isAuthenticated ? (
               <>
                 <UserAvatar
+                  key={user?.avatarUrl}
                   avatarUrl={user?.avatarUrl}
                   userName={user?.name}
                   size="sm"

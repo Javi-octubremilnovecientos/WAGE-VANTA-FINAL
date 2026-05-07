@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from './useRedux';
 import { selectUser, patchUser } from '@/features/auth/authSlice';
-import { useUpdateUserMutation, mapSupabaseResponseToUser } from '@/features/auth/authApi';
+import { useUpdateUserMutation } from '@/features/auth/authApi';
 import type { UserData } from '@/lib/User';
 
 /**
@@ -62,15 +62,14 @@ export function useUpdateUserData() {
             };
 
             // Enviar a Supabase con todos los campos
-            const updatedSupabaseUser = await updateUser({
+            await updateUser({
                 data: fullUserData,
             }).unwrap();
 
-            // Actualizar Redux con la respuesta de Supabase para mantener sincronización
-            const mappedUser = mapSupabaseResponseToUser(updatedSupabaseUser);
-            dispatch(patchUser(mappedUser));
+            // Actualizar Redux directamente con lo que enviamos — más fiable que la respuesta de Supabase
+            dispatch(patchUser(partialData));
 
-            return mappedUser;
+            return partialData;
         },
         [user, updateUser, dispatch],
     );

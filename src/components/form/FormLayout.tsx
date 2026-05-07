@@ -73,7 +73,7 @@ function FormLayout({ onNavigateToSheet }: FormLayoutProps) {
   const { canSaveTemplate, maxTemplates } = usePlanLimits();
 
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [authMode, setAuthMode] = useState<"login" | "signup" | "recovery">("login");
   const [templateModalOpen, setTemplateModalOpen] = useState(false);
   const [templateMode, setTemplateMode] = useState<"save" | "load">("load");
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);

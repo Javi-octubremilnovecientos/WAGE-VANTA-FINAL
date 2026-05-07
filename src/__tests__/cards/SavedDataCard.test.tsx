@@ -5,6 +5,7 @@ import SavedDataCard from '@/components/ui/cards/SavedDataCard'
 import type { Comparison } from '@/lib/User'
 
 const sampleComparison: Comparison = {
+  id: 1,
   selectedCountries: ['Spain', 'Denmark'],
   formValues: {
     'Economic Activity': 'Technology',

@@ -113,10 +113,10 @@ function UserSettings() {
                     setPasswordSuccess(false);
                 }, 3000);
             } catch (error: unknown) {
-                // Manejar errores específicos de Supabase
-                if (error?.data?.error_code === 'current_password_required') {
+                const err = error as { data?: { error_code?: string; msg?: string } };
+                if (err?.data?.error_code === 'current_password_required') {
                     setPasswordError('Current password is required');
-                } else if (error?.data?.msg?.includes('Invalid current password')) {
+                } else if (err?.data?.msg?.includes('Invalid current password')) {
                     setPasswordError('Current password is incorrect');
                 } else {
                     setPasswordError('Failed to update password. Please try again.');
@@ -157,12 +157,10 @@ function UserSettings() {
     };
 
     const handleAvatarUploadSuccess = (url: string) => {
-        // Actualizar Redux inmediatamente
         dispatch(patchUser({ avatarUrl: url || null }));
         setAvatarSuccess(true);
         setAvatarError(null);
 
-        // Ocultar mensaje de éxito después de 3 segundos
         setTimeout(() => {
             setAvatarSuccess(false);
         }, 3000);
@@ -269,13 +267,18 @@ function UserSettings() {
                             avatarSize="lg"
                         />
 
-                        {/* Success Message */}
                         {avatarSuccess && (
                             <div className="mt-4 rounded-md bg-green-500/10 border border-green-600/50 px-3 py-2 text-xs text-green-300">
                                 <div className="flex items-center gap-2">
                                     <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                                     <p className="font-semibold">Avatar updated successfully!</p>
                                 </div>
+                            </div>
+                        )}
+                        {avatarError && (
+                            <div className="mt-4 rounded-md bg-red-500/10 border border-red-600/50 px-3 py-2 text-xs text-red-300 flex items-center gap-2">
+                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400" />
+                                {avatarError}
                             </div>
                         )}
                     </div>
