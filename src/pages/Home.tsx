@@ -187,7 +187,7 @@ export default function Home() {
                     <div className="flex flex-col gap-3 md:gap-6 text-center items-center">
 
                         <img
-                            src="src\assets\images\Logitpop.png"
+                            src="src\assets\images\Logotipo.svg"
                             alt="Wage Vantage Logo"
                             className="h-17 w-16 lg:h-30 lg:w-20 object-contain"
                         />

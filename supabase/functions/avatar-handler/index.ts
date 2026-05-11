@@ -6,8 +6,9 @@
  * del path coincide con el del token (un usuario no puede subir/borrar
  * avatares de otro usuario).
  *
- * Deploy: supabase functions deploy avatar-handler
- *  (sin --no-verify-jwt: el JWT se verifica manualmente para extraer userId)
+ * Deploy: supabase functions deploy avatar-handler --no-verify-jwt
+ *  verify_jwt: false — el gateway no verifica el JWT para soportar tokens ES256
+ *  (asimétricos). La verificación se hace manualmente vía /auth/v1/user.
  *
  * Rutas:
  *   POST   /avatar-handler/{userId}/{filename}  — Sube un avatar
@@ -107,12 +108,16 @@ Deno.serve(async (req: Request) => {
 
     // ── DELETE: Remove avatar ──────────────────────────────────────────────────
     if (req.method === 'DELETE') {
-        const deleteResponse = await fetch(storageUrl, {
+        // Storage DELETE requires POST to /object/remove with a JSON body listing prefixes
+        const removeUrl = `${supabaseUrl}/storage/v1/object/remove`;
+        const deleteResponse = await fetch(removeUrl, {
             method: 'DELETE',
             headers: {
                 apikey: serviceKey,
                 Authorization: `Bearer ${serviceKey}`,
+                'Content-Type': 'application/json',
             },
+            body: JSON.stringify({ prefixes: [`${BUCKET_NAME}/${pathUserId}/${filename}`] }),
         });
 
         if (!deleteResponse.ok) {
