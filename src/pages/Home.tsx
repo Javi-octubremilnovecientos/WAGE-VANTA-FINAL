@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import logotipo from "@/assets/images/Logotipo.svg";
 import { useNavigate } from "react-router-dom";
 import { ChartBarIcon, WindowIcon } from "@heroicons/react/24/outline";
 import MainChart from "../components/charts/MainChart";
@@ -187,7 +188,7 @@ export default function Home() {
                     <div className="flex flex-col gap-3 md:gap-6 text-center items-center">
 
                         <img
-                            src="src\assets\images\Logotipo.svg"
+                            src={logotipo}
                             alt="Wage Vantage Logo"
                             className="h-17 w-16 lg:h-30 lg:w-20 object-contain"
                         />
